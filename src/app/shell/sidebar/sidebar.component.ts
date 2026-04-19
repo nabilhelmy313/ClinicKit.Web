@@ -6,11 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToggleService } from '../../core/services/toggle.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'ck-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatExpansionModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, RouterModule, MatExpansionModule, MatIconModule, MatTooltipModule, TranslatePipe],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })

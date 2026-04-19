@@ -1,10 +1,11 @@
 import { NgClass } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { ToggleService } from '../sidebar/toggle.service';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { LanguageService } from '../../core/services/language.service';
 
 @Component({
     selector: 'app-header',
@@ -13,6 +14,8 @@ import { CustomizerSettingsService } from '../../customizer-settings/customizer-
     styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+
+    readonly langService = inject(LanguageService);
 
     // isSidebarToggled
     isSidebarToggled = false;

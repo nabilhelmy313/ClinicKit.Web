@@ -2,14 +2,14 @@
     class="header-area bg-white border-radius transition"
     [ngClass]="{'active': isSidebarToggled, 'sticky': isSticky}"
     [class.component-dark-theme]="themeService.isDark()"
-    [class.right-sidebar]="themeService.isRightSidebar()"
+    [class.right-sidebar]="themeService.isRightSidebar() || langService.isRTL()"
     [class.hide-sidebar]="themeService.isHideSidebar()"
     [class.dark-header]="themeService.isHeaderDark()"
     [class.card-borderd-theme]="themeService.isCardBorder()"
-    [class.rtl-enabled]="themeService.isRTLEnabled()"
+    [class.rtl-enabled]="langService.isRTL()"
 >
-    <div class="d-md-flex align-items-center justify-content-between">
-        <div class="header-left-side d-flex align-items-center">
+    <div class="d-flex align-items-center w-100">
+        <div class="header-left-side d-flex align-items-center flex-grow-1">
             <div
                 class="burger-menu cursor-pointer transition d-xl-none"
                 [ngClass]="{'active': isSidebarToggled}"
@@ -26,47 +26,30 @@
                 <input type="text" class="input-search d-block w-100 border-none outline-0" placeholder="Search here...">
             </form>
         </div>
-        <ul class="header-right-side d-flex align-items-center mt-0 mb-0 pl-0 list-unstyled">
+        <div class="header-center-logo d-flex justify-content-center align-items-center flex-shrink-0">
+            <img src="assets/logo.svg" alt="Tabbab" style="height:44px;object-fit:contain;">
+        </div>
+        <ul class="header-right-side d-flex align-items-center justify-content-end flex-grow-1 mt-0 mb-0 pl-0 list-unstyled">
             <li>
                 <button mat-icon-button [matMenuTriggerFor]="languageMenu" class="language-menu-btn">
-                    <i class="material-symbols-outlined">
-                        translate
-                    </i>
+                    <span class="lang-flag">{{ langService.lang() === 'ar' ? '🇸🇦' : '🇺🇸' }}</span>
                 </button>
                 <mat-menu class="language-menu-dropdown" #languageMenu="matMenu" xPosition="before">
-                    <div
-                        [class.dark-menu]="themeService.isDark() || themeService.isHeaderDark()"
-                    >
+                    <div [class.dark-menu]="themeService.isDark() || themeService.isHeaderDark()">
                         <span class="title fw-medium d-block">Choose Language</span>
                         <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
                             <li>
-                                <button mat-button>
-                                    <img src="images/flags/usa.png" alt="flag">
-                                    English
+                                <button mat-button
+                                    (click)="langService.switchLanguage('en')"
+                                    [class.active]="langService.lang() === 'en'">
+                                    🇺🇸 English
                                 </button>
                             </li>
                             <li>
-                                <button mat-button>
-                                    <img src="images/flags/australia.png" alt="flag">
-                                    Australian
-                                </button>
-                            </li>
-                            <li>
-                                <button mat-button>
-                                    <img src="images/flags/spain.png" alt="flag">
-                                    Spanish
-                                </button>
-                            </li>
-                            <li>
-                                <button mat-button>
-                                    <img src="images/flags/france.png" alt="flag">
-                                    French
-                                </button>
-                            </li>
-                            <li>
-                                <button mat-button>
-                                    <img src="images/flags/germany.png" alt="flag">
-                                    German
+                                <button mat-button
+                                    (click)="langService.switchLanguage('ar')"
+                                    [class.active]="langService.lang() === 'ar'">
+                                    🇸🇦 العربية
                                 </button>
                             </li>
                         </ul>

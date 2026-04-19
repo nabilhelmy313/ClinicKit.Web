@@ -30,9 +30,8 @@ export class CustomizerSettingsService {
             // Card Border Radius
             this.isCardBorderRadiusTheme = JSON.parse(localStorage.getItem('isCardBorderRadiusTheme') || 'false');
     
-            // RTL Mode — default true (Arabic is the default language)
-            this.isRTLEnabledTheme = JSON.parse(localStorage.getItem('isRTLEnabledTheme') ?? 'true');
-            this.updateRTLBodyClass();
+            // RTL is now controlled exclusively by LanguageService
+            this.isRTLEnabledTheme = false;
         }
     }
 
