@@ -1,4 +1,7 @@
 {
+  "APP": {
+    "NAME": "طَبَّبَ"
+  },
   "COMMON": {
     "SAVE": "حفظ",
     "CANCEL": "إلغاء",
@@ -29,6 +32,8 @@
     "VIEW": "عرض",
     "CREATE": "إنشاء",
     "UPDATE": "تحديث",
+    "VIEW_ALL": "عرض الكل",
+    "ADMINISTRATOR": "مدير النظام",
     "ROWS_PER_PAGE": "صفوف في الصفحة",
     "OF": "من",
     "TOTAL": "الإجمالي"
@@ -36,6 +41,7 @@
   "AUTH": {
     "LOGIN": "تسجيل الدخول",
     "LOGOUT": "تسجيل الخروج",
+    "SIGN_OUT": "تسجيل الخروج",
     "EMAIL": "البريد الإلكتروني",
     "PASSWORD": "كلمة المرور",
     "REMEMBER_ME": "تذكرني",
@@ -48,20 +54,51 @@
     "UNAUTHORIZED": "غير مصرح لك بالوصول"
   },
   "SIDEBAR": {
+    "SECTION_MAIN": "الرئيسية",
+    "SECTION_CLINICAL": "السريري",
+    "SECTION_FINANCE": "المالية",
+    "SECTION_ANALYTICS": "التحليلات",
+    "SECTION_SYSTEM": "النظام",
     "DASHBOARD": "لوحة التحكم",
     "PATIENTS": "المرضى",
+    "ALL_PATIENTS": "جميع المرضى",
+    "REGISTER_PATIENT": "تسجيل مريض",
+    "MEDICAL_RECORDS": "السجلات الطبية",
     "DOCTORS": "الأطباء",
+    "ALL_DOCTORS": "جميع الأطباء",
+    "SCHEDULES": "الجداول",
+    "DEPARTMENTS": "الأقسام",
     "APPOINTMENTS": "المواعيد",
+    "ALL_APPOINTMENTS": "جميع المواعيد",
+    "CALENDAR_VIEW": "عرض التقويم",
+    "BOOK_APPOINTMENT": "حجز موعد",
     "REPORTS": "التقارير",
     "SETTINGS": "الإعدادات",
+    "CLINIC_PROFILE": "ملف العيادة",
+    "USERS_ROLES": "المستخدمون والأدوار",
+    "TENANTS": "المستأجرون",
     "PROFILE": "الملف الشخصي",
     "CLINIC": "العيادة",
     "PHARMACY": "الصيدلية",
     "BILLING": "الفواتير",
+    "INVOICES": "الفواتير",
+    "PAYMENTS": "المدفوعات",
+    "INSURANCE": "التأمين",
     "INVENTORY": "المخزون",
     "STAFF": "الكادر الطبي",
     "ANALYTICS": "الإحصائيات",
-    "HELP": "المساعدة"
+    "HELP": "المساعدة",
+    "ADMINISTRATOR": "مدير النظام"
+  },
+  "TOPBAR": {
+    "SEARCH_PLACEHOLDER": "بحث عن مرضى، مواعيد...",
+    "DARK_MODE": "تفعيل الوضع الداكن",
+    "LIGHT_MODE": "تفعيل الوضع الفاتح",
+    "APPOINTMENT_CALENDAR": "تقويم المواعيد",
+    "NOTIFICATIONS": "الإشعارات",
+    "VIEW_ALL": "عرض الكل",
+    "CLINIC_SETTINGS": "إعدادات العيادة",
+    "USER_MANAGEMENT": "إدارة المستخدمين"
   },
   "DASHBOARD": {
     "TITLE": "لوحة التحكم",

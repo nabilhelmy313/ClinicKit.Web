@@ -1,3 +1,27 @@
+// Language-driven layout — triggered by html[dir="rtl"] set synchronously by LanguageService
+[dir="rtl"] {
+    .sidebar-area {
+        left: auto !important;
+        right: 0 !important;
+    }
+    .header-area {
+        left: 25px !important;
+        right: 282px !important;
+        &.active, &.hide-sidebar {
+            left: 25px !important;
+            right: 85px !important;
+        }
+    }
+    .main-content {
+        padding-left: 25px !important;
+        padding-right: 282px !important;
+        &.active, &.hide-sidebar {
+            padding-left: 25px !important;
+            padding-right: 85px !important;
+        }
+    }
+}
+
 .rtl-enabled {
     direction: rtl;
     text-align: right;

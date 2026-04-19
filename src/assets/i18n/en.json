@@ -1,4 +1,7 @@
 {
+  "APP": {
+    "NAME": "Tabbab"
+  },
   "COMMON": {
     "SAVE": "Save",
     "CANCEL": "Cancel",
@@ -29,6 +32,8 @@
     "VIEW": "View",
     "CREATE": "Create",
     "UPDATE": "Update",
+    "VIEW_ALL": "View all",
+    "ADMINISTRATOR": "Administrator",
     "ROWS_PER_PAGE": "Rows per page",
     "OF": "of",
     "TOTAL": "Total"
@@ -36,6 +41,7 @@
   "AUTH": {
     "LOGIN": "Login",
     "LOGOUT": "Logout",
+    "SIGN_OUT": "Sign Out",
     "EMAIL": "Email",
     "PASSWORD": "Password",
     "REMEMBER_ME": "Remember me",
@@ -48,20 +54,51 @@
     "UNAUTHORIZED": "You are not authorized to access this resource"
   },
   "SIDEBAR": {
+    "SECTION_MAIN": "Main",
+    "SECTION_CLINICAL": "Clinical",
+    "SECTION_FINANCE": "Finance",
+    "SECTION_ANALYTICS": "Analytics",
+    "SECTION_SYSTEM": "System",
     "DASHBOARD": "Dashboard",
     "PATIENTS": "Patients",
+    "ALL_PATIENTS": "All Patients",
+    "REGISTER_PATIENT": "Register Patient",
+    "MEDICAL_RECORDS": "Medical Records",
     "DOCTORS": "Doctors",
+    "ALL_DOCTORS": "All Doctors",
+    "SCHEDULES": "Schedules",
+    "DEPARTMENTS": "Departments",
     "APPOINTMENTS": "Appointments",
+    "ALL_APPOINTMENTS": "All Appointments",
+    "CALENDAR_VIEW": "Calendar View",
+    "BOOK_APPOINTMENT": "Book Appointment",
     "REPORTS": "Reports",
     "SETTINGS": "Settings",
+    "CLINIC_PROFILE": "Clinic Profile",
+    "USERS_ROLES": "Users & Roles",
+    "TENANTS": "Tenants",
     "PROFILE": "Profile",
     "CLINIC": "Clinic",
     "PHARMACY": "Pharmacy",
     "BILLING": "Billing",
+    "INVOICES": "Invoices",
+    "PAYMENTS": "Payments",
+    "INSURANCE": "Insurance",
     "INVENTORY": "Inventory",
     "STAFF": "Medical Staff",
     "ANALYTICS": "Analytics",
-    "HELP": "Help"
+    "HELP": "Help",
+    "ADMINISTRATOR": "Administrator"
+  },
+  "TOPBAR": {
+    "SEARCH_PLACEHOLDER": "Search patients, appointments…",
+    "DARK_MODE": "Switch to Dark Mode",
+    "LIGHT_MODE": "Switch to Light Mode",
+    "APPOINTMENT_CALENDAR": "Appointment Calendar",
+    "NOTIFICATIONS": "Notifications",
+    "VIEW_ALL": "View all",
+    "CLINIC_SETTINGS": "Clinic Settings",
+    "USER_MANAGEMENT": "User Management"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",

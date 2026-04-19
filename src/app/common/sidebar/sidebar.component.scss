@@ -14,21 +14,28 @@
         
         .logo {
             position: absolute;
-            padding: 25px;
+            padding: 20px 25px;
             z-index: 2;
             right: 0;
             left: 0;
             top: 0;
-            
+
             a {
                 color: var(--blackColor);
-                font: {
-                    weight: 700;
-                    size: 24px;
-                };
-                span {
-                    margin-left: 10px;
-                }
+            }
+
+            .sidebar-logo {
+                height: 48px;
+                object-fit: contain;
+                // primary color (#1D9E75) filter from black
+                filter: brightness(0) saturate(100%) invert(45%) sepia(86%) saturate(444%) hue-rotate(119deg) brightness(93%) contrast(95%);
+                transition: filter 0.3s ease;
+            }
+        }
+
+        &.component-dark-theme, &.dark-sidebar {
+            .sidebar-logo {
+                filter: brightness(0) invert(1);
             }
         }
         .burger-menu {

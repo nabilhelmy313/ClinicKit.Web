@@ -18,44 +18,44 @@
   <nav class="sidebar__nav" role="navigation">
 
     <!-- MAIN section -->
-    <p class="sidebar__section-title">MAIN</p>
+    <p class="sidebar__section-title">{{ 'SIDEBAR.SECTION_MAIN' | translate }}</p>
 
     <a routerLink="/dashboard"
        routerLinkActive="sidebar__link--active"
        [routerLinkActiveOptions]="{ exact: true }"
        class="sidebar__link">
       <i class="ri-dashboard-3-line sidebar__icon"></i>
-      <span class="sidebar__label">Dashboard</span>
+      <span class="sidebar__label">{{ 'SIDEBAR.DASHBOARD' | translate }}</span>
     </a>
 
     <!-- CLINICAL section -->
-    <p class="sidebar__section-title">CLINICAL</p>
+    <p class="sidebar__section-title">{{ 'SIDEBAR.SECTION_CLINICAL' | translate }}</p>
 
     <!-- Patients (expandable) -->
     <mat-expansion-panel class="sidebar__panel">
       <mat-expansion-panel-header>
         <mat-panel-title class="sidebar__panel-title">
           <i class="ri-user-heart-line sidebar__icon"></i>
-          <span class="sidebar__label">Patients</span>
+          <span class="sidebar__label">{{ 'SIDEBAR.PATIENTS' | translate }}</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ul class="sidebar__sub-menu">
         <li>
           <a routerLink="/patients" routerLinkActive="sidebar__sub-link--active"
              [routerLinkActiveOptions]="{ exact: true }" class="sidebar__sub-link">
-            All Patients
+            {{ 'SIDEBAR.ALL_PATIENTS' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/patients/new" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Register Patient
+            {{ 'SIDEBAR.REGISTER_PATIENT' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/patients/records" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Medical Records
+            {{ 'SIDEBAR.MEDICAL_RECORDS' | translate }}
           </a>
         </li>
       </ul>
@@ -66,26 +66,26 @@
       <mat-expansion-panel-header>
         <mat-panel-title class="sidebar__panel-title">
           <i class="ri-calendar-check-line sidebar__icon"></i>
-          <span class="sidebar__label">Appointments</span>
+          <span class="sidebar__label">{{ 'SIDEBAR.APPOINTMENTS' | translate }}</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ul class="sidebar__sub-menu">
         <li>
           <a routerLink="/appointments" routerLinkActive="sidebar__sub-link--active"
              [routerLinkActiveOptions]="{ exact: true }" class="sidebar__sub-link">
-            All Appointments
+            {{ 'SIDEBAR.ALL_APPOINTMENTS' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/appointments/calendar" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Calendar View
+            {{ 'SIDEBAR.CALENDAR_VIEW' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/appointments/new" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Book Appointment
+            {{ 'SIDEBAR.BOOK_APPOINTMENT' | translate }}
           </a>
         </li>
       </ul>
@@ -96,102 +96,102 @@
       <mat-expansion-panel-header>
         <mat-panel-title class="sidebar__panel-title">
           <i class="ri-stethoscope-line sidebar__icon"></i>
-          <span class="sidebar__label">Doctors</span>
+          <span class="sidebar__label">{{ 'SIDEBAR.DOCTORS' | translate }}</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ul class="sidebar__sub-menu">
         <li>
           <a routerLink="/doctors" routerLinkActive="sidebar__sub-link--active"
              [routerLinkActiveOptions]="{ exact: true }" class="sidebar__sub-link">
-            All Doctors
+            {{ 'SIDEBAR.ALL_DOCTORS' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/doctors/schedule" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Schedules
+            {{ 'SIDEBAR.SCHEDULES' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/doctors/departments" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Departments
+            {{ 'SIDEBAR.DEPARTMENTS' | translate }}
           </a>
         </li>
       </ul>
     </mat-expansion-panel>
 
     <!-- FINANCE section -->
-    <p class="sidebar__section-title">FINANCE</p>
+    <p class="sidebar__section-title">{{ 'SIDEBAR.SECTION_FINANCE' | translate }}</p>
 
     <!-- Billing (expandable) -->
     <mat-expansion-panel class="sidebar__panel">
       <mat-expansion-panel-header>
         <mat-panel-title class="sidebar__panel-title">
           <i class="ri-bill-line sidebar__icon"></i>
-          <span class="sidebar__label">Billing</span>
+          <span class="sidebar__label">{{ 'SIDEBAR.BILLING' | translate }}</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ul class="sidebar__sub-menu">
         <li>
           <a routerLink="/billing/invoices" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Invoices
+            {{ 'SIDEBAR.INVOICES' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/billing/payments" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Payments
+            {{ 'SIDEBAR.PAYMENTS' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/billing/insurance" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Insurance
+            {{ 'SIDEBAR.INSURANCE' | translate }}
           </a>
         </li>
       </ul>
     </mat-expansion-panel>
 
     <!-- ANALYTICS section -->
-    <p class="sidebar__section-title">ANALYTICS</p>
+    <p class="sidebar__section-title">{{ 'SIDEBAR.SECTION_ANALYTICS' | translate }}</p>
 
     <a routerLink="/reports"
        routerLinkActive="sidebar__link--active"
        class="sidebar__link">
       <i class="ri-bar-chart-line sidebar__icon"></i>
-      <span class="sidebar__label">Reports</span>
+      <span class="sidebar__label">{{ 'SIDEBAR.REPORTS' | translate }}</span>
     </a>
 
     <!-- SYSTEM section -->
-    <p class="sidebar__section-title">SYSTEM</p>
+    <p class="sidebar__section-title">{{ 'SIDEBAR.SECTION_SYSTEM' | translate }}</p>
 
     <!-- Settings (expandable) -->
     <mat-expansion-panel class="sidebar__panel">
       <mat-expansion-panel-header>
         <mat-panel-title class="sidebar__panel-title">
           <i class="ri-settings-4-line sidebar__icon"></i>
-          <span class="sidebar__label">Settings</span>
+          <span class="sidebar__label">{{ 'SIDEBAR.SETTINGS' | translate }}</span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <ul class="sidebar__sub-menu">
         <li>
           <a routerLink="/settings/clinic" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Clinic Profile
+            {{ 'SIDEBAR.CLINIC_PROFILE' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/settings/users" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Users & Roles
+            {{ 'SIDEBAR.USERS_ROLES' | translate }}
           </a>
         </li>
         <li>
           <a routerLink="/settings/tenants" routerLinkActive="sidebar__sub-link--active"
              class="sidebar__sub-link">
-            Tenants
+            {{ 'SIDEBAR.TENANTS' | translate }}
           </a>
         </li>
       </ul>
@@ -204,7 +204,7 @@
     <div class="sidebar__user-avatar">N</div>
     <div class="sidebar__user-info">
       <span class="sidebar__user-name">Nabil Helmy</span>
-      <span class="sidebar__user-role">Administrator</span>
+      <span class="sidebar__user-role">{{ 'SIDEBAR.ADMINISTRATOR' | translate }}</span>
     </div>
   </div>
 </aside>
