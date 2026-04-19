@@ -147,6 +147,34 @@ button {
 // Dark CSS
 @import "./dark";
 
+// Toast panel classes (applied via ToastService panelClass)
+.mat-mdc-snack-bar-container {
+    &.toast-success {
+        --mdc-snackbar-container-color: var(--sage-50);
+        --mdc-snackbar-supporting-text-color: var(--sage-700);
+        --mat-snack-bar-button-color: var(--sage-700);
+        border-left: 4px solid var(--sage-500);
+    }
+    &.toast-error {
+        --mdc-snackbar-container-color: var(--pom-50);
+        --mdc-snackbar-supporting-text-color: var(--pom-500);
+        --mat-snack-bar-button-color: var(--pom-500);
+        border-left: 4px solid var(--pom-500);
+    }
+    &.toast-info {
+        --mdc-snackbar-container-color: var(--lapis-50);
+        --mdc-snackbar-supporting-text-color: var(--lapis-500);
+        --mat-snack-bar-button-color: var(--lapis-500);
+        border-left: 4px solid var(--lapis-500);
+    }
+    &.toast-warn {
+        --mdc-snackbar-container-color: var(--clay-50);
+        --mdc-snackbar-supporting-text-color: var(--clay-500);
+        --mat-snack-bar-button-color: var(--clay-500);
+        border-left: 4px solid var(--clay-500);
+    }
+}
+
 /* Max width 767px */
 @media only screen and (max-width : 767px) {
 
