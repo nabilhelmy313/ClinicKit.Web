@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>خطة تنفيذ Starter Kit + عيادات</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: #f5f4f0;
+  color: #1a1a18;
+  padding: 24px 16px 40px;
+  direction: rtl;
+}
+.container { max-width: 720px; margin: 0 auto; }
+h1 { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+.subtitle { font-size: 13px; color: #73726c; margin-bottom: 20px; }
+
+.global-bar { background: #e8e6df; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+.global-bar-top { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.bar-label { font-size: 13px; font-weight: 500; }
+.bar-pct   { font-size: 13px; color: #73726c; }
+.bar-track { height: 6px; border-radius: 6px; background: #ccc9c0; overflow: hidden; }
+.bar-fill  { height: 100%; border-radius: 6px; background: #1D9E75; transition: width 0.3s; }
+
+.legend-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; font-size: 11px; color: #73726c; align-items: center; }
+.leg { display: flex; align-items: center; gap: 4px; }
+.tag { display: inline-block; font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 8px; white-space: nowrap; }
+.tag-be   { background: #E1F5EE; color: #085041; }
+.tag-fe   { background: #E6F1FB; color: #0C447C; }
+.tag-both { background: #EEEDFE; color: #3C3489; }
+.tag-eg   { background: #FAEEDA; color: #633806; }
+
+.sprint { border: 0.5px solid #d0cec5; border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: #fff; }
+.sprint-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 16px; background: #f1efe8;
+  border-bottom: 0.5px solid #d0cec5;
+  cursor: pointer; user-select: none;
+}
+.sprint-head:hover { background: #e8e6df; }
+.sprint-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 500; flex-shrink: 0;
+}
+.sprint-title { font-size: 14px; font-weight: 500; flex: 1; }
+.sprint-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.sprint-meta  { font-size: 11px; color: #73726c; white-space: nowrap; }
+.chevron { font-size: 11px; color: #999; transition: transform 0.2s; flex-shrink: 0; }
+.chevron.open { transform: rotate(180deg); }
+
+.task-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 16px; border-bottom: 0.5px solid #e8e6df;
+  cursor: pointer; transition: background 0.12s;
+}
+.task-row:last-child { border-bottom: none; }
+.task-row:hover { background: #f5f4f0; }
+.chk {
+  width: 16px; height: 16px; border-radius: 4px;
+  border: 1.5px solid #b4b2a9; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.chk.done { background: #1D9E75; border-color: #1D9E75; }
+.chk.done::after {
+  content: ''; width: 8px; height: 5px;
+  border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px); display: block;
+}
+.task-main { flex: 1; min-width: 0; }
+.task-name { font-size: 13px; font-weight: 500; margin: 0 0 2px; }
+.task-sub  { font-size: 11px; color: #73726c; margin: 0; }
+.task-tag  { font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 8px; white-space: nowrap; align-self: center; }
+
+.deliverable {
+  background: #f5f4f0; border-top: 0.5px solid #d0cec5;
+  padding: 10px 16px; display: flex; align-items: center; gap: 8px;
+}
+.del-icon {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; flex-shrink: 0;
+}
+.del-text { font-size: 12px; color: #73726c; }
+.del-text strong { color: #1a1a18; font-weight: 500; }
+
+.summary { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-top: 4px; }
+.sum-card { background: #fff; border: 0.5px solid #d0cec5; border-radius: 10px; padding: 12px 14px; }
+.sum-label { font-size: 11px; color: #73726c; margin: 0 0 4px; }
+.sum-val   { font-size: 22px; font-weight: 500; color: #1a1a18; margin: 0; }
+.sum-val.green { color: #1D9E75; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>خطة تنفيذ Starter Kit + نظام العيادات</h1>
+<p class="subtitle">4 أسابيع — 20 مهمة — Demo جاهز في نهاية الأسبوع الرابع</p>
+
+<div class="global-bar">
+  <div class="global-bar-top">
+    <span class="bar-label" id="gl-label">التقدم الكلي</span>
+    <span class="bar-pct" id="gl-pct">0%</span>
+  </div>
+  <div class="bar-track"><div class="bar-fill" id="gl-fill" style="width:0%"></div></div>
+</div>
+
+<div class="legend-row">
+  <span class="leg"><span class="tag tag-be">BE</span> Backend .NET</span>
+  <span class="leg"><span class="tag tag-fe">FE</span> Frontend Angular</span>
+  <span class="leg"><span class="tag tag-both">Full</span> الاثنين</span>
+  <span class="leg"><span class="tag tag-eg">مصر</span> متطلب محلي</span>
+</div>
+
+<!-- SPRINT 1 -->
+<div class="sprint">
+  <div class="sprint-head" onclick="toggleSprint('s1')">
+    <span class="sprint-num" style="background:#E1F5EE;color:#085041;">1</span>
+    <span class="sprint-title">الأسبوع 1 — Starter Kit الأساسي</span>
+    <span class="sprint-badge" style="background:#E1F5EE;color:#085041;">Kit</span>
+    <span class="sprint-meta">5 مهام</span>
+    <span class="chevron open" id="chev-s1">▼</span>
+  </div>
+  <div id="body-s1">
+    <div class="task-row" onclick="tick('t1')"><div class="chk" id="t1"></div><div class="task-main"><p class="task-name">Solution structure + BaseEntity</p><p class="task-sub">Projects: API / Application / Domain / Infrastructure — BaseEntity بـ TenantId، Audit، SoftDelete</p></div><span class="task-tag tag-be">BE</span></div>
+    <div class="task-row" onclick="tick('t2')"><div class="chk" id="t2"></div><div class="task-main"><p class="task-name">Multi-Tenancy middleware + EF Global Filter</p><p class="task-sub">TenantId من JWT، Global Query Filter على كل DbSet</p></div><span class="task-tag tag-be">BE</span></div>
+    <div class="task-row" onclick="tick('t3')"><div class="chk" id="t3"></div><div class="task-main"><p class="task-name">JWT Auth — Login / Refresh / Revoke</p><p class="task-sub">ASP.NET Identity + JWT + Refresh Token table</p></div><span class="task-tag tag-be">BE</span></div>
+    <div class="task-row" onclick="tick('t4')"><div class="chk" id="t4"></div><div class="task-main"><p class="task-name">Roles & Permissions seeder</p><p class="task-sub">Admin، Doctor، Receptionist — default permissions لكل role</p></div><span class="task-tag tag-be">BE</span></div>
+    <div class="task-row" onclick="tick('t5')"><div class="chk" id="t5"></div><div class="task-main"><p class="task-name">Global Error Handler + Serilog</p><p class="task-sub">ProblemDetails response، file + console logging</p></div><span class="task-tag tag-be">BE</span></div>
+    <div class="deliverable">
+      <div class="del-icon" style="background:#E1F5EE;color:#085041;">✓</div>
+      <p class="del-text"><strong>Deliverable:</strong> API بيشتغل — Login بيرجع Token، Multi-Tenant جاهز</p>
+    </div>
+  </div>
+</div>
+
+<!-- SPRINT 2 -->
+<div class="sprint">
+  <div class="sprint-head" onclick="toggleSprint('s2')">
+    <span class="sprint-num" style="background:#E6F1FB;color:#0C447C;">2</span>
+    <span class="sprint-title">الأسبوع 2 — Angular Shell + Shared Components</span>
+    <span class="sprint-badge" style="background:#E6F1FB;color:#0C447C;">Kit</span>
+    <span class="sprint-meta">5 مهام</span>
+    <span class="chevron open" id="chev-s2">▼</span>
+  </div>
+  <div id="body-s2">
+    <div class="task-row" onclick="tick('t6')"><div class="chk" id="t6"></div><div class="task-main"><p class="task-name">App Shell — Sidebar + Layout + Routing</p><p class="task-sub">Lazy-loaded modules، AuthGuard، شكل موحد للصفحات</p></div><span class="task-tag tag-fe">FE</span></div>
+    <div class="task-row" onclick="tick('t7')"><div class="chk" id="t7"></div><div class="task-main"><p class="task-name">Auth module — Login screen + HTTP interceptor</p><p class="task-sub">Token storage، auto-attach header، 401 redirect</p></div><span class="task-tag tag-fe">FE</span></div>
+    <div class="task-row" onclick="tick('t8')"><div class="chk" id="t8"></div><div class="task-main"><p class="task-name">GTable component + ColumnDefinitionEx</p><p class="task-sub">Sort، filter، pagination، action buttons — generic</p></div><span class="task-tag tag-fe">FE</span></div>
+    <div class="task-row" onclick="tick('t9')"><div class="chk" id="t9"></div><div class="task-main"><p class="task-name">RTL/LTR toggle + ngx-translate setup</p><p class="task-sub">ملفات ar.json / en.json، dir تلقائي، PrimeNG RTL</p></div><span class="task-tag tag-both">Full</span></div>
+    <div class="task-row" onclick="tick('t10')"><div class="chk" id="t10"></div><div class="task-main"><p class="task-name">Shared: Dialogs، Toasts، Permission directive</p><p class="task-sub">ConfirmDialog، *hasPermission directive، Toast service</p></div><span class="task-tag tag-fe">FE</span></div>
+    <div class="deliverable">
+      <div class="del-icon" style="background:#E6F1FB;color:#0C447C;">✓</div>
+      <p class="del-text"><strong>Deliverable:</strong> Starter Kit كامل — جاهز يتنسخ لأي مشروع جديد</p>
+    </div>
+  </div>
+</div>
+
+<!-- SPRINT 3 -->
+<div class="sprint">
+  <div class="sprint-head" onclick="toggleSprint('s3')">
+    <span class="sprint-num" style="background:#EEEDFE;color:#3C3489;">3</span>
+    <span class="sprint-title">الأسبوع 3 — إدارة المرضى والمواعيد</span>
+    <span class="sprint-badge" style="background:#EEEDFE;color:#3C3489;">عيادة</span>
+    <span class="sprint-meta">5 مهام</span>
+    <span class="chevron open" id="chev-s3">▼</span>
+  </div>
+  <div id="body-s3">
+    <div class="task-row" onclick="tick('t11')"><div class="chk" id="t11"></div><div class="task-main"><p class="task-name">Patient entity + CRUD API</p><p class="task-sub">Name، Phone، DOB، Gender، MedicalHistory — بحث بالاسم والتليفون</p></div><span class="task-tag tag-be">BE</span></div>
+    <div class="task-row" onclick="tick('t12')"><div class="chk" id="t12"></div><div class="task-main"><p class="task-name">Appointment entity + conflict check</p><p class="task-sub">Doctor، Patient، Slot — منع التعارض، حالات: Pending/Confirmed/Cancelled</p></div><span class="task-tag tag-be">BE</span></div>
+    <div class="task-row" onclick="tick('t13')"><div class="chk" id="t13"></div><div class="task-main"><p class="task-name">شاشة المرضى — GTable + Add/Edit dialog</p><p class="task-sub">قائمة، بحث سريع، فورم تسجيل مريض جديد</p></div><span class="task-tag tag-fe">FE</span></div>
+    <div class="task-row" onclick="tick('t14')"><div class="chk" id="t14"></div><div class="task-main"><p class="task-name">شاشة المواعيد — Calendar + جدول اليوم</p><p class="task-sub">PrimeNG Calendar، قائمة منتظرين، تغيير حالة بنقرة</p></div><span class="task-tag tag-fe">FE</span></div>
+    <div class="task-row" onclick="tick('t15')"><div class="chk" id="t15"></div><div class="task-main"><p class="task-name">الملف الطبي للمريض</p><p class="task-sub">تاريخ الزيارات، تشخيصات، وصفات — timeline view</p></div><span class="task-tag tag-both">Full</span></div>
+    <div class="deliverable">
+      <div class="del-icon" style="background:#EEEDFE;color:#3C3489;">✓</div>
+      <p class="del-text"><strong>Deliverable:</strong> تقدر تسجل مريض وتحجزله موعد وتشوف جدول اليوم</p>
+    </div>
+  </div>
+</div>
+
+<!-- SPRINT 4 -->
+<div class="sprint">
+  <div class="sprint-head" onclick="toggleSprint('s4')">
+    <span class="sprint-num" style="background:#FAEEDA;color:#633806;">4</span>
+    <span class="sprint-title">الأسبوع 4 — كاشير + واتساب + Demo</span>
+    <span class="sprint-badge" style="background:#FAEEDA;color:#633806;">مصر</span>
+    <span class="sprint-meta">5 مهام</span>
+    <span class="chevron open" id="chev-s4">▼</span>
+  </div>
+  <div id="body-s4">
+    <div class="task-row" onclick="tick('t16')"><div class="chk" id="t16"></div><div class="task-main"><p class="task-name">Invoice entity + Billing API</p><p class="task-sub">خدمات، مبلغ، حالة الدفع، طباعة PDF</p></div><span class="task-tag tag-be">BE</span></div>
+    <div class="task-row" onclick="tick('t17')"><div class="chk" id="t17"></div><div class="task-main"><p class="task-name">شاشة الفاتورة + طباعة</p><p class="task-sub">إضافة خدمات، حساب الإجمالي، طباعة أو PDF</p></div><span class="task-tag tag-fe">FE</span></div>
+    <div class="task-row" onclick="tick('t18')"><div class="chk" id="t18"></div><div class="task-main"><p class="task-name">WhatsApp reminder service</p><p class="task-sub">Background job — بعت تذكير قبل الموعد بـ 24 ساعة وساعة</p></div><span class="task-tag tag-eg">مصر</span></div>
+    <div class="task-row" onclick="tick('t19')"><div class="chk" id="t19"></div><div class="task-main"><p class="task-name">e-Receipt stub — هيكل الربط بالضرائب</p><p class="task-sub">Service interface جاهز، mock response للـ demo</p></div><span class="task-tag tag-eg">مصر</span></div>
+    <div class="task-row" onclick="tick('t20')"><div class="chk" id="t20"></div><div class="task-main"><p class="task-name">Demo polish + seed data + deploy</p><p class="task-sub">بيانات تجريبية واقعية، حل bugs، رفع على server</p></div><span class="task-tag tag-both">Full</span></div>
+    <div class="deliverable">
+      <div class="del-icon" style="background:#FAEEDA;color:#633806;">★</div>
+      <p class="del-text"><strong>Deliverable:</strong> MVP جاهز للـ Demo — تقدر تعرضه على أول عميل</p>
+    </div>
+  </div>
+</div>
+
+<div class="summary">
+  <div class="sum-card"><p class="sum-label">إجمالي المهام</p><p class="sum-val">20</p></div>
+  <div class="sum-card"><p class="sum-label">مدة الـ Kit</p><p class="sum-val">2 أسابيع</p></div>
+  <div class="sum-card"><p class="sum-label">مدة العيادة MVP</p><p class="sum-val">2 أسابيع</p></div>
+  <div class="sum-card"><p class="sum-label">Demo جاهز في</p><p class="sum-val green">4 أسابيع</p></div>
+</div>
+
+</div>
+<script>
+const total = 20;
+const done = new Set();
+function tick(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (done.has(id)) { done.delete(id); el.classList.remove('done'); }
+  else { done.add(id); el.classList.add('done'); }
+  const pct = Math.round(done.size / total * 100);
+  document.getElementById('gl-fill').style.width = pct + '%';
+  document.getElementById('gl-pct').textContent = pct + '%';
+  document.getElementById('gl-label').textContent = 'التقدم الكلي — ' + done.size + ' من ' + total + ' مهمة';
+}
+function toggleSprint(id) {
+  const body = document.getElementById('body-' + id);
+  const chev = document.getElementById('chev-' + id);
+  if (!body || !chev) return;
+  const isHidden = body.style.display === 'none';
+  body.style.display = isHidden ? 'block' : 'none';
+  chev.classList.toggle('open', isHidden);
+}
+</script>
+</body>
+</html>

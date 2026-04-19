@@ -1,0 +1,10 @@
+<div
+    class="star-rating"
+    [class.rtl-enabled]="themeService.isRTLEnabled()"
+>
+    @for (i of [1, 2, 3, 4, 5]; track $index) {
+        <span class="star" (click)="onClick(i)">
+            {{ i <= rating ? '★' : '☆' }}
+        </span>
+    }
+</div>

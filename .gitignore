@@ -1,0 +1,47 @@
+# ─── macOS ───────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ─── .NET / C# ───────────────────────────────────────────
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.csproj.user
+publish/
+*.nupkg
+*.snupkg
+*.log
+
+# ─── ASP.NET / Entity Framework ──────────────────────────
+appsettings.Development.json
+appsettings.Local.json
+
+# ─── Angular / Node ──────────────────────────────────────
+node_modules/
+dist/
+.angular/
+.cache/
+npm-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# ─── Environment / Secrets ───────────────────────────────
+.env
+.env.*
+secrets.json
+**/secrets.json
+
+# ─── IDE ─────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── OS ──────────────────────────────────────────────────
+Thumbs.db
+Desktop.ini
