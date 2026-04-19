@@ -1,5 +1,6 @@
 // Language-driven layout — triggered by html[dir="rtl"] set synchronously by LanguageService
 [dir="rtl"] {
+    --fontFamily: 'Tajawal', sans-serif;
     .sidebar-area {
         left: auto !important;
         right: 0 !important;
