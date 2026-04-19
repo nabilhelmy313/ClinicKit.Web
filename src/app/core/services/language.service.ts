@@ -50,14 +50,7 @@ export class LanguageService {
     readonly ready$ = this._ready$.asObservable();
 
     // ── Bootstrap ─────────────────────────────────────────────────────────────
-    constructor() {
-        if (isPlatformBrowser(this.platformId)) {
-            const stored = localStorage.getItem(STORAGE_KEY) as AppLanguage | null;
-            const initial: AppLanguage = (stored === 'ar' || stored === 'en') ? stored : DEFAULT_LANG;
-            // Fire-and-forget; ready$ signals completion
-            void this._applyLanguage(initial);
-        }
-    }
+    constructor() {}
 
     // ── Public API ────────────────────────────────────────────────────────────
 

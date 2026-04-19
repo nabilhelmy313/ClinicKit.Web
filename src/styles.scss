@@ -8,32 +8,76 @@
 html {
     @include mat.theme((
         color: (
-            primary: mat.$red-palette,
-            tertiary: mat.$orange-palette,
+            primary: mat.$green-palette,
+            tertiary: mat.$amber-palette,
         ),
         typography: Outfit,
         density: 0,
     ));
 }
 
-/* ClinicKit brand — Red Cream Medical theme */
+/* ClinicKit design system tokens */
 :root {
     --fontFamily: 'Outfit', sans-serif;
-    --daxaColor: #C41E3A;          /* ClinicKit primary red */
-    --primaryColor: #C41E3A;
-    --primaryDark: #8B1A2B;
-    --primaryLight: #F9E8EB;
-    --creamBg: #FAF7F2;
-    --dangerColor: #e74c3c;
-    --infoColor: #2563eb;
-    --warningColor: #d97706;
-    --successColor: #059669;
-    --blackColor: #475569;
-    --whiteColor: #ffffff;
-    --bodyColor: #919aa3;
     --transition: .5s;
     --fontSize: 16px;
     --borderBoxShadow: rgba(0, 0, 0, .05) 0px 6px 24px 0px, rgba(0, 0, 0, .08) 0px 0px 0px 1px;
+
+    /* Sage — primary brand green */
+    --sage-50:  #E8F3EE;
+    --sage-100: #D0E7DB;
+    --sage-200: #A8D3BD;
+    --sage-300: #6FB593;
+    --sage-400: #3DA072;
+    --sage-500: #1D9E75;
+    --sage-600: #147A5A;
+    --sage-700: #0E5C43;
+    --sage-800: #085041;
+    --sage-900: #063127;
+
+    /* Gold — accent (revenue / logo pip) */
+    --gold-50:  #FAEEDA;
+    --gold-300: #D6A54A;
+    --gold-500: #8F6320;
+    --gold-600: #633806;
+
+    /* Paper — backgrounds */
+    --paper-0: #FBFAF6;
+    --paper-1: #F5F4F0;
+    --paper-2: #EFEDE6;
+    --paper-3: #E8E6DF;
+    --paper-4: #D0CEC5;
+    --paper-5: #B4B2A9;
+
+    /* Ink — text */
+    --ink-0: #1A1A18;
+    --ink-1: #3A3932;
+    --ink-2: #73726C;
+    --ink-3: #A09E95;
+
+    /* Semantic accents */
+    --lapis-500: #1B6FB8;
+    --lapis-50:  #E6F1FB;
+    --plum-500:  #4E44A8;
+    --plum-50:   #EEEDFE;
+    --clay-500:  #C4642B;
+    --clay-50:   #FBEEE6;
+    --pom-500:   #C43B2B;
+    --pom-50:    #FBE8E6;
+
+    /* Legacy aliases — keeps existing components working */
+    --daxaColor:    var(--sage-500);
+    --primaryColor: var(--sage-500);
+    --primaryDark:  var(--sage-700);
+    --primaryLight: var(--sage-50);
+    --creamBg:      var(--paper-1);
+    --successColor: var(--sage-500);
+    --dangerColor:  var(--pom-500);
+    --infoColor:    var(--lapis-500);
+    --warningColor: var(--clay-500);
+    --blackColor:   var(--ink-0);
+    --bodyColor:    var(--ink-2);
+    --whiteColor:   #ffffff;
 }
 *, ::after, ::before {
     box-sizing: border-box;
@@ -42,7 +86,7 @@ body {
     margin: 0;
     padding: 0;
     color: var(--blackColor);
-    background-color: #eff3f9;
+    background-color: var(--paper-1);
     font: {
         weight: 400;
         size: var(--fontSize);

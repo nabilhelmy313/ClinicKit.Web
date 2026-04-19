@@ -1,0 +1,36 @@
+{
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "SEARCH": "Search",
+    "LOADING": "Loading...",
+    "CONFIRM": "Confirm",
+    "BACK": "Back",
+    "NEXT": "Next",
+    "SUBMIT": "Submit"
+  },
+  "NAV": {
+    "DASHBOARD": "Dashboard",
+    "PATIENTS": "Patients",
+    "APPOINTMENTS": "Appointments",
+    "DOCTORS": "Doctors",
+    "BILLING": "Billing",
+    "REPORTS": "Reports",
+    "SETTINGS": "Settings"
+  },
+  "AUTH": {
+    "SIGN_IN": "Sign In",
+    "SIGN_UP": "Sign Up",
+    "SIGN_OUT": "Sign Out",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "FORGOT_PASSWORD": "Forgot password?"
+  },
+  "ERRORS": {
+    "REQUIRED": "This field is required",
+    "INVALID_EMAIL": "Invalid email address",
+    "MIN_LENGTH": "Minimum {{length}} characters"
+  }
+}
