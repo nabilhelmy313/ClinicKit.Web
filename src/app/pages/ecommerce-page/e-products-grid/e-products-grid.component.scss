@@ -166,20 +166,20 @@
                                 &.white {
                                     .mdc-checkbox {
                                         .mdc-checkbox__background {
-                                            border-color: #919aa3;
+                                            border-color: var(--ink-3);
                                             background-color: var(--whiteColor);
                                         }
                                         .mdc-checkbox__native-control {
                                             &:enabled {
                                                 &:focus {
                                                     &:checked~.mdc-checkbox__background, &:indeterminate~.mdc-checkbox__background {
-                                                        border-color: #919aa3;
+                                                        border-color: var(--ink-3);
                                                         background-color: var(--whiteColor);
                                                     }
                                                 }
                                             }
                                             &:enabled:checked~.mdc-checkbox__background, &:enabled:indeterminate~.mdc-checkbox__background, &[data-indeterminate=true]:enabled~.mdc-checkbox__background {
-                                                border-color: #919aa3;
+                                                border-color: var(--ink-3);
                                             }
                                             &:enabled~.mdc-checkbox__background {
                                                 .mdc-checkbox__checkmark {

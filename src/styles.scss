@@ -9,7 +9,7 @@ html {
     @include mat.theme((
         color: (
             primary: mat.$green-palette,
-            tertiary: mat.$amber-palette,
+            tertiary: mat.$orange-palette,
         ),
         typography: Outfit,
         density: 0,
@@ -85,7 +85,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    color: var(--blackColor);
+    color: var(--ink-1);
     background-color: var(--paper-1);
     font: {
         weight: 400;
@@ -95,13 +95,13 @@ body {
 }
 a {
     transition: var(--transition);
-    color: var(--blackColor);
+    color: var(--ink-1);
     text-decoration: none;
     outline: 0 !important;
 
     &:hover {
         text-decoration: none;
-        color: var(--daxaColor);
+        color: var(--sage-600);
     }
 }
 .d-table {
@@ -192,4 +192,3 @@ button {
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {}
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

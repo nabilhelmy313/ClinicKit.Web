@@ -688,7 +688,7 @@ html {
         --mdc-radio-selected-hover-icon-color: var(--daxaColor);
         --mat-radio-checked-ripple-color: var(--daxaColor);
         --mdc-radio-selected-icon-color: var(--daxaColor);
-        --mdc-radio-unselected-icon-color: #919aa3;
+        --mdc-radio-unselected-icon-color: var(--ink-3);
 
         &.primary {
             --mdc-radio-selected-pressed-icon-color: var(--primaryColor);

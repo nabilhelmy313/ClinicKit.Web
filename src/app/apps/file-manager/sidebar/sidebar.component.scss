@@ -85,7 +85,7 @@
                                         height: 5px;
                                         border-radius: 50%;
                                         position: absolute;
-                                        background: #475569;
+                                        background: var(--ink-1);
                                         transform: translateY(-50%);
                                         transition: var(--transition);
                                     }

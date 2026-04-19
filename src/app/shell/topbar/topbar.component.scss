@@ -1,4 +1,4 @@
-$primary:       #C41E3A;
+// ─── Layout constants (non-color) ────────────────────────────────────────────
 $sidebar-width: 260px;
 $topbar-height: 64px;
 $transition:    0.25s ease;
@@ -12,8 +12,8 @@ $transition:    0.25s ease;
   left: $sidebar-width;
   right: 0;
   height: $topbar-height;
-  background: #fff;
-  border-bottom: 1px solid #eee;
+  background: var(--paper-0);
+  border-bottom: 1px solid var(--paper-4);
   z-index: 900;
   transition: left $transition, background $transition, box-shadow $transition;
 
@@ -22,14 +22,14 @@ $transition:    0.25s ease;
   }
 
   &.topbar--dark {
-    background: #1a1a2e;
-    border-bottom-color: #2a2a4a;
-    .topbar__icon-btn, .topbar__profile-btn { color: #c4cde0; }
+    background: var(--sage-900);
+    border-bottom-color: var(--sage-800);
+    .topbar__icon-btn, .topbar__profile-btn { color: var(--sage-100); }
     .topbar__icon-btn:hover, .topbar__profile-btn:hover { background: rgba(255,255,255,.06); }
-    .topbar__search-input { background: #23233e; color: #e0e6f0; border-color: #3a3a5c; }
-    .topbar__search-input::placeholder { color: #6b7db3; }
-    .topbar__search-icon { color: #6b7db3; }
-    .topbar__username { color: #c4cde0; }
+    .topbar__search-input { background: var(--sage-800); color: var(--paper-0); border-color: var(--sage-700); }
+    .topbar__search-input::placeholder { color: var(--sage-400); }
+    .topbar__search-icon { color: var(--sage-400); }
+    .topbar__username { color: var(--sage-100); }
   }
 
   @media (max-width: 991px) {
@@ -66,10 +66,10 @@ $transition:    0.25s ease;
   border-radius: 8px;
   cursor: pointer;
   font-size: 22px;
-  color: #555;
+  color: var(--ink-2);
   transition: background $transition;
 
-  &:hover { background: #f5f5f5; }
+  &:hover { background: var(--paper-2); }
 
   @media (max-width: 991px) { display: flex; }
 }
@@ -85,7 +85,7 @@ $transition:    0.25s ease;
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #aaa;
+  color: var(--ink-3);
   font-size: 16px;
   pointer-events: none;
 }
@@ -93,20 +93,20 @@ $transition:    0.25s ease;
 .topbar__search-input {
   width: 100%;
   padding: 8px 14px 8px 38px;
-  border: 1.5px solid #e8e8e8;
+  border: 1.5px solid var(--paper-4);
   border-radius: 10px;
   font-size: 14px;
-  background: #fafafa;
+  background: var(--paper-1);
   transition: border-color $transition, background $transition;
   outline: none;
-  color: #333;
+  color: var(--ink-1);
 
   &:focus {
-    border-color: $primary;
-    background: #fff;
+    border-color: var(--sage-500);
+    background: var(--paper-0);
   }
 
-  &::placeholder { color: #bbb; }
+  &::placeholder { color: var(--ink-3); }
 }
 
 // ─── Actions ─────────────────────────────────────────────────────────────────
@@ -130,12 +130,12 @@ $transition:    0.25s ease;
   border-radius: 10px;
   cursor: pointer;
   font-size: 20px;
-  color: #555;
+  color: var(--ink-2);
   text-decoration: none;
   position: relative;
   transition: background $transition, color $transition;
 
-  &:hover { background: #f5f5f5; color: $primary; }
+  &:hover { background: var(--sage-50); color: var(--sage-600); }
 
   &--badge { overflow: visible; }
 }
@@ -148,7 +148,7 @@ $transition:    0.25s ease;
   height: 16px;
   padding: 0 4px;
   border-radius: 8px;
-  background: $primary;
+  background: var(--sage-500);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -169,19 +169,19 @@ $transition:    0.25s ease;
   border-radius: 24px;
   cursor: pointer;
   transition: background $transition;
-  color: #444;
+  color: var(--ink-1);
   font-size: 14px;
 
-  &:hover { background: #f5f5f5; }
+  &:hover { background: var(--paper-2); }
 
-  i { font-size: 16px; color: #888; }
+  i { font-size: 16px; color: var(--ink-3); }
 }
 
 .topbar__avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: $primary;
+  background: var(--sage-500);
   color: #fff;
   display: flex;
   align-items: center;
@@ -199,7 +199,7 @@ $transition:    0.25s ease;
 
 .topbar__username {
   font-weight: 600;
-  color: #333;
+  color: var(--ink-0);
 
   @media (max-width: 480px) { display: none; }
 }
@@ -208,17 +208,17 @@ $transition:    0.25s ease;
 .ck-dropdown__wrapper {
   min-width: 300px;
   padding: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
 
   &.ck-dropdown--dark {
-    background: #1a1a2e;
-    .ck-dropdown__title { color: #e0e6f0; }
-    .ck-dropdown__action { color: #6b7db3; }
-    .ck-notif__text { color: #c4cde0; }
-    .ck-notif__time { color: #6b7db3; }
-    .ck-dropdown__profile-name { color: #e0e6f0; }
-    .ck-dropdown__profile-email { color: #6b7db3; }
-    a { color: #c4cde0; }
+    background: var(--sage-900);
+    .ck-dropdown__title { color: var(--paper-0); }
+    .ck-dropdown__action { color: var(--sage-300); }
+    .ck-notif__text { color: var(--sage-100); }
+    .ck-notif__time { color: var(--sage-400); }
+    .ck-dropdown__profile-name { color: var(--paper-0); }
+    .ck-dropdown__profile-email { color: var(--sage-400); }
+    a { color: var(--sage-100); }
   }
 }
 
@@ -227,18 +227,18 @@ $transition:    0.25s ease;
   justify-content: space-between;
   align-items: center;
   padding: 14px 16px 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--paper-4);
 }
 
 .ck-dropdown__title {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: var(--ink-0);
 }
 
 .ck-dropdown__action {
   font-size: 12px;
-  color: $primary;
+  color: var(--sage-600);
   text-decoration: none;
   &:hover { text-decoration: underline; }
 }
@@ -255,24 +255,24 @@ $transition:    0.25s ease;
       gap: 10px;
       padding: 10px 16px;
       font-size: 14px;
-      color: #444;
+      color: var(--ink-1);
       text-decoration: none;
       transition: background 0.15s;
-      &:hover { background: #f8f8f8; }
-      i { font-size: 18px; color: #888; }
+      &:hover { background: var(--paper-2); }
+      i { font-size: 18px; color: var(--ink-3); }
     }
   }
 }
 
 .ck-dropdown__divider {
   height: 1px;
-  background: #eee;
+  background: var(--paper-4);
   margin: 6px 0;
 }
 
 .ck-dropdown__logout a {
-  color: $primary !important;
-  i { color: $primary !important; }
+  color: var(--pom-500) !important;
+  i { color: var(--pom-500) !important; }
 }
 
 // Notification item
@@ -283,7 +283,7 @@ $transition:    0.25s ease;
   padding: 12px 16px;
   transition: background 0.15s;
   cursor: pointer;
-  &:hover { background: #fafafa; }
+  &:hover { background: var(--paper-2); }
 }
 
 .ck-notif__icon {
@@ -297,14 +297,14 @@ $transition:    0.25s ease;
 .ck-notif__text {
   margin: 0 0 3px;
   font-size: 13.5px;
-  color: #333;
+  color: var(--ink-1);
   white-space: normal;
   line-height: 1.4;
 }
 
 .ck-notif__time {
   font-size: 11.5px;
-  color: #aaa;
+  color: var(--ink-3);
 }
 
 // Profile card inside dropdown
@@ -313,18 +313,18 @@ $transition:    0.25s ease;
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--paper-4);
 }
 
 .ck-dropdown__profile-name {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: var(--ink-0);
   margin: 0 0 2px;
 }
 
 .ck-dropdown__profile-email {
   font-size: 12px;
-  color: #888;
+  color: var(--ink-3);
   margin: 0;
 }
