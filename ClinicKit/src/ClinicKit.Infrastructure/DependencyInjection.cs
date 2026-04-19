@@ -28,7 +28,7 @@ public static class DependencyInjection
             options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
                 sql => sql.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
+ 
         services.AddScoped<IApplicationDbContext>(
             provider => provider.GetRequiredService<ApplicationDbContext>());
 
