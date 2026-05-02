@@ -51,6 +51,13 @@ export const routes: Routes = [
                         .then(m => m.PatientDetailComponent),
                 title: 'Patient Profile — ClinicKit',
             },
+            {
+                path: ':id/edit',
+                loadComponent: () =>
+                    import('./pages/patients/patient-form/patient-form.component')
+                        .then(m => m.PatientFormComponent),
+                title: 'Edit Patient — ClinicKit',
+            },
         ],
     },
 
