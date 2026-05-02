@@ -4,16 +4,12 @@ import { ApiService } from '../../../core/services/api.service';
 import { PagedResult } from '../../../core/models/api.models';
 import {
   Patient,
+  PatientBrief,
   CreatePatientDto,
   UpdatePatientDto,
   PatientQuery,
 } from '../models/patient.model';
 
-/**
- * Pure HTTP layer for the Patients feature.
- * No state, no signals — only API calls.
- * All business logic and state live in PatientsFacade.
- */
 @Injectable({ providedIn: 'root' })
 export class PatientsApiService extends ApiService {
   private readonly path = '/api/patients';
@@ -26,15 +22,15 @@ export class PatientsApiService extends ApiService {
     return this.get<Patient>(`${this.path}/${id}`);
   }
 
+  search(term: string): Observable<PatientBrief[]> {
+    return this.get<PatientBrief[]>(`${this.path}/search`, { term });
+  }
+
   create(dto: CreatePatientDto): Observable<Patient> {
     return this.post<Patient>(this.path, dto);
   }
 
   update(id: string, dto: UpdatePatientDto): Observable<Patient> {
     return this.put<Patient>(`${this.path}/${id}`, dto);
-  }
-
-  remove(id: string): Observable<void> {
-    return this.delete<void>(`${this.path}/${id}`);
   }
 }

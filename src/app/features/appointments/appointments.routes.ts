@@ -6,20 +6,27 @@ export const APPOINTMENTS_ROUTES: Routes = [
     loadComponent: () =>
       import('./appointments-list/appointments-list.component')
         .then(m => m.AppointmentsListComponent),
-    title: 'Appointments — ClinicKit',
+    title: 'المواعيد — طَبَّبَ',
   },
   {
     path: 'calendar',
     loadComponent: () =>
       import('./appointments-calendar/appointments-calendar.component')
         .then(m => m.AppointmentsCalendarComponent),
-    title: 'Appointment Calendar — ClinicKit',
+    title: 'تقويم المواعيد — طَبَّبَ',
   },
   {
     path: 'new',
     loadComponent: () =>
       import('./appointment-form/appointment-form.component')
         .then(m => m.AppointmentFormComponent),
-    title: 'Book Appointment — ClinicKit',
+    title: 'حجز موعد — طَبَّبَ',
+  },
+  {
+    path: ':id/edit',
+    loadComponent: () =>
+      import('./appointment-form/appointment-form.component')
+        .then(m => m.AppointmentFormComponent),
+    title: 'تعديل الموعد — طَبَّبَ',
   },
 ];
