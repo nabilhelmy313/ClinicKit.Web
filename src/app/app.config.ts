@@ -9,7 +9,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import {
     provideHttpClient,
     withInterceptors,
-    withFetch,
 } from '@angular/common/http';
 
 import { routes } from './app.routes';
@@ -23,7 +22,6 @@ export const appConfig: ApplicationConfig = {
         provideClientHydration(withEventReplay()),
         provideAnimationsAsync(),
         provideHttpClient(
-            withFetch(),
             withInterceptors([jwtInterceptor]),
         ),
     ],
