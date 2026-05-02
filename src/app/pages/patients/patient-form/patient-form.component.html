@@ -1,0 +1,113 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        [icon]="isEdit ? 'edit' : 'person_add'"
+        [title]="(isEdit ? 'PATIENTS.EDIT_PATIENT' : 'PATIENTS.ADD_PATIENT') | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('PATIENTS.TITLE' | translate), link: '/patients' },
+            { label: (isEdit ? ('PATIENTS.EDIT_PATIENT' | translate) : ('PATIENTS.ADD_PATIENT' | translate)) }
+        ]">
+        <!-- Back button in header -->
+        <button class="default-btn outline-btn" type="button" (click)="cancel()">
+            <i class="material-symbols-outlined">
+                {{ langService.isRTL() ? 'arrow_forward' : 'arrow_back' }}
+            </i>
+            {{ 'COMMON.BACK' | translate }}
+        </button>
+    </ck-page-header>
+
+    <ck-card [title]="(isEdit ? 'PATIENTS.EDIT_SUBTITLE' : 'PATIENTS.ADD_SUBTITLE') | translate">
+
+        @if (isEdit && !formReady()) {
+            <div class="d-flex align-items-center justify-content-center py-40">
+                <mat-spinner diameter="40"></mat-spinner>
+            </div>
+        } @else {
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="row">
+
+                    <!-- First name -->
+                    <div class="col-md-6 mb-20">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ 'PATIENTS.FIRST_NAME' | translate }}</mat-label>
+                            <input matInput formControlName="firstName" />
+                            @if (f['firstName'].invalid && f['firstName'].touched) {
+                                <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Last name -->
+                    <div class="col-md-6 mb-20">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ 'PATIENTS.LAST_NAME' | translate }}</mat-label>
+                            <input matInput formControlName="lastName" />
+                            @if (f['lastName'].invalid && f['lastName'].touched) {
+                                <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-md-6 mb-20">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ 'PATIENTS.PHONE' | translate }}</mat-label>
+                            <input matInput formControlName="phone" dir="ltr"
+                                   [placeholder]="'PATIENTS.PHONE_PLACEHOLDER' | translate" />
+                            @if (f['phone'].hasError('required') && f['phone'].touched) {
+                                <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                            } @else if (f['phone'].hasError('pattern') && f['phone'].touched) {
+                                <mat-error>{{ 'PATIENTS.PHONE_INVALID' | translate }}</mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-6 mb-20">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ 'PATIENTS.GENDER' | translate }}</mat-label>
+                            <mat-select formControlName="gender">
+                                <mat-option [value]="Gender.Male">{{ 'PATIENTS.MALE' | translate }}</mat-option>
+                                <mat-option [value]="Gender.Female">{{ 'PATIENTS.FEMALE' | translate }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Date of birth -->
+                    <div class="col-md-6 mb-20">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ 'PATIENTS.BIRTH_DATE' | translate }}</mat-label>
+                            <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" />
+                            <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #dobPicker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="col-12 mb-20">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ 'PATIENTS.NOTES' | translate }}</mat-label>
+                            <textarea matInput formControlName="notes" rows="3"></textarea>
+                        </mat-form-field>
+                    </div>
+
+                </div>
+
+                <!-- Form actions bar -->
+                <ck-form-actions
+                    [saveLabel]="(isEdit ? 'COMMON.UPDATE' : 'PATIENTS.ADD_PATIENT') | translate"
+                    [saveIcon]="isEdit ? 'save' : 'person_add'"
+                    [cancelLabel]="'COMMON.CANCEL' | translate"
+                    [loading]="submitting()"
+                    (cancel)="cancel()"
+                    (save)="onSubmit()">
+                </ck-form-actions>
+
+            </form>
+        }
+
+    </ck-card>
+
+</div>

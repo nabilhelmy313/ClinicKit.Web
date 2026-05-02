@@ -128,9 +128,65 @@ button {
         size: var(--fontSize) !important;
     };
 }
-.mb-25 {
-    margin-bottom: 25px !important;
+.mb-25 { margin-bottom: 25px !important; }
+
+// ── Global component classes ──────────────────────────────────────────────────
+
+// Card wrapper (used in page layouts)
+.card-box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: var(--borderBoxShadow);
+    padding: 20px 22px 22px;
 }
+
+// Primary button
+.default-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 20px;
+    background: var(--sage-500);
+    color: #fff;
+    border: 1.5px solid var(--sage-500);
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--fontFamily);
+    cursor: pointer;
+    transition: background .18s, border-color .18s;
+    white-space: nowrap;
+
+    &:hover:not(:disabled)   { background: var(--sage-700); border-color: var(--sage-700); }
+    &:disabled                { opacity: .5; cursor: not-allowed; }
+
+    // Outline / secondary variant
+    &.outline-btn {
+        background: transparent;
+        color: var(--ink-1);
+        border-color: var(--paper-4);
+        &:hover:not(:disabled) { background: var(--paper-2); border-color: var(--paper-3); }
+    }
+
+    // Small variant used by pagination
+    &.small-btn {
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+
+    i.material-symbols-outlined {
+        font-size: 18px;
+        line-height: 1;
+    }
+}
+
+// Spacing / flex gaps
+.gap-10 { gap: 10px !important; }
+.gap-8  { gap: 8px  !important; }
+.py-40  { padding-top: 40px !important; padding-bottom: 40px !important; }
+.mt-10  { margin-top: 10px !important; }
+.mt-20  { margin-top: 20px !important; }
 
 // Utilities CSS
 @import "./utilities";

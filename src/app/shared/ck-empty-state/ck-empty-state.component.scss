@@ -1,0 +1,32 @@
+.ck-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+
+    &__icon-wrap {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: var(--paper-1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+    }
+
+    &__icon {
+        font-size: 36px;
+        color: var(--ink-3);
+    }
+
+    &__message {
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: 0 0 20px;
+        max-width: 280px;
+        line-height: 1.6;
+    }
+}

@@ -913,4 +913,41 @@
         }
     }
 
+    // Mat Table (global — applies inside ck-card and any other container)
+    .mat-mdc-table {
+        background-color: #1b232d;
+
+        .mat-mdc-header-row {
+            background-color: #131920;
+        }
+        .mat-mdc-header-cell {
+            background-color: #131920;
+            color: rgba(255, 255, 255, 0.87);
+            border-bottom-color: rgba(255, 255, 255, 0.09);
+        }
+        .mat-mdc-row {
+            background-color: #1b232d;
+
+            &:hover .mat-mdc-cell {
+                background-color: rgba(255, 255, 255, 0.03);
+            }
+        }
+        .mat-mdc-cell {
+            background-color: #1b232d;
+            color: rgba(255, 255, 255, 0.80);
+            border-bottom-color: rgba(255, 255, 255, 0.09);
+        }
+
+        // table-responsive scrollbar
+        + .table-responsive, .table-responsive & {
+            &::-webkit-scrollbar-track { background-color: rgba(255, 255, 255, 0.10); }
+            &::-webkit-scrollbar-thumb { background: #131920; }
+        }
+    }
+
+    .table-responsive {
+        &::-webkit-scrollbar-track { background-color: rgba(255, 255, 255, 0.10); }
+        &::-webkit-scrollbar-thumb { background: #131920; }
+    }
+
 }

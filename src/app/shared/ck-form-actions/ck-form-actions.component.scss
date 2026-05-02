@@ -1,0 +1,19 @@
+.ck-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+
+    // Inside a card — adds a top divider and padding
+    &--card {
+        margin-top: 8px;
+        padding-top: 20px;
+        border-top: 1px solid var(--paper-3);
+    }
+}
+
+// RTL: flip button order so Save appears on the left (primary action side)
+:host-context([dir='rtl']) .ck-form-actions {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}

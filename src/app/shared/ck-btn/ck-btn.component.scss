@@ -1,0 +1,81 @@
+:host { display: inline-flex; }
+
+.ck-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: background .18s, border-color .18s, color .18s, opacity .18s;
+    white-space: nowrap;
+    line-height: 1.4;
+
+    &:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; }
+
+    // ── Variants ─────────────────────────────────────────────────────────────
+    &--primary {
+        background: var(--sage-500);
+        color: #fff;
+        border-color: var(--sage-500);
+        &:hover:not(:disabled) { background: var(--sage-700); border-color: var(--sage-700); }
+    }
+
+    &--outline {
+        background: transparent;
+        color: var(--sage-600);
+        border-color: var(--sage-500);
+        &:hover:not(:disabled) { background: var(--sage-50); }
+    }
+
+    &--danger {
+        background: var(--pom-500);
+        color: #fff;
+        border-color: var(--pom-500);
+        &:hover:not(:disabled) { background: #a42e20; border-color: #a42e20; }
+    }
+
+    &--ghost {
+        background: transparent;
+        color: var(--ink-1);
+        border-color: transparent;
+        &:hover:not(:disabled) { background: var(--paper-2); }
+    }
+
+    &--icon {
+        padding: 7px;
+        border-radius: 50%;
+        background: transparent;
+        border-color: transparent;
+        color: var(--ink-2);
+        &:hover:not(:disabled) { background: var(--paper-2); color: var(--ink-0); }
+    }
+
+    // ── Sizes ─────────────────────────────────────────────────────────────────
+    &--sm { padding: 5px 12px; font-size: 13px; gap: 4px; }
+    &--lg { padding: 12px 26px; font-size: 15px; }
+
+    // ── Icon inside button ────────────────────────────────────────────────────
+    &__icon { font-size: 18px; line-height: 1; }
+
+    // ── Loading spinner ───────────────────────────────────────────────────────
+    &__spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid currentColor;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: ck-spin .6s linear infinite;
+        flex-shrink: 0;
+    }
+}
+
+@keyframes ck-spin {
+    to { transform: rotate(360deg); }
+}

@@ -1,0 +1,91 @@
+.ck-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 22px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: var(--borderBoxShadow);
+
+    :host-context(.dark-theme) & {
+        background: #1b232d;
+
+        .ck-page-header__title { color: rgba(255, 255, 255, 0.87); }
+    }
+
+    &__left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &__icon {
+        font-size: 28px;
+        color: var(--sage-500);
+        flex-shrink: 0;
+    }
+
+    &__title {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--ink-0);
+        margin: 0 0 4px;
+        line-height: 1.2;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+}
+
+// ── Breadcrumb ────────────────────────────────────────────────────────────────
+.ck-breadcrumb {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    flex-wrap: wrap;
+
+    &__item {
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        color: var(--ink-3);
+
+        a {
+            color: var(--sage-600);
+            text-decoration: none;
+            &:hover { text-decoration: underline; }
+        }
+
+        // separator dot between items
+        &:not(:last-child)::after {
+            content: '•';
+            margin: 0 6px;
+            color: var(--paper-4);
+        }
+
+        &--active span {
+            color: var(--ink-2);
+            font-weight: 500;
+        }
+    }
+
+    :host-context(.dark-theme) & {
+        &__item {
+            color: rgba(255, 255, 255, 0.40);
+
+            a { color: rgba(255, 255, 255, 0.55); }
+
+            &:not(:last-child)::after { color: rgba(255, 255, 255, 0.20); }
+
+            &--active span { color: rgba(255, 255, 255, 0.80); }
+        }
+    }
+}

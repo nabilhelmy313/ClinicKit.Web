@@ -12,6 +12,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
+import { ToastService }        from '../../../core/services/toast.service';
 import {
     Appointment,
     AppointmentStatus,
@@ -19,171 +20,38 @@ import {
     AppointmentTypeLabels,
     AppointmentStatusColor,
 } from '../../../core/models/appointment.model';
+import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
+import { LanguageService } from '../../../core/services/language.service';
+import { ThemeService }    from '../../../core/services/theme.service';
+import {
+    CkPageHeaderComponent, CkCardComponent,
+    CkBtnComponent, CkStatusBadgeComponent, CkEmptyStateComponent,
+} from '../../../shared/index';
 
 @Component({
     selector: 'app-appointments-list',
     standalone: true,
+    templateUrl: './appointments-list.component.html',
+    styleUrl:    './appointments-list.component.scss',
     imports: [
         CommonModule, DatePipe, RouterLink, ReactiveFormsModule,
         MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule,
         MatTableModule, MatProgressBarModule,
         MatDatepickerModule, MatNativeDateModule,
+        TranslatePipe,
+        CkPageHeaderComponent, CkCardComponent,
+        CkBtnComponent, CkStatusBadgeComponent, CkEmptyStateComponent,
     ],
-    template: `
-        <!-- Page header -->
-        <div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-between">
-            <h5 class="mb-0">
-                <i class="material-symbols-outlined me-2 align-middle">calendar_month</i>
-                المواعيد
-            </h5>
-            <div class="d-flex gap-10">
-                <button class="default-btn outline-btn"
-                        (click)="router.navigate(['/appointments/calendar'])">
-                    <i class="material-symbols-outlined me-1">grid_view</i>
-                    تقويم
-                </button>
-                <button class="default-btn"
-                        (click)="router.navigate(['/appointments/new'])">
-                    <i class="material-symbols-outlined me-1">add</i>
-                    موعد جديد
-                </button>
-            </div>
-        </div>
-
-        <!-- Filters card -->
-        <div class="card-box mb-25">
-            <div class="row align-items-end">
-                <div class="col-md-3 mb-15">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>من تاريخ</mat-label>
-                        <input matInput [matDatepicker]="fromPicker"
-                               [formControl]="fromDateControl" />
-                        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #fromPicker></mat-datepicker>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-3 mb-15">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>إلى تاريخ</mat-label>
-                        <input matInput [matDatepicker]="toPicker"
-                               [formControl]="toDateControl" />
-                        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
-                        <mat-datepicker #toPicker></mat-datepicker>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-3 mb-15">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>الحالة</mat-label>
-                        <mat-select [formControl]="statusControl">
-                            <mat-option [value]="null">الكل</mat-option>
-                            @for (opt of statusOptions; track opt.value) {
-                                <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-3 mb-15">
-                    <button class="default-btn w-100" style="height:54px" (click)="search()">
-                        <i class="material-symbols-outlined me-1">search</i>
-                        بحث
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Table card -->
-        <div class="card-box mb-25">
-            @if (loading()) {
-                <mat-progress-bar mode="indeterminate" class="mb-15"></mat-progress-bar>
-            }
-
-            @if (!loading() && appointments().length === 0) {
-                <div class="text-center py-40">
-                    <i class="material-symbols-outlined" style="font-size:48px;color:#ccc">
-                        event_busy
-                    </i>
-                    <p class="text-body mt-10">لا توجد مواعيد مطابقة للبحث.</p>
-                </div>
-            } @else {
-                <div class="table-responsive">
-                    <table mat-table [dataSource]="appointments()" class="w-100">
-
-                        <!-- Patient -->
-                        <ng-container matColumnDef="patient">
-                            <th mat-header-cell *matHeaderCellDef>المريض</th>
-                            <td mat-cell *matCellDef="let a">
-                                <a [routerLink]="['/patients', a.patientId]" class="fw-medium text-primary">
-                                    {{ a.patientName }}
-                                </a>
-                                <div class="text-body" style="font-size:12px" dir="ltr">{{ a.patientPhone }}</div>
-                            </td>
-                        </ng-container>
-
-                        <!-- Date -->
-                        <ng-container matColumnDef="date">
-                            <th mat-header-cell *matHeaderCellDef>التاريخ</th>
-                            <td mat-cell *matCellDef="let a">
-                                {{ a.appointmentDate | date:'dd/MM/yyyy' }}
-                            </td>
-                        </ng-container>
-
-                        <!-- Time -->
-                        <ng-container matColumnDef="time">
-                            <th mat-header-cell *matHeaderCellDef>الوقت</th>
-                            <td mat-cell *matCellDef="let a" dir="ltr">
-                                {{ a.startTime.substring(0,5) }} – {{ a.endTime.substring(0,5) }}
-                            </td>
-                        </ng-container>
-
-                        <!-- Type -->
-                        <ng-container matColumnDef="type">
-                            <th mat-header-cell *matHeaderCellDef>النوع</th>
-                            <td mat-cell *matCellDef="let a">{{ typeLabel(a.type) }}</td>
-                        </ng-container>
-
-                        <!-- Status -->
-                        <ng-container matColumnDef="status">
-                            <th mat-header-cell *matHeaderCellDef>الحالة</th>
-                            <td mat-cell *matCellDef="let a">
-                                <span class="badge bg-{{ statusColor(a.status) }}">
-                                    {{ statusLabel(a.status) }}
-                                </span>
-                            </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="d-flex align-items-center justify-content-between mt-20 pt-15"
-                     style="border-top:1px solid #eee">
-                    <span class="text-body" style="font-size:13px">
-                        {{ (page() - 1) * pageSize() + 1 }}–{{ min(page() * pageSize(), totalCount()) }}
-                        من {{ totalCount() }} موعد
-                    </span>
-                    <div class="d-flex gap-2">
-                        <button class="default-btn small-btn"
-                                [disabled]="page() === 1" (click)="prevPage()">
-                            <i class="material-symbols-outlined">chevron_right</i>
-                        </button>
-                        <span class="d-flex align-items-center px-10">{{ page() }} / {{ totalPages() }}</span>
-                        <button class="default-btn small-btn"
-                                [disabled]="page() >= totalPages()" (click)="nextPage()">
-                            <i class="material-symbols-outlined">chevron_left</i>
-                        </button>
-                    </div>
-                </div>
-            }
-        </div>
-    `,
 })
 export class AppointmentsListComponent implements OnInit {
-    readonly         router = inject(Router);
-    private readonly svc    = inject(AppointmentsService);
+    readonly         router       = inject(Router);
+    private readonly svc          = inject(AppointmentsService);
+    private readonly toast        = inject(ToastService);
+    readonly langService          = inject(LanguageService);
+    readonly themeService         = inject(ThemeService);
 
-    // ── filter controls ───────────────────────────────────────────────────────
+    protected readonly AppointmentStatus = AppointmentStatus;
+
     fromDateControl = new FormControl<Date | null>(null);
     toDateControl   = new FormControl<Date | null>(null);
     statusControl   = new FormControl<AppointmentStatus | null>(null);
@@ -193,12 +61,12 @@ export class AppointmentsListComponent implements OnInit {
         label,
     }));
 
-    // ── reactive state ────────────────────────────────────────────────────────
     appointments = signal<Appointment[]>([]);
     totalCount   = signal(0);
     page         = signal(1);
     pageSize     = signal(20);
     loading      = signal(false);
+    updatingId   = signal<string | null>(null);
 
     displayedColumns = ['patient', 'date', 'time', 'type', 'status'];
 
@@ -236,4 +104,32 @@ export class AppointmentsListComponent implements OnInit {
 
     prevPage(): void { this.page.update(p => p - 1); this.load(); }
     nextPage(): void { this.page.update(p => p + 1); this.load(); }
+
+    changeStatus(appointment: Appointment, newStatus: AppointmentStatus): void {
+        if (appointment.status === newStatus) return;
+
+        this.updatingId.set(appointment.id);
+
+        // Optimistic update so the badge reflects immediately
+        this.appointments.update(list =>
+            list.map(a => a.id === appointment.id ? { ...a, status: newStatus } : a),
+        );
+
+        this.svc.updateStatus(appointment.id, { status: newStatus }).subscribe({
+            next: updated => {
+                this.appointments.update(list =>
+                    list.map(a => a.id === updated.id ? updated : a),
+                );
+                this.updatingId.set(null);
+                this.toast.success(this.langService.translate('APPOINTMENTS.STATUS_UPDATED'));
+            },
+            error: () => {
+                // Rollback on failure
+                this.appointments.update(list =>
+                    list.map(a => a.id === appointment.id ? { ...a, status: appointment.status } : a),
+                );
+                this.updatingId.set(null);
+            },
+        });
+    }
 }

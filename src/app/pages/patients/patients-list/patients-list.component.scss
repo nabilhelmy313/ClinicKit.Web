@@ -1,0 +1,61 @@
+// ── Loading bar ───────────────────────────────────────────────────────────────
+.ck-table-loading {
+    height: 3px;
+    overflow: hidden;
+    background: var(--paper-2);
+
+    &__bar {
+        height: 100%;
+        width: 40%;
+        background: var(--sage-500);
+        border-radius: 2px;
+        animation: ck-slide 1.4s ease-in-out infinite;
+    }
+}
+
+@keyframes ck-slide {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(350%); }
+}
+
+// ── Table link ────────────────────────────────────────────────────────────────
+.ck-table-link {
+    color: var(--sage-600);
+    font-weight: 500;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+}
+
+// ── Action cell ───────────────────────────────────────────────────────────────
+.ck-table-actions {
+    white-space: nowrap;
+    width: 1%;
+}
+
+// ── Pagination row ────────────────────────────────────────────────────────────
+.ck-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    border-top: 1px solid var(--paper-2);
+
+    &__info {
+        font-size: 13px;
+        color: var(--ink-3);
+    }
+
+    &__controls {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    &__page {
+        font-size: 13px;
+        color: var(--ink-1);
+        padding: 0 8px;
+        min-width: 50px;
+        text-align: center;
+    }
+}

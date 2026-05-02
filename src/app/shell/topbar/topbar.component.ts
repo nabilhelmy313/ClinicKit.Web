@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToggleService } from '../../core/services/toggle.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { AuthService } from '../../core/services/auth.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
@@ -25,6 +26,7 @@ import { TranslatePipe } from '../../core/pipes/translate.pipe';
 export class TopbarComponent {
   protected readonly toggleService = inject(ToggleService);
   protected readonly themeService = inject(ThemeService);
+  private  readonly authService   = inject(AuthService);
 
   protected readonly isSidebarOpen = this.toggleService.sidebarOpen;
   protected readonly isDark = computed(() => this.themeService.isDark());
@@ -41,6 +43,10 @@ export class TopbarComponent {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
   // Notifications placeholder

@@ -255,12 +255,11 @@
                                 Support
                                 <a routerLink="/settings/connections" class="link-btn d-block position-absolute"></a>
                             </li>
-                            <li class="position-relative transition fw-medium">
+                            <li class="position-relative transition fw-medium" style="cursor:pointer" (click)="logout()">
                                 <i class="material-symbols-outlined">
                                     logout
                                 </i>
                                 Logout
-                                <a routerLink="/authentication/logout" class="link-btn d-block position-absolute"></a>
                             </li>
                         </ul>
                     </div>

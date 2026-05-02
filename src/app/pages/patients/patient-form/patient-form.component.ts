@@ -15,122 +15,25 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PatientsService } from '../../../core/services/patients.service';
 import { ToastService }    from '../../../core/services/toast.service';
 import { Gender }          from '../../../core/models/patient.model';
+import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
+import { LanguageService } from '../../../core/services/language.service';
+import { ThemeService }    from '../../../core/services/theme.service';
+import { CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent } from '../../../shared/index';
 
-/** Egyptian mobile regex — 01[0125]XXXXXXXX (with optional +20 / 0 prefix). */
 const EG_PHONE = /^(\+?20|0)?1[0125]\d{8}$/;
 
 @Component({
     selector: 'app-patient-form',
     standalone: true,
+    templateUrl: './patient-form.component.html',
+    styleUrl:    './patient-form.component.scss',
     imports: [
         CommonModule, ReactiveFormsModule,
         MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule,
         MatDatepickerModule, MatNativeDateModule, MatProgressSpinnerModule,
+        TranslatePipe,
+        CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent,
     ],
-    template: `
-        <!-- Page header -->
-        <div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-between">
-            <h5 class="mb-0">
-                <i class="material-symbols-outlined me-2 align-middle">person_add</i>
-                {{ isEdit ? 'تعديل بيانات المريض' : 'تسجيل مريض جديد' }}
-            </h5>
-            <button class="default-btn outline-btn" (click)="cancel()">
-                <i class="material-symbols-outlined me-1">arrow_forward</i>
-                رجوع
-            </button>
-        </div>
-
-        <div class="card-box mb-25">
-            @if (isEdit && !formReady()) {
-                <div class="d-flex align-items-center justify-content-center py-40">
-                    <mat-spinner diameter="40"></mat-spinner>
-                </div>
-            } @else {
-                <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                    <div class="row">
-                        <!-- First name -->
-                        <div class="col-md-6 mb-20">
-                            <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>الاسم الأول</mat-label>
-                                <input matInput formControlName="firstName" />
-                                @if (f['firstName'].invalid && f['firstName'].touched) {
-                                    <mat-error>الاسم الأول مطلوب</mat-error>
-                                }
-                            </mat-form-field>
-                        </div>
-
-                        <!-- Last name -->
-                        <div class="col-md-6 mb-20">
-                            <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>الاسم الأخير</mat-label>
-                                <input matInput formControlName="lastName" />
-                                @if (f['lastName'].invalid && f['lastName'].touched) {
-                                    <mat-error>الاسم الأخير مطلوب</mat-error>
-                                }
-                            </mat-form-field>
-                        </div>
-
-                        <!-- Phone -->
-                        <div class="col-md-6 mb-20">
-                            <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>رقم التليفون</mat-label>
-                                <input matInput formControlName="phone" dir="ltr"
-                                       placeholder="01XXXXXXXXX" />
-                                @if (f['phone'].hasError('required') && f['phone'].touched) {
-                                    <mat-error>رقم التليفون مطلوب</mat-error>
-                                } @else if (f['phone'].hasError('pattern') && f['phone'].touched) {
-                                    <mat-error>رقم غير صحيح — يجب أن يبدأ بـ 010 أو 011 أو 012 أو 015</mat-error>
-                                }
-                            </mat-form-field>
-                        </div>
-
-                        <!-- Gender -->
-                        <div class="col-md-6 mb-20">
-                            <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>النوع</mat-label>
-                                <mat-select formControlName="gender">
-                                    <mat-option [value]="Gender.Male">ذكر</mat-option>
-                                    <mat-option [value]="Gender.Female">أنثى</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-
-                        <!-- Date of birth -->
-                        <div class="col-md-6 mb-20">
-                            <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>تاريخ الميلاد (اختياري)</mat-label>
-                                <input matInput [matDatepicker]="dobPicker"
-                                       formControlName="dateOfBirth" />
-                                <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
-                                <mat-datepicker #dobPicker></mat-datepicker>
-                            </mat-form-field>
-                        </div>
-
-                        <!-- Notes -->
-                        <div class="col-12 mb-20">
-                            <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>ملاحظات (اختياري)</mat-label>
-                                <textarea matInput formControlName="notes" rows="3"></textarea>
-                            </mat-form-field>
-                        </div>
-                    </div>
-
-                    <!-- Submit -->
-                    <div class="d-flex gap-10 justify-content-end">
-                        <button type="button" class="default-btn outline-btn" (click)="cancel()">
-                            إلغاء
-                        </button>
-                        <button type="submit" class="default-btn" [disabled]="submitting()">
-                            @if (submitting()) {
-                                <mat-spinner diameter="18" class="d-inline-block me-1"></mat-spinner>
-                            }
-                            {{ isEdit ? 'حفظ التعديلات' : 'تسجيل المريض' }}
-                        </button>
-                    </div>
-                </form>
-            }
-        </div>
-    `,
 })
 export class PatientFormComponent implements OnInit {
     private readonly fb    = inject(FormBuilder);
@@ -138,6 +41,8 @@ export class PatientFormComponent implements OnInit {
     private readonly toast = inject(ToastService);
     readonly         router = inject(Router);
     private readonly route  = inject(ActivatedRoute);
+    readonly langService    = inject(LanguageService);
+    readonly themeService   = inject(ThemeService);
 
     protected readonly Gender = Gender;
 

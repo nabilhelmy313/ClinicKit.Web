@@ -1,0 +1,22 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="grid_view"
+        [title]="'APPOINTMENTS.CALENDAR' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('APPOINTMENTS.TITLE' | translate), link: '/appointments' },
+            { label: ('APPOINTMENTS.CALENDAR' | translate) }
+        ]">
+    </ck-page-header>
+
+    <ck-card>
+        <p class="text-body mb-0">{{ 'APPOINTMENTS.SUBTITLE' | translate }}</p>
+        <div class="alert alert-info mt-15" role="alert">
+            <i class="material-symbols-outlined me-2">construction</i>
+            Week 2 sprint
+        </div>
+    </ck-card>
+
+</div>

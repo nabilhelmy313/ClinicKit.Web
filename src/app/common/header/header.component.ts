@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { LanguageService } from '../../core/services/language.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-header',
@@ -15,7 +16,8 @@ import { LanguageService } from '../../core/services/language.service';
 })
 export class HeaderComponent {
 
-    readonly langService = inject(LanguageService);
+    readonly langService  = inject(LanguageService);
+    private readonly authService = inject(AuthService);
 
     // isSidebarToggled
     isSidebarToggled = false;
@@ -55,6 +57,10 @@ export class HeaderComponent {
     // Dark Mode
     toggleTheme() {
         this.themeService.toggleTheme();
+    }
+
+    logout() {
+        this.authService.logout();
     }
 
 }

@@ -1,0 +1,9 @@
+<div class="ck-empty">
+    <div class="ck-empty__icon-wrap">
+        <i class="material-symbols-outlined ck-empty__icon">{{ icon }}</i>
+    </div>
+    <p class="ck-empty__message">{{ message }}</p>
+    @if (actionLabel) {
+        <ck-btn [icon]="actionIcon" (clicked)="action.emit()">{{ actionLabel }}</ck-btn>
+    }
+</div>

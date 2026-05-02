@@ -1,0 +1,29 @@
+<div class="ck-page-header mb-25">
+
+    <div class="ck-page-header__left">
+        @if (icon) {
+            <i class="material-symbols-outlined ck-page-header__icon">{{ icon }}</i>
+        }
+        <div>
+            <h5 class="ck-page-header__title">{{ title }}</h5>
+            @if (breadcrumbs.length) {
+                <ol class="ck-breadcrumb">
+                    @for (crumb of breadcrumbs; track crumb.label; let last = $last) {
+                        <li class="ck-breadcrumb__item" [class.ck-breadcrumb__item--active]="last">
+                            @if (!last && crumb.link) {
+                                <a [routerLink]="crumb.link">{{ crumb.label }}</a>
+                            } @else {
+                                <span>{{ crumb.label }}</span>
+                            }
+                        </li>
+                    }
+                </ol>
+            }
+        </div>
+    </div>
+
+    <div class="ck-page-header__actions">
+        <ng-content></ng-content>
+    </div>
+
+</div>

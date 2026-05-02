@@ -106,7 +106,7 @@
               <li><a routerLink="/settings/clinic" mat-menu-item><i class="ri-settings-4-line"></i> {{ 'TOPBAR.CLINIC_SETTINGS' | translate }}</a></li>
               <li><a routerLink="/settings/users" mat-menu-item><i class="ri-user-settings-line"></i> {{ 'TOPBAR.USER_MANAGEMENT' | translate }}</a></li>
               <li class="ck-dropdown__divider"></li>
-              <li><a routerLink="/auth/logout" mat-menu-item class="ck-dropdown__logout"><i class="ri-logout-box-r-line"></i> {{ 'AUTH.SIGN_OUT' | translate }}</a></li>
+              <li><button mat-menu-item class="ck-dropdown__logout" (click)="logout()"><i class="ri-logout-box-r-line"></i> {{ 'AUTH.SIGN_OUT' | translate }}</button></li>
             </ul>
           </div>
         </mat-menu>

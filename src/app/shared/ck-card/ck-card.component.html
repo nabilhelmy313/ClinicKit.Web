@@ -1,0 +1,21 @@
+<div class="ck-card mb-25" [class.ck-card--no-padding]="noPadding">
+
+    @if (title) {
+        <div class="ck-card__header">
+            <div class="ck-card__header-text">
+                <h6 class="ck-card__title">{{ title }}</h6>
+                @if (subtitle) {
+                    <p class="ck-card__subtitle">{{ subtitle }}</p>
+                }
+            </div>
+            <div class="ck-card__actions">
+                <ng-content select="[ck-card-actions]"></ng-content>
+            </div>
+        </div>
+    }
+
+    <div class="ck-card__body">
+        <ng-content></ng-content>
+    </div>
+
+</div>

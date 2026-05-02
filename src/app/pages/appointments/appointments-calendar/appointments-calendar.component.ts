@@ -1,21 +1,17 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { TranslatePipe }     from '../../../core/pipes/translate.pipe';
+import { LanguageService }   from '../../../core/services/language.service';
+import { ThemeService }      from '../../../core/services/theme.service';
+import { CkPageHeaderComponent, CkCardComponent } from '../../../shared/index';
 
 @Component({
     selector: 'app-appointments-calendar',
     standalone: true,
-    imports: [CommonModule],
-    template: `
-        <div class="breadcrumb-card mb-25 d-md-flex align-items-center justify-content-between">
-            <h5 class="mb-0">Calendar View</h5>
-        </div>
-        <div class="card-box mb-25">
-            <p class="text-body mb-0">Visual calendar of appointments.</p>
-            <div class="alert alert-info mt-15" role="alert">
-                <i class="material-symbols-outlined me-2">construction</i>
-                Full implementation — Week 2 sprint.
-            </div>
-        </div>
-    `,
+    templateUrl: './appointments-calendar.component.html',
+    styleUrl:    './appointments-calendar.component.scss',
+    imports: [TranslatePipe, CkPageHeaderComponent, CkCardComponent],
 })
-export class AppointmentsCalendarComponent {}
+export class AppointmentsCalendarComponent {
+    readonly langService  = inject(LanguageService);
+    readonly themeService = inject(ThemeService);
+}

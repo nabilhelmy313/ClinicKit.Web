@@ -1,0 +1,113 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <!-- Page header -->
+    <ck-page-header
+        icon="patient_list"
+        [title]="'PATIENTS.TITLE' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('PATIENTS.TITLE' | translate) }
+        ]">
+        <ck-btn icon="person_add" (clicked)="router.navigate(['/patients/new'])">
+            {{ 'PATIENTS.ADD_PATIENT' | translate }}
+        </ck-btn>
+    </ck-page-header>
+
+    <!-- Search -->
+    <ck-card>
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'PATIENTS.SEARCH_PLACEHOLDER' | translate }}</mat-label>
+            <input matInput [formControl]="searchControl"
+                   [placeholder]="'PATIENTS.SEARCH_PLACEHOLDER' | translate" />
+            <span matSuffix class="material-symbols-outlined pe-2">search</span>
+        </mat-form-field>
+    </ck-card>
+
+    <!-- Table -->
+    <ck-card [noPadding]="true">
+
+        @if (loading()) {
+            <div class="ck-table-loading">
+                <div class="ck-table-loading__bar"></div>
+            </div>
+        }
+
+        @if (!loading() && patients().length === 0) {
+            <ck-empty-state
+                icon="person_search"
+                [message]="'PATIENTS.NO_PATIENTS' | translate"
+                [actionLabel]="'PATIENTS.ADD_PATIENT' | translate"
+                actionIcon="person_add"
+                (action)="router.navigate(['/patients/new'])">
+            </ck-empty-state>
+        } @else {
+            <div class="table-responsive">
+                <table mat-table [dataSource]="patients()" class="w-100">
+
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'PATIENTS.FULL_NAME' | translate }}</th>
+                        <td mat-cell *matCellDef="let p">
+                            <a [routerLink]="['/patients', p.id]" class="ck-table-link">
+                                {{ p.fullName }}
+                            </a>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="phone">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'PATIENTS.PHONE' | translate }}</th>
+                        <td mat-cell *matCellDef="let p" dir="ltr">{{ p.phone }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="gender">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'PATIENTS.GENDER' | translate }}</th>
+                        <td mat-cell *matCellDef="let p">{{ genderLabel(p.gender) }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="dob">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'PATIENTS.BIRTH_DATE' | translate }}</th>
+                        <td mat-cell *matCellDef="let p">
+                            {{ p.dateOfBirth ? (p.dateOfBirth | date:'dd/MM/yyyy') : '—' }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let p" class="ck-table-actions">
+                            <ck-btn variant="icon" icon="visibility"
+                                    (clicked)="router.navigate(['/patients', p.id])">
+                            </ck-btn>
+                            <ck-btn variant="icon" icon="event_add"
+                                    (clicked)="bookAppointment(p.id)">
+                            </ck-btn>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                        class="cursor-pointer"
+                        (click)="router.navigate(['/patients', row.id])"></tr>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="ck-pagination">
+                <span class="ck-pagination__info">
+                    {{ (page() - 1) * pageSize() + 1 }}–{{ min(page() * pageSize(), totalCount()) }}
+                    {{ 'COMMON.OF' | translate }} {{ totalCount() }}
+                </span>
+                <div class="ck-pagination__controls">
+                    <ck-btn variant="icon" icon="chevron_right" size="sm"
+                            [disabled]="page() === 1" (clicked)="prevPage()">
+                    </ck-btn>
+                    <span class="ck-pagination__page">{{ page() }} / {{ totalPages() }}</span>
+                    <ck-btn variant="icon" icon="chevron_left" size="sm"
+                            [disabled]="page() >= totalPages()" (clicked)="nextPage()">
+                    </ck-btn>
+                </div>
+            </div>
+        }
+
+    </ck-card>
+
+</div>

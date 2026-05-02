@@ -1,0 +1,50 @@
+.empty-icon {
+    font-size: 48px;
+    color: #ccc;
+}
+
+.search-btn {
+    height: 54px;
+}
+
+.pagination-row {
+    border-top: 1px solid #eee;
+}
+
+.pagination-info {
+    font-size: 13px;
+}
+
+.phone-cell {
+    font-size: 12px;
+}
+
+// Inline status select — remove all mat-form-field chrome
+.status-select {
+    width: auto;
+
+    // Remove bottom subscript spacer
+    &.mat-mdc-form-field {
+        .mat-mdc-form-field-subscript-wrapper { display: none; }
+    }
+
+    // Remove outline border and background
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+        border: none !important;
+    }
+
+    // Remove internal padding so badge sits flush
+    .mat-mdc-form-field-infix {
+        padding: 0 !important;
+        min-height: unset !important;
+    }
+    .mat-mdc-text-field-wrapper {
+        padding: 0 !important;
+        background: transparent !important;
+    }
+
+    // Hide the arrow — badge acts as the trigger affordance
+    .mat-mdc-select-arrow-wrapper { display: none; }
+}

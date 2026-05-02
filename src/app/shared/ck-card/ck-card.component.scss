@@ -1,0 +1,54 @@
+.ck-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: var(--borderBoxShadow);
+    overflow: hidden;
+
+    :host-context(.dark-theme) & {
+        background: #1b232d;
+
+        .ck-card__title { color: rgba(255, 255, 255, 0.87); }
+        .ck-card__subtitle { color: rgba(255, 255, 255, 0.50); }
+    }
+
+    &__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 22px 0;
+    }
+
+    &__title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ink-0);
+        margin: 0 0 2px;
+    }
+
+    &__subtitle {
+        font-size: 13px;
+        color: var(--ink-3);
+        margin: 0;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    &__body {
+        padding: 18px 22px 22px;
+    }
+
+    &--no-padding &__body {
+        padding: 0;
+    }
+
+    // header + no-padding: keep header padding, remove body padding
+    &--no-padding &__header {
+        padding-bottom: 14px;
+    }
+}

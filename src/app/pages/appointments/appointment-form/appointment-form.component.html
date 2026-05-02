@@ -1,0 +1,129 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="event_add"
+        [title]="'APPOINTMENTS.BOOK_APPOINTMENT' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('APPOINTMENTS.TITLE' | translate), link: '/appointments' },
+            { label: ('APPOINTMENTS.BOOK_APPOINTMENT' | translate) }
+        ]">
+        <button class="default-btn outline-btn" type="button" (click)="cancel()">
+            <i class="material-symbols-outlined">
+                {{ langService.isRTL() ? 'arrow_forward' : 'arrow_back' }}
+            </i>
+            {{ 'COMMON.BACK' | translate }}
+        </button>
+    </ck-page-header>
+
+    <ck-card [title]="'APPOINTMENTS.BOOK_SUBTITLE' | translate">
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="row">
+
+                <!-- Patient search -->
+                <div class="col-12 mb-20">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'APPOINTMENTS.PATIENT' | translate }}</mat-label>
+                        <input matInput
+                               [formControl]="patientSearch"
+                               [matAutocomplete]="auto"
+                               [placeholder]="'APPOINTMENTS.SEARCH_PATIENT' | translate" />
+                        <mat-autocomplete #auto="matAutocomplete"
+                                          [displayWith]="displayPatient"
+                                          (optionSelected)="onPatientSelected($event.option.value)">
+                            @for (opt of patientOptions(); track opt.id) {
+                                <mat-option [value]="opt">
+                                    {{ opt.fullName }}
+                                    <span class="text-body ms-5 patient-phone" dir="ltr">
+                                        {{ opt.phone }}
+                                    </span>
+                                </mat-option>
+                            }
+                        </mat-autocomplete>
+                        @if (form.get('patientId')?.invalid && form.get('patientId')?.touched) {
+                            <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+                <!-- Appointment date -->
+                <div class="col-md-4 mb-20">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'APPOINTMENTS.DATE' | translate }}</mat-label>
+                        <input matInput [matDatepicker]="datePicker"
+                               formControlName="appointmentDate" [min]="today" />
+                        <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #datePicker></mat-datepicker>
+                        @if (f['appointmentDate'].invalid && f['appointmentDate'].touched) {
+                            <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+                <!-- Start time -->
+                <div class="col-md-4 mb-20">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'APPOINTMENTS.START_TIME' | translate }}</mat-label>
+                        <input matInput type="time" formControlName="startTime" />
+                        @if (f['startTime'].invalid && f['startTime'].touched) {
+                            <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+                <!-- End time -->
+                <div class="col-md-4 mb-20">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'APPOINTMENTS.END_TIME' | translate }}</mat-label>
+                        <input matInput type="time" formControlName="endTime" />
+                        @if (f['endTime'].invalid && f['endTime'].touched) {
+                            <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+                <!-- Visit type -->
+                <div class="col-md-6 mb-20">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'APPOINTMENTS.TYPE' | translate }}</mat-label>
+                        <mat-select formControlName="type">
+                            <mat-option [value]="AppointmentType.FirstVisit">
+                                {{ 'APPOINTMENTS.FIRST_VISIT' | translate }}
+                            </mat-option>
+                            <mat-option [value]="AppointmentType.FollowUp">
+                                {{ 'APPOINTMENTS.FOLLOW_UP' | translate }}
+                            </mat-option>
+                            <mat-option [value]="AppointmentType.Emergency">
+                                {{ 'APPOINTMENTS.EMERGENCY' | translate }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <!-- Notes -->
+                <div class="col-12 mb-20">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'APPOINTMENTS.NOTES' | translate }}</mat-label>
+                        <textarea matInput formControlName="notes" rows="3"></textarea>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <!-- Form actions bar -->
+            <ck-form-actions
+                [saveLabel]="'APPOINTMENTS.BOOK_CONFIRM' | translate"
+                saveIcon="event_available"
+                [cancelLabel]="'COMMON.CANCEL' | translate"
+                [loading]="submitting()"
+                (cancel)="cancel()"
+                (save)="onSubmit()">
+            </ck-form-actions>
+
+        </form>
+
+    </ck-card>
+
+</div>

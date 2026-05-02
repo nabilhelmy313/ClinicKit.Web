@@ -1,0 +1,23 @@
+<div class="ck-form-actions" [class.ck-form-actions--card]="inCard">
+
+    <!-- Cancel / Back -->
+    <ck-btn
+        variant="outline"
+        [icon]="resolvedCancelIcon"
+        type="button"
+        (clicked)="cancel.emit()">
+        {{ cancelLabel || ('COMMON.CANCEL' | translate) }}
+    </ck-btn>
+
+    <!-- Save / Submit -->
+    <ck-btn
+        variant="primary"
+        [icon]="loading ? '' : saveIcon"
+        [loading]="loading"
+        [disabled]="disabled"
+        type="submit"
+        (clicked)="save.emit()">
+        {{ saveLabel || ('COMMON.SAVE' | translate) }}
+    </ck-btn>
+
+</div>

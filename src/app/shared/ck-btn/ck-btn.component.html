@@ -1,0 +1,8 @@
+<button [class]="classes" [type]="type" [disabled]="disabled || loading" (click)="onClick($event)">
+    @if (loading) {
+        <span class="ck-btn__spinner"></span>
+    } @else if (icon) {
+        <i class="material-symbols-outlined ck-btn__icon">{{ icon }}</i>
+    }
+    <ng-content></ng-content>
+</button>

@@ -1,12 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
+// All routes are behind authentication — no SEO or prerender benefit.
+// Client-side rendering avoids server-route mismatches on page reload.
 export const serverRoutes: ServerRoute[] = [
-    // Dynamic routes (have :id params) — rendered on the server per-request
-    { path: 'patients/:id',      renderMode: RenderMode.Server },
-    { path: 'appointments/:id',  renderMode: RenderMode.Server },
-    { path: 'billing/:id',       renderMode: RenderMode.Server },
-    { path: 'doctors/:id',       renderMode: RenderMode.Server },
-
-    // All other routes — prerendered at build time
-    { path: '**', renderMode: RenderMode.Prerender },
+    { path: '**', renderMode: RenderMode.Client },
 ];
