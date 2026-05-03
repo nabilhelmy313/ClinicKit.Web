@@ -202,7 +202,11 @@
   "CANCELLED_SUCCESS": "تم إلغاء الموعد بنجاح",
   "ACTIONS": "إجراءات",
   "TODAY": "اليوم",
-  "NO_APPT_DAY": "لا مواعيد"
+  "NO_APPT_DAY": "لا مواعيد",
+  "WEEK": "أسبوع",
+  "PREV_WEEK": "الأسبوع السابق",
+  "NEXT_WEEK": "الأسبوع القادم",
+  "JUMP_TO_DATE": "انتقل إلى تاريخ"
   },
   "SETTINGS": {
     "TITLE": "الإعدادات",

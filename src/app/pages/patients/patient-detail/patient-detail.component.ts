@@ -59,8 +59,14 @@ export class PatientDetailComponent implements OnInit {
 
     aptColumns = ['date', 'time', 'type', 'status'];
 
-    statusLabel(s: number)  { return AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels] ?? '—'; }
-    typeLabel(t: number)    { return AppointmentTypeLabels[t   as keyof typeof AppointmentTypeLabels]   ?? '—'; }
+    statusLabel(s: number): string {
+        const key = AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels];
+        return key ? this.langService.translate(key) : '—';
+    }
+    typeLabel(t: number): string {
+        const key = AppointmentTypeLabels[t as keyof typeof AppointmentTypeLabels];
+        return key ? this.langService.translate(key) : '—';
+    }
 
     // ── Detail items for the profile card ────────────────────────────────────
     patientDetails = computed<CkDetailItem[]>(() => {

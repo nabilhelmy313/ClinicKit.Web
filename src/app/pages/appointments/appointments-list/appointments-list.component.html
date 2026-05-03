@@ -43,7 +43,7 @@
                     <mat-select [formControl]="statusControl">
                         <mat-option [value]="null">{{ 'COMMON.ALL' | translate }}</mat-option>
                         @for (opt of statusOptions; track opt.value) {
-                            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                            <mat-option [value]="opt.value">{{ opt.label | translate }}</mat-option>
                         }
                     </mat-select>
                 </mat-form-field>
@@ -121,7 +121,7 @@
                                 <button mat-menu-item (click)="changeStatus(a, opt.value)">
                                     <ck-status-badge
                                         [status]="opt.value.toString()"
-                                        [label]="opt.label">
+                                        [label]="opt.label | translate">
                                     </ck-status-badge>
                                 </button>
                             }

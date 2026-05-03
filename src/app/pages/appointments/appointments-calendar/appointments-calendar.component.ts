@@ -1,6 +1,9 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule }  from '@angular/common';
 import { Router }        from '@angular/router';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule, MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
@@ -24,7 +27,10 @@ import {
     styleUrl:    './appointments-calendar.component.scss',
     imports: [
         CommonModule,
+        ReactiveFormsModule,
         MatProgressSpinnerModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
         TranslatePipe,
         CkPageHeaderComponent, CkCardComponent,
         CkBtnComponent, CkStatusBadgeComponent,
@@ -41,6 +47,9 @@ export class AppointmentsCalendarComponent implements OnInit {
     anchor       = signal(new Date());
     appointments = signal<Appointment[]>([]);
     loading      = signal(false);
+
+    /** Hidden date-picker control used by the "jump to date" button. */
+    jumpControl = new FormControl<Date | null>(null);
 
     // ── Computed ──────────────────────────────────────────────────────────────
     weekStart = computed(() => {
@@ -63,6 +72,21 @@ export class AppointmentsCalendarComponent implements OnInit {
     /** RTL-aware chevron icons for prev/next navigation. */
     prevIcon = computed(() => this.langService.isRTL() ? 'chevron_right' : 'chevron_left');
     nextIcon = computed(() => this.langService.isRTL() ? 'chevron_left'  : 'chevron_right');
+
+    /** Localised "Month Year" label — e.g. "May 2026" / "مايو 2026". */
+    monthLabel = computed(() =>
+        new Intl.DateTimeFormat(
+            this.langService.isRTL() ? 'ar-EG' : 'en-US',
+            { month: 'long', year: 'numeric' },
+        ).format(this.weekStart()),
+    );
+
+    /** Week-of-year number (ISO-ish: week 1 = week containing Jan 1). */
+    weekNumber = computed(() => {
+        const d   = new Date(this.weekStart());
+        const jan = new Date(d.getFullYear(), 0, 1);
+        return Math.ceil(((d.getTime() - jan.getTime()) / 86_400_000 + jan.getDay() + 1) / 7);
+    });
 
     // ── Helpers ───────────────────────────────────────────────────────────────
     fmt(d: Date): string {
@@ -88,11 +112,13 @@ export class AppointmentsCalendarComponent implements OnInit {
     }
 
     statusLabel(s: number): string {
-        return AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels] ?? '—';
+        const key = AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels];
+        return key ? this.langService.translate(key) : '—';
     }
 
     typeLabel(t: number): string {
-        return AppointmentTypeLabels[t as keyof typeof AppointmentTypeLabels] ?? '—';
+        const key = AppointmentTypeLabels[t as keyof typeof AppointmentTypeLabels];
+        return key ? this.langService.translate(key) : '—';
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────
@@ -114,6 +140,14 @@ export class AppointmentsCalendarComponent implements OnInit {
 
     goToToday(): void {
         this.anchor.set(new Date());
+        this.load();
+    }
+
+    /** Called when the user picks a date from the jump-to-date picker. */
+    onJump(event: MatDatepickerInputEvent<Date>): void {
+        if (!event.value) return;
+        this.anchor.set(event.value);
+        this.jumpControl.setValue(null, { emitEvent: false });
         this.load();
     }
 

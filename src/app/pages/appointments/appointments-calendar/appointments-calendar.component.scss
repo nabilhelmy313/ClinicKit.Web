@@ -2,27 +2,153 @@
 .cal-nav {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     padding: 12px 20px;
     border-bottom: 1px solid var(--border-color, #e5e7eb);
+    background: var(--cardBG, #fff);
     flex-wrap: wrap;
 
-    &__controls {
+    // ── Title block ──────────────────────────────────────────────────────────
+    &__title {
         display: flex;
-        align-items: center;
-        gap: 6px;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    &__month {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--headingColor, #14161a);
+        line-height: 1.2;
     }
 
     &__range {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--ink-1, #111827);
-        flex: 1;
-        text-align: center;
+        font-size: 11px;
+        color: var(--bodyColor, #6b7280);
     }
 
-    &__spinner {
+    // ── Center: jump-to-date ─────────────────────────────────────────────────
+    &__center {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    &__jump-input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+    }
+
+    &__jump-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0 14px;
+        height: 36px;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 8px;
+        background: var(--whiteColor, #fff);
+        cursor: pointer;
+        user-select: none;
+        transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+
+        &:hover {
+            border-color: var(--primaryColor, #1D9E75);
+            background: var(--primaryLight, #E8F3EE);
+            box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.12);
+
+            .cal-nav__jump-caret { transform: rotate(180deg); }
+        }
+    }
+
+    &__jump-icon {
+        font-size: 16px;
+        color: var(--primaryColor, #1D9E75);
         flex-shrink: 0;
+    }
+
+    &__jump-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--headingColor, #14161a);
+        white-space: nowrap;
+    }
+
+    &__jump-caret {
+        font-size: 15px;
+        color: var(--bodyColor, #9ca3af);
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+
+    &__spinner { flex-shrink: 0; }
+
+    // ── Prev / Today / Next — three separate buttons ─────────────────────────
+    &__controls {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    // Square icon button — its own border-radius means hover is always clean
+    &__arrow {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 8px;
+        background: var(--whiteColor, #fff);
+        cursor: pointer;
+        color: var(--bodyColor, #4b5563);
+        transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+        .material-symbols-outlined { font-size: 18px; }
+
+        &:hover {
+            background: var(--primaryColor, #1D9E75);
+            border-color: var(--primaryColor, #1D9E75);
+            color: #fff;
+        }
+
+        &:active {
+            background: var(--primaryDark, #0E5C43);
+            border-color: var(--primaryDark, #0E5C43);
+            color: #fff;
+        }
+    }
+
+    // "Today" text button — wider pill shape
+    &__today {
+        height: 36px;
+        padding: 0 14px;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 8px;
+        background: var(--whiteColor, #fff);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--primaryColor, #1D9E75);
+        white-space: nowrap;
+        transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+        &:hover {
+            background: var(--primaryLight, #E8F3EE);
+            border-color: var(--primaryColor, #1D9E75);
+            color: var(--primaryDark, #0E5C43);
+        }
+
+        &:active {
+            background: var(--primaryColor, #1D9E75);
+            border-color: var(--primaryColor, #1D9E75);
+            color: #fff;
+        }
     }
 }
 
@@ -206,10 +332,38 @@
 // ── Dark mode overrides ───────────────────────────────────────────────────────
 :host-context(.dark-theme) {
     .cal-nav {
-        border-bottom-color: rgba(255, 255, 255, 0.10);
+        background: transparent;
+        border-bottom-color: rgba(255, 255, 255, 0.08);
 
-        &__range {
-            color: rgba(255, 255, 255, 0.90);
+        &__month { color: rgba(255, 255, 255, 0.90); }
+        &__range { color: rgba(255, 255, 255, 0.40); }
+
+        &__jump-btn {
+            border-color: rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.05);
+            &:hover {
+                border-color: var(--primaryColor, #1D9E75);
+                background: rgba(29, 158, 117, 0.18);
+            }
+        }
+        &__jump-label { color: rgba(255, 255, 255, 0.85); }
+        &__jump-caret { color: rgba(255, 255, 255, 0.40); }
+
+        &__arrow {
+            border-color: rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        &__today {
+            border-color: rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primaryColor, #1D9E75);
+            &:hover {
+                background: rgba(29, 158, 117, 0.18);
+                border-color: var(--primaryColor, #1D9E75);
+                color: #fff;
+            }
         }
     }
 

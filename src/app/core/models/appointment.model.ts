@@ -17,19 +17,21 @@ export enum AppointmentType {
 
 // ── Display labels ─────────────────────────────────────────────────────────────
 
+/** Maps each status to its i18n key — pass through langService.translate() */
 export const AppointmentStatusLabels: Record<AppointmentStatus, string> = {
-  [AppointmentStatus.Pending]:    'قيد الانتظار',
-  [AppointmentStatus.Confirmed]:  'مؤكد',
-  [AppointmentStatus.InProgress]: 'جارٍ',
-  [AppointmentStatus.Completed]:  'مكتمل',
-  [AppointmentStatus.Cancelled]:  'ملغى',
-  [AppointmentStatus.NoShow]:     'لم يحضر',
+  [AppointmentStatus.Pending]:    'APPOINTMENTS.PENDING',
+  [AppointmentStatus.Confirmed]:  'APPOINTMENTS.CONFIRMED',
+  [AppointmentStatus.InProgress]: 'APPOINTMENTS.IN_PROGRESS',
+  [AppointmentStatus.Completed]:  'APPOINTMENTS.COMPLETED',
+  [AppointmentStatus.Cancelled]:  'APPOINTMENTS.CANCELLED',
+  [AppointmentStatus.NoShow]:     'APPOINTMENTS.NO_SHOW',
 };
 
+/** Maps each type to its i18n key — pass through langService.translate() */
 export const AppointmentTypeLabels: Record<AppointmentType, string> = {
-  [AppointmentType.FirstVisit]: 'زيارة أولى',
-  [AppointmentType.FollowUp]:   'متابعة',
-  [AppointmentType.Emergency]:  'طارئ',
+  [AppointmentType.FirstVisit]: 'APPOINTMENTS.FIRST_VISIT',
+  [AppointmentType.FollowUp]:   'APPOINTMENTS.FOLLOW_UP',
+  [AppointmentType.Emergency]:  'APPOINTMENTS.EMERGENCY',
 };
 
 /** CSS colour class suffix for each status chip. */

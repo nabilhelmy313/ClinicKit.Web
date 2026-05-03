@@ -202,7 +202,11 @@
   "CANCELLED_SUCCESS": "Appointment cancelled successfully",
   "ACTIONS": "Actions",
   "TODAY": "Today",
-  "NO_APPT_DAY": "No appointments"
+  "NO_APPT_DAY": "No appointments",
+  "WEEK": "Week",
+  "PREV_WEEK": "Previous week",
+  "NEXT_WEEK": "Next week",
+  "JUMP_TO_DATE": "Jump to date"
   },
   "SETTINGS": {
     "TITLE": "Settings",

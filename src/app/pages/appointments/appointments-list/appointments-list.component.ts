@@ -76,7 +76,7 @@ export class AppointmentsListComponent implements OnInit {
     nextOptions(current: AppointmentStatus) {
         return this.validTransitions[current]?.map(v => ({
             value: v,
-            label: AppointmentStatusLabels[v] ?? '—',
+            label: AppointmentStatusLabels[v] ?? '',   // i18n key — translated in template via | translate
         })) ?? [];
     }
 
@@ -98,8 +98,14 @@ export class AppointmentsListComponent implements OnInit {
 
     displayedColumns = ['patient', 'date', 'time', 'type', 'status', 'actions'];
 
-    statusLabel(s: number) { return AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels] ?? '—'; }
-    typeLabel(t: number)   { return AppointmentTypeLabels[t   as keyof typeof AppointmentTypeLabels]   ?? '—'; }
+    statusLabel(s: number): string {
+        const key = AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels];
+        return key ? this.langService.translate(key) : '—';
+    }
+    typeLabel(t: number): string {
+        const key = AppointmentTypeLabels[t as keyof typeof AppointmentTypeLabels];
+        return key ? this.langService.translate(key) : '—';
+    }
 
     ngOnInit(): void { this.load(); }
 

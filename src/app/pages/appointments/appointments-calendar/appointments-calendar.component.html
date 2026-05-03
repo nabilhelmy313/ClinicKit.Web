@@ -23,26 +23,59 @@
 
         <!-- ── Week navigation bar ──────────────────────────────────────── -->
         <div class="cal-nav">
-
+             <!-- Right: Prev / Today / Next -->
             <div class="cal-nav__controls">
-                <ck-btn variant="icon" size="sm" [icon]="prevIcon()"
-                        (click)="prevWeek()">
-                </ck-btn>
-                <ck-btn variant="outline" size="sm" (click)="goToToday()">
+                <button class="cal-nav__arrow" (click)="prevWeek()"
+                        [title]="'APPOINTMENTS.PREV_WEEK' | translate">
+                    <span class="material-symbols-outlined">{{ prevIcon() }}</span>
+                </button>
+
+                <button class="cal-nav__today" (click)="goToToday()">
                     {{ 'APPOINTMENTS.TODAY' | translate }}
-                </ck-btn>
-                <ck-btn variant="icon" size="sm" [icon]="nextIcon()"
-                        (click)="nextWeek()">
-                </ck-btn>
+                </button>
+
+                <button class="cal-nav__arrow" (click)="nextWeek()"
+                        [title]="'APPOINTMENTS.NEXT_WEEK' | translate">
+                    <span class="material-symbols-outlined">{{ nextIcon() }}</span>
+                </button>
             </div>
 
-            <span class="cal-nav__range" dir="ltr">
-                {{ weekStart() | date:'dd/MM' }} – {{ weekEnd() | date:'dd/MM/yyyy' }}
-            </span>
+
+
+            <!-- Center: Jump-to-date picker -->
+            <div class="cal-nav__center">
+                <!-- Hidden real input wired to the datepicker -->
+                <input class="cal-nav__jump-input"
+                       [formControl]="jumpControl"
+                       [matDatepicker]="jumpPicker"
+                       (dateChange)="onJump($event)"
+                       readonly />
+                <mat-datepicker #jumpPicker></mat-datepicker>
+
+                <!-- Visible styled trigger button -->
+                <button class="cal-nav__jump-btn" (click)="jumpPicker.open()"
+                        [title]="'APPOINTMENTS.JUMP_TO_DATE' | translate">
+                    <span class="material-symbols-outlined cal-nav__jump-icon">calendar_month</span>
+                    <span class="cal-nav__jump-label" dir="ltr">
+                        {{ weekStart() | date:'d MMM' }} – {{ weekEnd() | date:'d MMM yyyy' }}
+                    </span>
+                    <span class="material-symbols-outlined cal-nav__jump-caret">expand_more</span>
+                </button>
+            </div>
 
             @if (loading()) {
-                <mat-spinner diameter="20" class="cal-nav__spinner"></mat-spinner>
+                <mat-spinner diameter="18" class="cal-nav__spinner"></mat-spinner>
             }
+
+            <!-- Left: Month / year title + week range -->
+            <div class="cal-nav__title">
+                <span class="cal-nav__month">{{ monthLabel() }}</span>
+                <span class="cal-nav__range" dir="ltr">
+                    {{ weekStart() | date:'d MMM' }} – {{ weekEnd() | date:'d MMM' }}
+                    &nbsp;·&nbsp;
+                    {{ 'APPOINTMENTS.WEEK' | translate }} {{ weekNumber() }}
+                </span>
+            </div>
 
         </div>
 
