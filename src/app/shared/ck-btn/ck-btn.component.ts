@@ -16,8 +16,9 @@ export class CkBtnComponent {
     @Input() size: CkBtnSize       = 'md';
     @Input() icon  = '';
     @Input() type: 'button' | 'submit' | 'reset' = 'button';
-    @Input() loading  = false;
-    @Input() disabled = false;
+    @Input() loading   = false;
+    @Input() disabled  = false;
+    @Input() fullWidth = false;
 
     @Output() clicked = new EventEmitter<MouseEvent>();
 
@@ -26,6 +27,7 @@ export class CkBtnComponent {
             'ck-btn',
             `ck-btn--${this.variant}`,
             this.size !== 'md' ? `ck-btn--${this.size}` : '',
+            this.fullWidth ? 'ck-btn--full' : '',
         ].filter(Boolean).join(' ');
     }
 

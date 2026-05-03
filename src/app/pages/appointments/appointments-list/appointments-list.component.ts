@@ -2,14 +2,15 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe }  from '@angular/common';
 import { Router, RouterLink }       from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule }  from '@angular/material/form-field';
-import { MatInputModule }      from '@angular/material/input';
-import { MatSelectModule }     from '@angular/material/select';
-import { MatButtonModule }     from '@angular/material/button';
-import { MatTableModule }      from '@angular/material/table';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatDialog }               from '@angular/material/dialog';
+import { MatFormFieldModule }      from '@angular/material/form-field';
+import { MatInputModule }          from '@angular/material/input';
+import { MatSelectModule }         from '@angular/material/select';
+import { MatButtonModule }         from '@angular/material/button';
+import { MatTableModule }          from '@angular/material/table';
+import { MatMenuModule }           from '@angular/material/menu';
+import { MatDatepickerModule }     from '@angular/material/datepicker';
+import { MatNativeDateModule }     from '@angular/material/core';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
 import { ToastService }        from '../../../core/services/toast.service';
@@ -18,14 +19,15 @@ import {
     AppointmentStatus,
     AppointmentStatusLabels,
     AppointmentTypeLabels,
-    AppointmentStatusColor,
 } from '../../../core/models/appointment.model';
 import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
 import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService }    from '../../../core/services/theme.service';
 import {
     CkPageHeaderComponent, CkCardComponent,
-    CkBtnComponent, CkStatusBadgeComponent, CkEmptyStateComponent,
+    CkBtnComponent, CkStatusBadgeComponent,
+    CkTableComponent, CkCancelDialogComponent,
+    CkCancelDialogResult,
 } from '../../../shared/index';
 
 @Component({
@@ -35,22 +37,22 @@ import {
     styleUrl:    './appointments-list.component.scss',
     imports: [
         CommonModule, DatePipe, RouterLink, ReactiveFormsModule,
+        MatTableModule,
         MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule,
-        MatTableModule, MatProgressBarModule,
-        MatDatepickerModule, MatNativeDateModule,
+        MatMenuModule, MatDatepickerModule, MatNativeDateModule,
         TranslatePipe,
         CkPageHeaderComponent, CkCardComponent,
-        CkBtnComponent, CkStatusBadgeComponent, CkEmptyStateComponent,
+        CkBtnComponent, CkStatusBadgeComponent,
+        CkTableComponent, CkCancelDialogComponent,
     ],
 })
 export class AppointmentsListComponent implements OnInit {
     readonly         router       = inject(Router);
     private readonly svc          = inject(AppointmentsService);
     private readonly toast        = inject(ToastService);
+    private readonly dialog       = inject(MatDialog);
     readonly langService          = inject(LanguageService);
     readonly themeService         = inject(ThemeService);
-
-    protected readonly AppointmentStatus = AppointmentStatus;
 
     fromDateControl = new FormControl<Date | null>(null);
     toDateControl   = new FormControl<Date | null>(null);
@@ -61,6 +63,32 @@ export class AppointmentsListComponent implements OnInit {
         label,
     }));
 
+    // State machine — Cancelled removed; use the dedicated cancel button instead
+    private readonly validTransitions: Record<AppointmentStatus, AppointmentStatus[]> = {
+        [AppointmentStatus.Pending]:    [AppointmentStatus.Confirmed, AppointmentStatus.NoShow],
+        [AppointmentStatus.Confirmed]:  [AppointmentStatus.InProgress, AppointmentStatus.NoShow],
+        [AppointmentStatus.InProgress]: [AppointmentStatus.Completed],
+        [AppointmentStatus.Completed]:  [],
+        [AppointmentStatus.Cancelled]:  [],
+        [AppointmentStatus.NoShow]:     [],
+    };
+
+    nextOptions(current: AppointmentStatus) {
+        return this.validTransitions[current]?.map(v => ({
+            value: v,
+            label: AppointmentStatusLabels[v] ?? '—',
+        })) ?? [];
+    }
+
+    canChange(status: AppointmentStatus): boolean {
+        return (this.validTransitions[status]?.length ?? 0) > 0;
+    }
+
+    /** Show cancel button for appointments that can still be cancelled. */
+    canCancel(status: AppointmentStatus): boolean {
+        return status === AppointmentStatus.Pending || status === AppointmentStatus.Confirmed;
+    }
+
     appointments = signal<Appointment[]>([]);
     totalCount   = signal(0);
     page         = signal(1);
@@ -68,13 +96,10 @@ export class AppointmentsListComponent implements OnInit {
     loading      = signal(false);
     updatingId   = signal<string | null>(null);
 
-    displayedColumns = ['patient', 'date', 'time', 'type', 'status'];
+    displayedColumns = ['patient', 'date', 'time', 'type', 'status', 'actions'];
 
-    totalPages() { return Math.ceil(this.totalCount() / this.pageSize()) || 1; }
-    min(a: number, b: number) { return Math.min(a, b); }
     statusLabel(s: number) { return AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels] ?? '—'; }
     typeLabel(t: number)   { return AppointmentTypeLabels[t   as keyof typeof AppointmentTypeLabels]   ?? '—'; }
-    statusColor(s: number) { return AppointmentStatusColor[s  as keyof typeof AppointmentStatusColor]  ?? 'secondary'; }
 
     ngOnInit(): void { this.load(); }
 
@@ -82,9 +107,7 @@ export class AppointmentsListComponent implements OnInit {
 
     load(): void {
         this.loading.set(true);
-
-        const toDate = (d: Date | null) =>
-            d ? d.toISOString().split('T')[0] : undefined;
+        const toDate = (d: Date | null) => d ? d.toISOString().split('T')[0] : undefined;
 
         this.svc.list({
             fromDate: toDate(this.fromDateControl.value),
@@ -105,17 +128,16 @@ export class AppointmentsListComponent implements OnInit {
     prevPage(): void { this.page.update(p => p - 1); this.load(); }
     nextPage(): void { this.page.update(p => p + 1); this.load(); }
 
+    // ── Status change (non-cancel transitions) ────────────────────────────────
     changeStatus(appointment: Appointment, newStatus: AppointmentStatus): void {
         if (appointment.status === newStatus) return;
 
         this.updatingId.set(appointment.id);
-
-        // Optimistic update so the badge reflects immediately
         this.appointments.update(list =>
             list.map(a => a.id === appointment.id ? { ...a, status: newStatus } : a),
         );
 
-        this.svc.updateStatus(appointment.id, { status: newStatus }).subscribe({
+        this.svc.updateStatus(appointment.id, { newStatus }).subscribe({
             next: updated => {
                 this.appointments.update(list =>
                     list.map(a => a.id === updated.id ? updated : a),
@@ -124,9 +146,50 @@ export class AppointmentsListComponent implements OnInit {
                 this.toast.success(this.langService.translate('APPOINTMENTS.STATUS_UPDATED'));
             },
             error: () => {
-                // Rollback on failure
                 this.appointments.update(list =>
                     list.map(a => a.id === appointment.id ? { ...a, status: appointment.status } : a),
+                );
+                this.updatingId.set(null);
+            },
+        });
+    }
+
+    // ── Cancel (opens reason dialog first) ───────────────────────────────────
+    openCancelDialog(appointment: Appointment): void {
+        const dialogRef = this.dialog.open(CkCancelDialogComponent, {
+            width:     '440px',
+            direction: this.langService.isRTL() ? 'rtl' : 'ltr',
+            data:      { patientName: appointment.patientName },
+        });
+
+        dialogRef.afterClosed().subscribe((result: CkCancelDialogResult | undefined) => {
+            if (!result?.confirmed) return;
+            this.doCancel(appointment, result.reason);
+        });
+    }
+
+    private doCancel(appointment: Appointment, reason: string | null): void {
+        this.updatingId.set(appointment.id);
+
+        // Optimistic update
+        this.appointments.update(list =>
+            list.map(a => a.id === appointment.id
+                ? { ...a, status: AppointmentStatus.Cancelled, cancellationReason: reason }
+                : a),
+        );
+
+        this.svc.cancel(appointment.id, { cancellationReason: reason }).subscribe({
+            next: updated => {
+                this.appointments.update(list =>
+                    list.map(a => a.id === updated.id ? updated : a),
+                );
+                this.updatingId.set(null);
+                this.toast.success(this.langService.translate('APPOINTMENTS.CANCELLED_SUCCESS'));
+            },
+            error: () => {
+                // Rollback
+                this.appointments.update(list =>
+                    list.map(a => a.id === appointment.id ? appointment : a),
                 );
                 this.updatingId.set(null);
             },

@@ -1,9 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe }  from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
-import { MatTableModule }          from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonModule }         from '@angular/material/button';
+import { MatTableModule }           from '@angular/material/table';
 
 import { PatientsService }     from '../../../core/services/patients.service';
 import { AppointmentsService } from '../../../core/services/appointments.service';
@@ -13,14 +12,14 @@ import {
     Appointment,
     AppointmentStatusLabels,
     AppointmentTypeLabels,
-    AppointmentStatusColor,
 } from '../../../core/models/appointment.model';
 import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
 import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService }    from '../../../core/services/theme.service';
 import {
     CkPageHeaderComponent, CkCardComponent,
-    CkBtnComponent, CkStatusBadgeComponent, CkEmptyStateComponent,
+    CkBtnComponent, CkStatusBadgeComponent,
+    CkTableComponent, CkDetailsComponent, CkDetailItem,
 } from '../../../shared/index';
 
 @Component({
@@ -30,10 +29,11 @@ import {
     styleUrl:    './patient-detail.component.scss',
     imports: [
         CommonModule, DatePipe, RouterLink,
-        MatTableModule, MatProgressSpinnerModule, MatButtonModule,
+        MatProgressSpinnerModule, MatTableModule,
         TranslatePipe,
         CkPageHeaderComponent, CkCardComponent,
-        CkBtnComponent, CkStatusBadgeComponent, CkEmptyStateComponent,
+        CkBtnComponent, CkStatusBadgeComponent,
+        CkTableComponent, CkDetailsComponent,
     ],
 })
 export class PatientDetailComponent implements OnInit {
@@ -59,12 +59,22 @@ export class PatientDetailComponent implements OnInit {
 
     aptColumns = ['date', 'time', 'type', 'status'];
 
-    min(a: number, b: number) { return Math.min(a, b); }
-
-    genderLabel(g: number)  { return GenderLabels[g as keyof typeof GenderLabels]  ?? '—'; }
     statusLabel(s: number)  { return AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels] ?? '—'; }
     typeLabel(t: number)    { return AppointmentTypeLabels[t   as keyof typeof AppointmentTypeLabels]   ?? '—'; }
-    statusColor(s: number)  { return AppointmentStatusColor[s  as keyof typeof AppointmentStatusColor]  ?? 'secondary'; }
+
+    // ── Detail items for the profile card ────────────────────────────────────
+    patientDetails = computed<CkDetailItem[]>(() => {
+        const p = this.patient();
+        if (!p) return [];
+        return [
+            { label: 'PATIENTS.FULL_NAME',         value: p.fullName },
+            { label: 'PATIENTS.PHONE',              value: p.phone,        type: 'ltr' },
+            { label: 'PATIENTS.GENDER',             value: GenderLabels[p.gender as keyof typeof GenderLabels] ?? '—' },
+            { label: 'PATIENTS.BIRTH_DATE',         value: p.dateOfBirth,  type: 'date', hideWhenEmpty: true },
+            { label: 'PATIENTS.REGISTRATION_DATE',  value: p.createdAt,    type: 'date' },
+            { label: 'PATIENTS.NOTES',              value: p.notes,        hideWhenEmpty: true },
+        ];
+    });
 
     ngOnInit(): void {
         this.patientId = this.route.snapshot.paramMap.get('id') ?? '';

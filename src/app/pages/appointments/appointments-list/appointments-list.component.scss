@@ -1,50 +1,47 @@
-.empty-icon {
-    font-size: 48px;
-    color: #ccc;
+// ── Status trigger button ─────────────────────────────────────────────────────
+.status-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: opacity 0.15s;
+
+    &:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &:not(:disabled):hover {
+        opacity: 0.8;
+    }
 }
 
-.search-btn {
-    height: 54px;
+.status-chevron {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1;
 }
 
-.pagination-row {
-    border-top: 1px solid #eee;
-}
-
-.pagination-info {
-    font-size: 13px;
-}
-
-.phone-cell {
+// ── Phone sub-text in patient cell ────────────────────────────────────────────
+.sub-text {
     font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 2px;
 }
 
-// Inline status select — remove all mat-form-field chrome
-.status-select {
-    width: auto;
+// ── Actions column ────────────────────────────────────────────────────────────
+.col-actions {
+    width: 120px;
+    text-align: center;
+}
 
-    // Remove bottom subscript spacer
-    &.mat-mdc-form-field {
-        .mat-mdc-form-field-subscript-wrapper { display: none; }
-    }
-
-    // Remove outline border and background
-    .mdc-notched-outline__leading,
-    .mdc-notched-outline__notch,
-    .mdc-notched-outline__trailing {
-        border: none !important;
-    }
-
-    // Remove internal padding so badge sits flush
-    .mat-mdc-form-field-infix {
-        padding: 0 !important;
-        min-height: unset !important;
-    }
-    .mat-mdc-text-field-wrapper {
-        padding: 0 !important;
-        background: transparent !important;
-    }
-
-    // Hide the arrow — badge acts as the trigger affordance
-    .mat-mdc-select-arrow-wrapper { display: none; }
+// ── Dark mode overrides ───────────────────────────────────────────────────────
+:host-context(.dark-theme) {
+    .status-chevron { color: rgba(255, 255, 255, 0.40); }
+    .sub-text        { color: rgba(255, 255, 255, 0.40); }
 }

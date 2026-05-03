@@ -913,41 +913,49 @@
         }
     }
 
-    // Mat Table (global — applies inside ck-card and any other container)
+    // Mat Table — dark redesign (mirrors light theme with dark tokens)
     .mat-mdc-table {
-        background-color: #1b232d;
+        background: #1b232d;
 
+        // Header: one shade darker than the card surface
         .mat-mdc-header-row {
-            background-color: #131920;
+            background: #131920;
         }
         .mat-mdc-header-cell {
-            background-color: #131920;
-            color: rgba(255, 255, 255, 0.87);
-            border-bottom-color: rgba(255, 255, 255, 0.09);
+            background: #131920;
+            color: rgba(255, 255, 255, 0.55);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.07);
+            --mat-table-header-headline-color: rgba(255, 255, 255, 0.55);
         }
-        .mat-mdc-row {
-            background-color: #1b232d;
 
+        // Rows
+        .mat-mdc-row {
             &:hover .mat-mdc-cell {
-                background-color: rgba(255, 255, 255, 0.03);
+                background: rgba(255, 255, 255, 0.03);
+            }
+            &:last-child .mat-mdc-cell {
+                border-bottom: none;
             }
         }
         .mat-mdc-cell {
-            background-color: #1b232d;
+            background: #1b232d;
             color: rgba(255, 255, 255, 0.80);
-            border-bottom-color: rgba(255, 255, 255, 0.09);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            --mat-table-row-item-label-text-color: rgba(255, 255, 255, 0.80);
+            --mat-table-row-item-outline-color:    rgba(255, 255, 255, 0.07);
         }
 
-        // table-responsive scrollbar
-        + .table-responsive, .table-responsive & {
-            &::-webkit-scrollbar-track { background-color: rgba(255, 255, 255, 0.10); }
-            &::-webkit-scrollbar-thumb { background: #131920; }
+        // Links stay brand-green (readable on dark)
+        a {
+            color: #4dc79a;
+            &:hover { color: #7ddbb5; }
         }
     }
 
+    // Scrollbar in dark
     .table-responsive {
-        &::-webkit-scrollbar-track { background-color: rgba(255, 255, 255, 0.10); }
-        &::-webkit-scrollbar-thumb { background: #131920; }
+        &::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
     }
 
 }

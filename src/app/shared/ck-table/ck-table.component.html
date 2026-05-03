@@ -1,0 +1,58 @@
+<!-- Loading bar — thin animated stripe at the top while fetching -->
+@if (loading) {
+    <div class="ckt-loading">
+        <div class="ckt-loading__bar"></div>
+    </div>
+}
+
+<!-- Empty state — shown when done loading but nothing to display -->
+@if (!loading && data.length === 0) {
+    <ck-empty-state
+        [icon]="emptyIcon"
+        [message]="emptyMessage"
+        [actionLabel]="emptyActionLabel"
+        [actionIcon]="emptyActionIcon"
+        (action)="emptyAction.emit()">
+    </ck-empty-state>
+}
+
+<!--
+    Table — ALWAYS kept in the DOM so that @ViewChild(MatTable) is always resolved
+    and ngAfterViewInit can safely call addColumnDef().
+    Hidden via CSS when loading or when there is no data.
+-->
+<div class="table-responsive" [style.display]="showTable ? '' : 'none'">
+    <table mat-table [dataSource]="data" class="w-100">
+
+        <!-- Column defs are projected via @ContentChildren + addColumnDef() -->
+        <ng-content></ng-content>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"
+            [class.ckt-row--clickable]="clickable"
+            (click)="clickable && rowClick.emit(row)">
+        </tr>
+
+    </table>
+</div>
+
+<!-- Pagination — shown whenever the table is visible -->
+@if (showPagination) {
+    <div class="ck-pagination">
+        <span class="ck-pagination__info">
+            {{ (page - 1) * pageSize + 1 }}–{{ min(page * pageSize, effectiveTotal) }}
+            {{ 'COMMON.OF' | translate }} {{ effectiveTotal }}
+        </span>
+        <div class="ck-pagination__controls">
+            <ck-btn variant="icon" size="sm" icon="chevron_right"
+                    [disabled]="page <= 1"
+                    (clicked)="prevPage.emit()">
+            </ck-btn>
+            <span class="ck-pagination__page">{{ page }} / {{ totalPages() }}</span>
+            <ck-btn variant="icon" size="sm" icon="chevron_left"
+                    [disabled]="page >= totalPages()"
+                    (clicked)="nextPage.emit()">
+            </ck-btn>
+        </div>
+    </div>
+}

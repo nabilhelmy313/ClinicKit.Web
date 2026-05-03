@@ -193,7 +193,16 @@
     "COMPLETED": "مكتمل",
     "CANCELLED": "ملغي",
     "NO_SHOW": "لم يحضر",
-    "NO_APPOINTMENTS": "لا توجد مواعيد مطابقة للبحث"
+    "NO_APPOINTMENTS": "لا توجد مواعيد مطابقة للبحث",
+  "CANCEL_TITLE": "إلغاء الموعد",
+  "CANCEL_WARNING": "هل أنت متأكد من إلغاء هذا الموعد؟ لا يمكن التراجع عن هذا الإجراء.",
+  "CANCEL_REASON": "سبب الإلغاء (اختياري)",
+  "CANCEL_REASON_PLACEHOLDER": "اكتب سبب الإلغاء...",
+  "CANCEL_CONFIRM": "تأكيد الإلغاء",
+  "CANCELLED_SUCCESS": "تم إلغاء الموعد بنجاح",
+  "ACTIONS": "إجراءات",
+  "TODAY": "اليوم",
+  "NO_APPT_DAY": "لا مواعيد"
   },
   "SETTINGS": {
     "TITLE": "الإعدادات",

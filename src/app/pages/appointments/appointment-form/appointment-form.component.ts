@@ -70,6 +70,14 @@ export class AppointmentFormComponent implements OnInit {
             notes:           [null],
         });
 
+        // Pre-fill date when navigating from the calendar "+" button
+        const prefilledDate = this.route.snapshot.queryParamMap.get('date');
+        if (prefilledDate) {
+            // Parse as local date (avoid UTC midnight offset shifting the day)
+            const [y, m, d] = prefilledDate.split('-').map(Number);
+            this.form.patchValue({ appointmentDate: new Date(y, m - 1, d) });
+        }
+
         const prefilledId = this.route.snapshot.queryParamMap.get('patientId');
         if (prefilledId) {
             this.form.patchValue({ patientId: prefilledId });

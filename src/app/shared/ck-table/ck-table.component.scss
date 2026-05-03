@@ -1,43 +1,38 @@
+:host {
+    display: block;
+}
+
 // ── Loading bar ───────────────────────────────────────────────────────────────
-.ck-table-loading {
+.ckt-loading {
     height: 3px;
     overflow: hidden;
-    background: var(--paper-2);
+    background: var(--sage-50);
 
     &__bar {
         height: 100%;
         width: 40%;
         background: var(--sage-500);
         border-radius: 2px;
-        animation: ck-slide 1.4s ease-in-out infinite;
+        animation: ckt-slide 1.4s ease-in-out infinite;
     }
 }
 
-@keyframes ck-slide {
+@keyframes ckt-slide {
     0%   { transform: translateX(-100%); }
     100% { transform: translateX(350%); }
 }
 
-// ── Table link ────────────────────────────────────────────────────────────────
-.ck-table-link {
-    color: var(--sage-600);
-    font-weight: 500;
-    text-decoration: none;
-    &:hover { text-decoration: underline; }
+// ── Clickable rows ────────────────────────────────────────────────────────────
+.ckt-row--clickable {
+    cursor: pointer;
 }
 
-// ── Action cell ───────────────────────────────────────────────────────────────
-.ck-table-actions {
-    white-space: nowrap;
-    width: 1%;
-}
-
-// ── Pagination row ────────────────────────────────────────────────────────────
+// ── Pagination ────────────────────────────────────────────────────────────────
 .ck-pagination {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 22px;
+    padding: 12px 20px;
     border-top: 1px solid var(--paper-2);
 
     &__info {
@@ -54,18 +49,22 @@
     &__page {
         font-size: 13px;
         color: var(--ink-1);
-        padding: 0 8px;
-        min-width: 50px;
+        padding: 0 10px;
+        min-width: 52px;
         text-align: center;
     }
 }
 
 // ── Dark mode ─────────────────────────────────────────────────────────────────
 :host-context(.dark-theme) {
+    .ckt-loading {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
     .ck-pagination {
         border-top-color: rgba(255, 255, 255, 0.07);
 
-        &__info { color: rgba(255, 255, 255, 0.45); }
+        &__info { color: rgba(255, 255, 255, 0.40); }
         &__page  { color: rgba(255, 255, 255, 0.70); }
     }
 }

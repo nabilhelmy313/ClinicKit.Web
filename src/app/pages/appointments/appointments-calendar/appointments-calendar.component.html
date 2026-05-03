@@ -2,21 +2,101 @@
      [class.component-dark-theme]="themeService.isDark()">
 
     <ck-page-header
-        icon="grid_view"
+        icon="calendar_month"
         [title]="'APPOINTMENTS.CALENDAR' | translate"
         [breadcrumbs]="[
             { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
             { label: ('APPOINTMENTS.TITLE' | translate), link: '/appointments' },
             { label: ('APPOINTMENTS.CALENDAR' | translate) }
         ]">
+        <ck-btn variant="outline" icon="list"
+                (click)="router.navigate(['/appointments'])">
+            {{ 'APPOINTMENTS.TITLE' | translate }}
+        </ck-btn>
+        <ck-btn icon="event_add"
+                (click)="router.navigate(['/appointments/new'])">
+            {{ 'APPOINTMENTS.ADD_APPOINTMENT' | translate }}
+        </ck-btn>
     </ck-page-header>
 
-    <ck-card>
-        <p class="text-body mb-0">{{ 'APPOINTMENTS.SUBTITLE' | translate }}</p>
-        <div class="alert alert-info mt-15" role="alert">
-            <i class="material-symbols-outlined me-2">construction</i>
-            Week 2 sprint
+    <ck-card [noPadding]="true">
+
+        <!-- ── Week navigation bar ──────────────────────────────────────── -->
+        <div class="cal-nav">
+
+            <div class="cal-nav__controls">
+                <ck-btn variant="icon" size="sm" [icon]="prevIcon()"
+                        (click)="prevWeek()">
+                </ck-btn>
+                <ck-btn variant="outline" size="sm" (click)="goToToday()">
+                    {{ 'APPOINTMENTS.TODAY' | translate }}
+                </ck-btn>
+                <ck-btn variant="icon" size="sm" [icon]="nextIcon()"
+                        (click)="nextWeek()">
+                </ck-btn>
+            </div>
+
+            <span class="cal-nav__range" dir="ltr">
+                {{ weekStart() | date:'dd/MM' }} – {{ weekEnd() | date:'dd/MM/yyyy' }}
+            </span>
+
+            @if (loading()) {
+                <mat-spinner diameter="20" class="cal-nav__spinner"></mat-spinner>
+            }
+
         </div>
+
+        <!-- ── 7-day grid ───────────────────────────────────────────────── -->
+        <div class="cal-grid">
+
+            @for (day of weekDays(); track day.toISOString()) {
+                <div class="cal-day" [class.cal-day--today]="isToday(day)">
+
+                    <!-- Day header -->
+                    <div class="cal-day__header">
+                        <span class="cal-day__name">{{ dayName(day) }}</span>
+                        <span class="cal-day__num">{{ day | date:'d' }}</span>
+                        <button class="cal-day__add"
+                                [title]="'APPOINTMENTS.ADD_APPOINTMENT' | translate"
+                                (click)="bookOnDay(day)">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                    </div>
+
+                    <!-- Appointment cards -->
+                    <div class="cal-day__body">
+
+                        @if (appointmentsForDay(day).length === 0 && !loading()) {
+                            <span class="cal-day__empty">
+                                {{ 'APPOINTMENTS.NO_APPT_DAY' | translate }}
+                            </span>
+                        }
+
+                        @for (appt of appointmentsForDay(day); track appt.id) {
+                            <div class="cal-appt"
+                                 [attr.data-status]="appt.status"
+                                 (click)="viewPatient(appt)">
+                                <span class="cal-appt__time" dir="ltr">
+                                    {{ appt.startTime.substring(0, 5) }}
+                                </span>
+                                <span class="cal-appt__name">{{ appt.patientName }}</span>
+                                <div class="cal-appt__footer">
+                                    <span class="cal-appt__type">{{ typeLabel(appt.type) }}</span>
+                                    <ck-status-badge
+                                        [status]="appt.status.toString()"
+                                        [label]="statusLabel(appt.status)">
+                                    </ck-status-badge>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
     </ck-card>
 
 </div>

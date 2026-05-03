@@ -79,3 +79,8 @@
 @keyframes ck-spin {
     to { transform: rotate(360deg); }
 }
+
+.ck-btn--full {
+    width: 100%;
+    justify-content: center;
+}

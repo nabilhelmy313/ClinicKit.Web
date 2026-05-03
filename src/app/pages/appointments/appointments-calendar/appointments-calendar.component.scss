@@ -1,0 +1,255 @@
+// ── Navigation bar ────────────────────────────────────────────────────────────
+.cal-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    flex-wrap: wrap;
+
+    &__controls {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    &__range {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ink-1, #111827);
+        flex: 1;
+        text-align: center;
+    }
+
+    &__spinner {
+        flex-shrink: 0;
+    }
+}
+
+// ── 7-day grid ────────────────────────────────────────────────────────────────
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(130px, 1fr));
+    overflow-x: auto;
+    min-height: 480px;
+}
+
+// ── Single day column ─────────────────────────────────────────────────────────
+.cal-day {
+    border-inline-end: 1px solid var(--border-color, #e5e7eb);
+    display: flex;
+    flex-direction: column;
+
+    &:last-child {
+        border-inline-end: none;
+    }
+
+    // Today highlight
+    &--today {
+        background: color-mix(in srgb, var(--primary, #0d5238) 4%, transparent);
+
+        .cal-day__num {
+            background: var(--primary, #0d5238);
+            color: #fff;
+        }
+    }
+
+    // ── Day header ────────────────────────────────────────────────────────────
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 10px 8px;
+        border-bottom: 1px solid var(--border-color, #e5e7eb);
+        position: sticky;
+        top: 0;
+        background: inherit;
+        z-index: 1;
+    }
+
+    &__name {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--ink-3, #6b7280);
+        flex: 1;
+    }
+
+    &__num {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-1, #111827);
+        flex-shrink: 0;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    &__add {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px dashed var(--border-color, #e5e7eb);
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+        flex-shrink: 0;
+
+        .material-symbols-outlined {
+            font-size: 14px;
+            color: var(--ink-3, #6b7280);
+        }
+    }
+
+    &:hover &__add,
+    &__add:focus {
+        opacity: 1;
+    }
+
+    &__add:hover {
+        background: var(--primary-light, #e8f2ed);
+        border-color: var(--primary, #0d5238);
+
+        .material-symbols-outlined {
+            color: var(--primary, #0d5238);
+        }
+    }
+
+    // ── Day body ──────────────────────────────────────────────────────────────
+    &__body {
+        flex: 1;
+        padding: 8px 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        overflow-y: auto;
+        min-height: 320px;
+    }
+
+    &__empty {
+        font-size: 11px;
+        color: var(--ink-3, #9ca3af);
+        text-align: center;
+        margin-top: 24px;
+        font-style: italic;
+    }
+}
+
+// ── Appointment card ──────────────────────────────────────────────────────────
+.cal-appt {
+    border-radius: 6px;
+    padding: 6px 8px;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-inline-start: 3px solid var(--primary, #0d5238);
+    cursor: pointer;
+    transition: box-shadow 0.15s, opacity 0.15s;
+
+    &:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+    }
+
+    // Status-based start-border color
+    &[data-status="0"] { border-inline-start-color: #f59e0b; } // Pending   → amber
+    &[data-status="1"] { border-inline-start-color: #22c55e; } // Confirmed → green
+    &[data-status="2"] { border-inline-start-color: #3b82f6; } // InProgress → blue
+    &[data-status="3"] { border-inline-start-color: #6b7280; } // Completed → gray
+    &[data-status="4"] { border-inline-start-color: #ef4444; } // Cancelled → red
+    &[data-status="5"] { border-inline-start-color: #f97316; } // NoShow    → orange
+
+    &__time {
+        display: block;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--ink-2, #374151);
+        letter-spacing: 0.03em;
+        margin-bottom: 2px;
+    }
+
+    &__name {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-1, #111827);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+    }
+
+    &__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 4px;
+        margin-top: 4px;
+    }
+
+    &__type {
+        font-size: 10px;
+        color: var(--ink-3, #6b7280);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+// ── Dark mode overrides ───────────────────────────────────────────────────────
+:host-context(.dark-theme) {
+    .cal-nav {
+        border-bottom-color: rgba(255, 255, 255, 0.10);
+
+        &__range {
+            color: rgba(255, 255, 255, 0.90);
+        }
+    }
+
+    .cal-day {
+        border-inline-end-color: rgba(255, 255, 255, 0.10);
+
+        &--today {
+            background: color-mix(in srgb, var(--primary, #0d5238) 12%, transparent);
+        }
+
+        &__header {
+            border-bottom-color: rgba(255, 255, 255, 0.10);
+        }
+
+        &__name   { color: rgba(255, 255, 255, 0.50); }
+        &__num    { color: rgba(255, 255, 255, 0.90); }
+        &__empty  { color: rgba(255, 255, 255, 0.30); }
+
+        &__add {
+            border-color: rgba(255, 255, 255, 0.15);
+
+            .material-symbols-outlined { color: rgba(255, 255, 255, 0.40); }
+        }
+
+        &__add:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary, #0d5238);
+        }
+    }
+
+    .cal-appt {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.10);
+
+        &:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.40);
+        }
+
+        &__time   { color: rgba(255, 255, 255, 0.60); }
+        &__name   { color: rgba(255, 255, 255, 0.90); }
+        &__type   { color: rgba(255, 255, 255, 0.45); }
+    }
+}

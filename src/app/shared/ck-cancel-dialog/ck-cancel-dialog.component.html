@@ -1,0 +1,42 @@
+<div class="ckcd"
+     [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.ckcd--dark]="themeService.isDark()">
+
+    <!-- ── Header ───────────────────────────────────────────────── -->
+    <div class="ckcd__header">
+        <span class="material-symbols-outlined ckcd__icon">event_busy</span>
+        <h2 class="ckcd__title">{{ 'APPOINTMENTS.CANCEL_TITLE' | translate }}</h2>
+    </div>
+
+    <!-- ── Body ─────────────────────────────────────────────────── -->
+    <div class="ckcd__body">
+
+        <p class="ckcd__patient">{{ data.patientName }}</p>
+
+        <p class="ckcd__warning">
+            {{ 'APPOINTMENTS.CANCEL_WARNING' | translate }}
+        </p>
+
+        <!-- Optional reason -->
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'APPOINTMENTS.CANCEL_REASON' | translate }}</mat-label>
+            <textarea matInput
+                      [formControl]="reasonCtrl"
+                      rows="3"
+                      [placeholder]="'APPOINTMENTS.CANCEL_REASON_PLACEHOLDER' | translate">
+            </textarea>
+        </mat-form-field>
+
+    </div>
+
+    <!-- ── Actions ──────────────────────────────────────────────── -->
+    <div class="ckcd__actions">
+        <ck-btn variant="outline" (click)="dismiss()">
+            {{ 'COMMON.BACK' | translate }}
+        </ck-btn>
+        <ck-btn variant="danger" icon="event_busy" (click)="confirm()">
+            {{ 'APPOINTMENTS.CANCEL_CONFIRM' | translate }}
+        </ck-btn>
+    </div>
+
+</div>

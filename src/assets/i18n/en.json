@@ -193,7 +193,16 @@
     "COMPLETED": "Completed",
     "CANCELLED": "Cancelled",
     "NO_SHOW": "No Show",
-    "NO_APPOINTMENTS": "No matching appointments found"
+    "NO_APPOINTMENTS": "No matching appointments found",
+  "CANCEL_TITLE": "Cancel Appointment",
+  "CANCEL_WARNING": "Are you sure you want to cancel this appointment? This action cannot be undone.",
+  "CANCEL_REASON": "Cancellation Reason (optional)",
+  "CANCEL_REASON_PLACEHOLDER": "Enter reason for cancellation...",
+  "CANCEL_CONFIRM": "Confirm Cancellation",
+  "CANCELLED_SUCCESS": "Appointment cancelled successfully",
+  "ACTIONS": "Actions",
+  "TODAY": "Today",
+  "NO_APPT_DAY": "No appointments"
   },
   "SETTINGS": {
     "TITLE": "Settings",

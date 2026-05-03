@@ -1,0 +1,29 @@
+<div class="ck-details"
+     [dir]="resolvedDir"
+     [class.ck-details--cols-1]="columns === 1"
+     [class.ck-details--cols-2]="columns === 2"
+     [class.ck-details--cols-3]="columns === 3">
+
+    @for (item of visibleItems; track item.label) {
+        <div class="ck-details__row">
+
+            <!-- Label -->
+            <span class="ck-details__label">
+                @if (item.labelRaw) {
+                    {{ item.label }}
+                } @else {
+                    {{ item.label | translate }}
+                }
+            </span>
+
+            <!-- Value -->
+            <span class="ck-details__value"
+                  [dir]="isLtr(item) ? 'ltr' : resolvedDir"
+                  [class]="item.valueClass ?? ''">
+                {{ displayValue(item) }}
+            </span>
+
+        </div>
+    }
+
+</div>

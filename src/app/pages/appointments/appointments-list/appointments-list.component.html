@@ -18,14 +18,13 @@
         </ck-btn>
     </ck-page-header>
 
-    <!-- Filters card -->
+    <!-- Filters -->
     <ck-card [title]="'APPOINTMENTS.FILTER' | translate">
         <div class="row align-items-end">
             <div class="col-md-3 mb-15">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{ 'APPOINTMENTS.FROM_DATE' | translate }}</mat-label>
-                    <input matInput [matDatepicker]="fromPicker"
-                           [formControl]="fromDateControl" />
+                    <input matInput [matDatepicker]="fromPicker" [formControl]="fromDateControl" />
                     <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
                     <mat-datepicker #fromPicker></mat-datepicker>
                 </mat-form-field>
@@ -33,8 +32,7 @@
             <div class="col-md-3 mb-15">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{ 'APPOINTMENTS.TO_DATE' | translate }}</mat-label>
-                    <input matInput [matDatepicker]="toPicker"
-                           [formControl]="toDateControl" />
+                    <input matInput [matDatepicker]="toPicker" [formControl]="toDateControl" />
                     <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
                     <mat-datepicker #toPicker></mat-datepicker>
                 </mat-form-field>
@@ -58,98 +56,105 @@
         </div>
     </ck-card>
 
-    <!-- Table card -->
+    <!-- Table -->
     <ck-card [noPadding]="true">
-        @if (loading()) {
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-        }
+        <ck-table
+            [data]="appointments()"
+            [columns]="displayedColumns"
+            [loading]="loading()"
+            [totalCount]="totalCount()"
+            [page]="page()"
+            [pageSize]="pageSize()"
+            emptyIcon="event_busy"
+            [emptyMessage]="'APPOINTMENTS.NO_APPOINTMENTS' | translate"
+            (prevPage)="prevPage()"
+            (nextPage)="nextPage()">
 
-        @if (!loading() && appointments().length === 0) {
-            <ck-empty-state
-                icon="event_busy"
-                [message]="'APPOINTMENTS.NO_APPOINTMENTS' | translate">
-            </ck-empty-state>
-        } @else {
-            <div class="table-responsive">
-                <table mat-table [dataSource]="appointments()" class="w-100">
+            <!-- Patient -->
+            <ng-container matColumnDef="patient">
+                <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.PATIENT' | translate }}</th>
+                <td mat-cell *matCellDef="let a">
+                    <a [routerLink]="['/patients', a.patientId]">{{ a.patientName }}</a>
+                    <div class="sub-text" dir="ltr">{{ a.patientPhone }}</div>
+                </td>
+            </ng-container>
 
-                    <ng-container matColumnDef="patient">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.PATIENT' | translate }}</th>
-                        <td mat-cell *matCellDef="let a">
-                            <a [routerLink]="['/patients', a.patientId]" class="fw-medium text-primary">
-                                {{ a.patientName }}
-                            </a>
-                            <div class="text-body phone-cell" dir="ltr">{{ a.patientPhone }}</div>
-                        </td>
-                    </ng-container>
+            <!-- Date -->
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.DATE' | translate }}</th>
+                <td mat-cell *matCellDef="let a">{{ a.appointmentDate | date:'dd/MM/yyyy' }}</td>
+            </ng-container>
 
-                    <ng-container matColumnDef="date">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.DATE' | translate }}</th>
-                        <td mat-cell *matCellDef="let a">
-                            {{ a.appointmentDate | date:'dd/MM/yyyy' }}
-                        </td>
-                    </ng-container>
+            <!-- Time -->
+            <ng-container matColumnDef="time">
+                <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.TIME' | translate }}</th>
+                <td mat-cell *matCellDef="let a" dir="ltr">
+                    {{ a.startTime.substring(0,5) }} – {{ a.endTime.substring(0,5) }}
+                </td>
+            </ng-container>
 
-                    <ng-container matColumnDef="time">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.TIME' | translate }}</th>
-                        <td mat-cell *matCellDef="let a" dir="ltr">
-                            {{ a.startTime.substring(0,5) }} – {{ a.endTime.substring(0,5) }}
-                        </td>
-                    </ng-container>
+            <!-- Type -->
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.TYPE' | translate }}</th>
+                <td mat-cell *matCellDef="let a">{{ typeLabel(a.type) }}</td>
+            </ng-container>
 
-                    <ng-container matColumnDef="type">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.TYPE' | translate }}</th>
-                        <td mat-cell *matCellDef="let a">{{ typeLabel(a.type) }}</td>
-                    </ng-container>
+            <!-- Status -->
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.STATUS' | translate }}</th>
+                <td mat-cell *matCellDef="let a">
 
-                    <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.STATUS' | translate }}</th>
-                        <td mat-cell *matCellDef="let a">
-                            <mat-form-field appearance="outline" class="status-select">
-                                <mat-select [value]="a.status"
-                                            [disabled]="updatingId() === a.id"
-                                            (selectionChange)="changeStatus(a, $event.value)">
-                                    <mat-select-trigger>
-                                        <ck-status-badge
-                                            [color]="statusColor(a.status)"
-                                            [label]="statusLabel(a.status)">
-                                        </ck-status-badge>
-                                    </mat-select-trigger>
-                                    @for (opt of statusOptions; track opt.value) {
-                                        <mat-option [value]="opt.value">
-                                            <ck-status-badge
-                                                [color]="statusColor(opt.value)"
-                                                [label]="opt.label">
-                                            </ck-status-badge>
-                                        </mat-option>
-                                    }
-                                </mat-select>
-                            </mat-form-field>
-                        </td>
-                    </ng-container>
+                    @if (canChange(a.status)) {
+                        <!-- Clickable badge → menu of valid transitions -->
+                        <button class="status-trigger"
+                                [disabled]="updatingId() === a.id"
+                                [matMenuTriggerFor]="statusMenu">
+                            <ck-status-badge
+                                [status]="a.status.toString()"
+                                [label]="statusLabel(a.status)">
+                            </ck-status-badge>
+                            <span class="material-symbols-outlined status-chevron">expand_more</span>
+                        </button>
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
-            </div>
+                        <mat-menu #statusMenu="matMenu" class="status-menu-panel">
+                            @for (opt of nextOptions(a.status); track opt.value) {
+                                <button mat-menu-item (click)="changeStatus(a, opt.value)">
+                                    <ck-status-badge
+                                        [status]="opt.value.toString()"
+                                        [label]="opt.label">
+                                    </ck-status-badge>
+                                </button>
+                            }
+                        </mat-menu>
 
-            <!-- Pagination -->
-            <div class="d-flex align-items-center justify-content-between px-20 py-15 pagination-row">
-                <span class="text-body pagination-info">
-                    {{ (page() - 1) * pageSize() + 1 }}–{{ min(page() * pageSize(), totalCount()) }}
-                    {{ 'COMMON.OF' | translate }} {{ totalCount() }}
-                </span>
-                <div class="d-flex gap-2 align-items-center">
-                    <ck-btn variant="outline" size="sm" icon="chevron_right"
-                            [disabled]="page() === 1" (click)="prevPage()">
-                    </ck-btn>
-                    <span class="px-10">{{ page() }} / {{ totalPages() }}</span>
-                    <ck-btn variant="outline" size="sm" icon="chevron_left"
-                            [disabled]="page() >= totalPages()" (click)="nextPage()">
-                    </ck-btn>
-                </div>
-            </div>
-        }
+                    } @else {
+                        <!-- Terminal: plain badge -->
+                        <ck-status-badge
+                            [status]="a.status.toString()"
+                            [label]="statusLabel(a.status)">
+                        </ck-status-badge>
+                    }
+
+                </td>
+            </ng-container>
+
+            <!-- Actions -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="col-actions">
+                    {{ 'APPOINTMENTS.ACTIONS' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let a" class="col-actions">
+                    @if (canCancel(a.status)) {
+                        <ck-btn variant="danger" size="sm" icon="event_busy"
+                                [disabled]="updatingId() === a.id"
+                                (click)="openCancelDialog(a)">
+                            {{ 'APPOINTMENTS.CANCELLED' | translate }}
+                        </ck-btn>
+                    }
+                </td>
+            </ng-container>
+
+        </ck-table>
     </ck-card>
 
 </div>

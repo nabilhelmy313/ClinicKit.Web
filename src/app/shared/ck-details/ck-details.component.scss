@@ -1,0 +1,69 @@
+// ── Host ──────────────────────────────────────────────────────────────────────
+:host {
+    display: block;
+}
+
+// ── Grid ─────────────────────────────────────────────────────────────────────
+.ck-details {
+    display: grid;
+    gap: 0;
+
+    // Default / 2-column layout
+    &--cols-1 { grid-template-columns: 1fr; }
+    &--cols-2 { grid-template-columns: repeat(2, 1fr); }
+    &--cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+    // Collapse to single column on small screens
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+// ── Row ───────────────────────────────────────────────────────────────────────
+.ck-details__row {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--paper-2);
+    gap: 4px;
+
+    // Last row in each grid column shouldn't show bottom border
+    // (handled by &:last-child below)
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+// ── Label ─────────────────────────────────────────────────────────────────────
+.ck-details__label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    line-height: 1.4;
+}
+
+// ── Value ─────────────────────────────────────────────────────────────────────
+.ck-details__value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-1);
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+// ── Dark mode ─────────────────────────────────────────────────────────────────
+:host-context(.dark-theme) {
+    .ck-details__row {
+        border-bottom-color: rgba(255, 255, 255, 0.07);
+    }
+
+    .ck-details__label {
+        color: rgba(255, 255, 255, 0.40);
+    }
+
+    .ck-details__value {
+        color: rgba(255, 255, 255, 0.85);
+    }
+}
