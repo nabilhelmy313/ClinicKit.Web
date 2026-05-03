@@ -98,7 +98,8 @@
     "NOTIFICATIONS": "الإشعارات",
     "VIEW_ALL": "عرض الكل",
     "CLINIC_SETTINGS": "إعدادات العيادة",
-    "USER_MANAGEMENT": "إدارة المستخدمين"
+    "USER_MANAGEMENT": "إدارة المستخدمين",
+    "NO_NOTIFICATIONS": "لا توجد إشعارات جديدة"
   },
   "DASHBOARD": {
     "TITLE": "لوحة التحكم",

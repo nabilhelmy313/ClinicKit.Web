@@ -98,7 +98,8 @@
     "NOTIFICATIONS": "Notifications",
     "VIEW_ALL": "View all",
     "CLINIC_SETTINGS": "Clinic Settings",
-    "USER_MANAGEMENT": "User Management"
+    "USER_MANAGEMENT": "User Management",
+    "NO_NOTIFICATIONS": "No new notifications"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",

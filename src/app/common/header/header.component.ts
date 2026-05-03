@@ -7,17 +7,18 @@ import { RouterLink } from '@angular/router';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
 import { LanguageService } from '../../core/services/language.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
     selector: 'app-header',
-    imports: [NgClass, MatMenuModule, MatButtonModule, RouterLink],
+    imports: [NgClass, MatMenuModule, MatButtonModule, RouterLink, TranslatePipe],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
 
     readonly langService  = inject(LanguageService);
-    private readonly authService = inject(AuthService);
+    readonly authService  = inject(AuthService);
 
     // isSidebarToggled
     isSidebarToggled = false;

@@ -157,7 +157,11 @@
     display: grid;
     grid-template-columns: repeat(7, minmax(130px, 1fr));
     overflow-x: auto;
-    min-height: 480px;
+    // Fill the remaining viewport height so the grid never pushes the page down.
+    // 300px = main-content padding-top (118) + page-header+mb-25 (97) + cal-nav (61) + buffer (24)
+    height: calc(100vh - 300px);
+    min-height: 400px;
+    align-items: stretch;
 }
 
 // ── Single day column ─────────────────────────────────────────────────────────
@@ -165,6 +169,7 @@
     border-inline-end: 1px solid var(--border-color, #e5e7eb);
     display: flex;
     flex-direction: column;
+    overflow: hidden;   // clip body so it scrolls inside, not the whole page
 
     &:last-child {
         border-inline-end: none;
@@ -253,12 +258,17 @@
     // ── Day body ──────────────────────────────────────────────────────────────
     &__body {
         flex: 1;
+        min-height: 0;      // lets flex child shrink below its content height
         padding: 8px 6px;
         display: flex;
         flex-direction: column;
         gap: 5px;
         overflow-y: auto;
-        min-height: 320px;
+
+        // Thin scrollbar per column
+        &::-webkit-scrollbar       { width: 4px; }
+        &::-webkit-scrollbar-track { background: transparent; }
+        &::-webkit-scrollbar-thumb { background: var(--paper-4); border-radius: 2px; }
     }
 
     &__empty {

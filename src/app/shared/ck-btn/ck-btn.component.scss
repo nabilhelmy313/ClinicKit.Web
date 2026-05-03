@@ -54,6 +54,10 @@
         border-color: transparent;
         color: var(--ink-2);
         &:hover:not(:disabled) { background: var(--paper-2); color: var(--ink-0); }
+
+        // Size variants must keep uniform padding to preserve the circle shape
+        &.ck-btn--sm { padding: 5px;  font-size: 13px; }
+        &.ck-btn--lg { padding: 10px; font-size: 15px; }
     }
 
     // ── Sizes ─────────────────────────────────────────────────────────────────
