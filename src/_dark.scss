@@ -722,25 +722,75 @@
         }
     }
 
-    // Mat Input
-    .mat-mdc-form-field {
-        --mdc-icon-button-icon-color: var(--whiteColor);
-        --mdc-filled-text-field-input-text-color: var(--whiteColor);
-        --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, .50);
-        --mdc-filled-text-field-hover-label-text-color: rgba(255, 255, 255, 0.6);
-        --mdc-filled-text-field-disabled-container-color: #131920;
-        --mdc-filled-text-field-disabled-input-text-color: rgba(255, 255, 255, 0.38);
-        --mdc-filled-text-field-disabled-label-text-color: rgba(255, 255, 255, 0.38);
-        --mdc-outlined-text-field-label-text-color: rgba(255, 255, 255, 0.6);
-        --mat-select-enabled-trigger-text-color: rgba(255, 255, 255, 0.87);
-        --mat-select-enabled-arrow-color: rgba(255, 255, 255, 0.54);
+    // ── card-box (plain div used in page layouts) ──────────────────────────────
+    .card-box {
+        background: #1b232d !important;
+        color: rgba(255, 255, 255, 0.87);
+    }
 
-        input, textarea {
-            background-color: transparent;
+    // ── Mat Input / Form Fields ─────────────────────────────────────────────────
+    .mat-mdc-form-field {
+        // Icon inside field
+        --mdc-icon-button-icon-color: var(--whiteColor);
+
+        // Outlined variant (used everywhere in this app: appearance="outline")
+        --mdc-outlined-text-field-input-text-color:             rgba(255, 255, 255, 0.87);
+        --mdc-outlined-text-field-caret-color:                  rgba(255, 255, 255, 0.87);
+        --mdc-outlined-text-field-focus-input-text-color:       rgba(255, 255, 255, 0.87);
+        --mdc-outlined-text-field-label-text-color:             rgba(255, 255, 255, 0.60);
+        --mdc-outlined-text-field-hover-label-text-color:       rgba(255, 255, 255, 0.75);
+        --mdc-outlined-text-field-focus-label-text-color:       rgba(255, 255, 255, 0.87);
+        --mdc-outlined-text-field-outline-color:                rgba(255, 255, 255, 0.23);
+        --mdc-outlined-text-field-hover-outline-color:          rgba(255, 255, 255, 0.55);
+        --mdc-outlined-text-field-focus-outline-color:          var(--sage-400);
+        --mdc-outlined-text-field-disabled-input-text-color:    rgba(255, 255, 255, 0.38);
+        --mdc-outlined-text-field-disabled-label-text-color:    rgba(255, 255, 255, 0.38);
+        --mdc-outlined-text-field-disabled-outline-color:       rgba(255, 255, 255, 0.12);
+        --mdc-outlined-text-field-input-text-placeholder-color: rgba(255, 255, 255, 0.45);
+
+        // Filled variant (fallback)
+        --mdc-filled-text-field-input-text-color:           rgba(255, 255, 255, 0.87);
+        --mdc-filled-text-field-caret-color:                rgba(255, 255, 255, 0.87);
+        --mdc-filled-text-field-label-text-color:           rgba(255, 255, 255, 0.60);
+        --mdc-filled-text-field-hover-label-text-color:     rgba(255, 255, 255, 0.75);
+        --mdc-filled-text-field-container-color:            rgba(255, 255, 255, 0.07);
+        --mdc-filled-text-field-disabled-container-color:   #131920;
+        --mdc-filled-text-field-disabled-input-text-color:  rgba(255, 255, 255, 0.38);
+        --mdc-filled-text-field-disabled-label-text-color:  rgba(255, 255, 255, 0.38);
+
+        // Select
+        --mat-select-enabled-trigger-text-color:  rgba(255, 255, 255, 0.87);
+        --mat-select-placeholder-text-color:      rgba(255, 255, 255, 0.45);
+        --mat-select-enabled-arrow-color:         rgba(255, 255, 255, 0.54);
+
+        // ── Direct rules (belt-and-suspenders — wins even if CSS-var chain breaks)
+        input.mat-mdc-input-element,
+        textarea.mat-mdc-input-element,
+        input,
+        textarea {
+            color: rgba(255, 255, 255, 0.87) !important;
+            caret-color: rgba(255, 255, 255, 0.87) !important;
+            background-color: transparent !important;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.40) !important;
+            }
         }
+
+        // Give the outlined wrapper a subtle dark tint so text is always readable
         .mat-mdc-text-field-wrapper {
+            background-color: rgba(255, 255, 255, 0.04);
             border-color: rgba(255, 255, 255, 0.15);
         }
+
+        // Autocomplete/select panel text
+        .mat-mdc-select-value-text { color: rgba(255, 255, 255, 0.87); }
+        .mat-mdc-select-placeholder { color: rgba(255, 255, 255, 0.45); }
+    }
+
+    // ── mat-error dark theme ────────────────────────────────────────────────────
+    .mat-mdc-form-field-error {
+        color: #f87171;   // red-400 — readable on dark surface
     }
 
     // Mat Calendar

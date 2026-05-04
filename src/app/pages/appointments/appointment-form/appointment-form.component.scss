@@ -1,3 +1,89 @@
 .patient-phone {
     font-size: 12px;
 }
+
+// ── Locked patient field (pre-filled from patient profile) ────────────────────
+.patient-locked-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.patient-locked-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+
+    .material-symbols-outlined { font-size: 16px; }
+}
+
+.patient-locked-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--sage-50);
+    border: 1.5px solid var(--sage-200);
+    border-radius: 8px;
+    width: 100%;
+    min-height: 56px;   // matches mat-form-field height
+
+    .chip-icon {
+        font-size: 22px;
+        color: var(--sage-600);
+        flex-shrink: 0;
+    }
+    .chip-name {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--ink-0);
+        flex: 1;
+    }
+    .chip-phone {
+        font-size: 13px;
+        color: var(--ink-2);
+        flex-shrink: 0;
+    }
+    .chip-change-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: transparent;
+        border-radius: 50%;
+        cursor: pointer;
+        color: var(--ink-3);
+        flex-shrink: 0;
+        transition: background .15s, color .15s;
+
+        .material-symbols-outlined { font-size: 18px; }
+
+        &:hover {
+            background: var(--paper-3);
+            color: var(--pom-500);
+        }
+    }
+}
+
+// Dark theme
+:host-context(.dark-theme) {
+    .patient-locked-label { color: rgba(255,255,255,0.60); }
+
+    .patient-locked-chip {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.15);
+
+        .chip-name  { color: rgba(255,255,255,0.87); }
+        .chip-phone { color: rgba(255,255,255,0.50); }
+        .chip-icon  { color: var(--sage-300); }
+        .chip-change-btn {
+            color: rgba(255,255,255,0.40);
+            &:hover { background: rgba(255,255,255,0.08); color: #f87171; }
+        }
+    }
+}

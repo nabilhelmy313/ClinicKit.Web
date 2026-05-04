@@ -144,6 +144,38 @@
         }
     }
 }
+
+// ── Sign-in dark theme (works via both body.dark-theme and .component-dark-theme) ──
+:host-context(.dark-theme),
+:host-context(body.dark-theme) {
+    .sign-in-area {
+        background-color: #131920;
+    }
+
+    .daxa-form {
+        background-color: #1b232d !important;
+
+        .title {
+            h3, p { color: rgba(255, 255, 255, 0.87); }
+        }
+
+        form {
+            .main-label { color: rgba(255, 255, 255, 0.87) !important; }
+
+            .btn.mat-mdc-button {
+                &[disabled] {
+                    opacity: 0.5;
+                    background-color: var(--blackColor);
+                }
+            }
+
+            .signin-with-socials .or {
+                span { background-color: #1b232d; }
+                &::before { background: rgba(255, 255, 255, 0.09); }
+            }
+        }
+    }
+}
 ::ng-deep {
     .daxa-form {
         form {

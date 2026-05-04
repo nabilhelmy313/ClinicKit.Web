@@ -195,6 +195,7 @@
     "CANCELLED": "Cancelled",
     "NO_SHOW": "No Show",
     "NO_APPOINTMENTS": "No matching appointments found",
+    "CHANGE_PATIENT": "Change patient",
   "CANCEL_TITLE": "Cancel Appointment",
   "CANCEL_WARNING": "Are you sure you want to cancel this appointment? This action cannot be undone.",
   "CANCEL_REASON": "Cancellation Reason (optional)",

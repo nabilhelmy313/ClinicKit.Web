@@ -22,30 +22,54 @@
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="row">
 
-                <!-- Patient search -->
+                <!-- Patient — locked chip when coming from profile, free search otherwise -->
                 <div class="col-12 mb-20">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>{{ 'APPOINTMENTS.PATIENT' | translate }}</mat-label>
-                        <input matInput
-                               [formControl]="patientSearch"
-                               [matAutocomplete]="auto"
-                               [placeholder]="'APPOINTMENTS.SEARCH_PATIENT' | translate" />
-                        <mat-autocomplete #auto="matAutocomplete"
-                                          [displayWith]="displayPatient"
-                                          (optionSelected)="onPatientSelected($event.option.value)">
-                            @for (opt of patientOptions(); track opt.id) {
-                                <mat-option [value]="opt">
-                                    {{ opt.fullName }}
-                                    <span class="text-body ms-5 patient-phone" dir="ltr">
-                                        {{ opt.phone }}
-                                    </span>
-                                </mat-option>
+
+                    @if (lockedPatient(); as lp) {
+                        <!-- ── Locked patient (navigated from patient profile) ──────────── -->
+                        <div class="patient-locked-field">
+                            <label class="patient-locked-label">
+                                <span class="material-symbols-outlined">person</span>
+                                {{ 'APPOINTMENTS.PATIENT' | translate }}
+                            </label>
+                            <div class="patient-locked-chip">
+                                <span class="material-symbols-outlined chip-icon">account_circle</span>
+                                <span class="chip-name">{{ lp.fullName }}</span>
+                                <span class="chip-phone" dir="ltr">{{ lp.phone }}</span>
+                                <button type="button" class="chip-change-btn"
+                                        (click)="unlockPatient()"
+                                        [title]="'APPOINTMENTS.CHANGE_PATIENT' | translate">
+                                    <span class="material-symbols-outlined">close</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    } @else {
+                        <!-- ── Free autocomplete search ─────────────────────────────────── -->
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>{{ 'APPOINTMENTS.PATIENT' | translate }}</mat-label>
+                            <input matInput
+                                   [formControl]="patientSearch"
+                                   [matAutocomplete]="auto"
+                                   [placeholder]="'APPOINTMENTS.SEARCH_PATIENT' | translate" />
+                            <mat-autocomplete #auto="matAutocomplete"
+                                              [displayWith]="displayPatient"
+                                              (optionSelected)="onPatientSelected($event.option.value)">
+                                @for (opt of patientOptions(); track opt.id) {
+                                    <mat-option [value]="opt">
+                                        {{ opt.fullName }}
+                                        <span class="text-body ms-5 patient-phone" dir="ltr">
+                                            {{ opt.phone }}
+                                        </span>
+                                    </mat-option>
+                                }
+                            </mat-autocomplete>
+                            @if (form.get('patientId')?.invalid && form.get('patientId')?.touched) {
+                                <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
                             }
-                        </mat-autocomplete>
-                        @if (form.get('patientId')?.invalid && form.get('patientId')?.touched) {
-                            <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
-                        }
-                    </mat-form-field>
+                        </mat-form-field>
+                    }
+
                 </div>
 
                 <!-- Appointment date -->

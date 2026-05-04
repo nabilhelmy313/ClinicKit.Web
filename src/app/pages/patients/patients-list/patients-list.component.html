@@ -73,11 +73,12 @@
 
                     <ng-container matColumnDef="actions">
                         <th mat-header-cell *matHeaderCellDef></th>
-                        <td mat-cell *matCellDef="let p" class="ck-table-actions">
-                            <ck-btn variant="icon" icon="visibility"
+                        <td mat-cell *matCellDef="let p" class="ck-table-actions"
+                            (click)="$event.stopPropagation()">
+                            <ck-btn variant="icon" size="sm" icon="visibility"
                                     (clicked)="router.navigate(['/patients', p.id])">
                             </ck-btn>
-                            <ck-btn variant="icon" icon="event_add"
+                            <ck-btn variant="icon" size="sm" icon="calendar_add_on"
                                     (clicked)="bookAppointment(p.id)">
                             </ck-btn>
                         </td>

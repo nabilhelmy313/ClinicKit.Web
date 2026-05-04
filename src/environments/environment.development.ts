@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000',   // local ASP.NET Core API
+  apiUrl: 'http://localhost:5000',    // local ASP.NET Core API (HTTP profile)
 };

@@ -14,6 +14,7 @@ import { MatDatepickerModule }    from '@angular/material/datepicker';
 import { MatNativeDateModule }    from '@angular/material/core';
 import { MatAutocompleteModule }  from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule }          from '@angular/material/icon';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
@@ -35,7 +36,7 @@ import { CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent } from '
         CommonModule, ReactiveFormsModule,
         MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule,
         MatDatepickerModule, MatNativeDateModule,
-        MatAutocompleteModule, MatProgressSpinnerModule,
+        MatAutocompleteModule, MatProgressSpinnerModule, MatIconModule,
         TranslatePipe,
         CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent,
     ],
@@ -54,9 +55,12 @@ export class AppointmentFormComponent implements OnInit {
 
     form!: FormGroup;
     patientSearch  = new FormControl('');
-    patientOptions = signal<PatientBrief[]>([]);
-    submitting     = signal(false);
-    today          = new Date();
+    patientOptions  = signal<PatientBrief[]>([]);
+    submitting      = signal(false);
+    today           = new Date();
+
+    /** Set when navigating from a patient profile — locks the patient field. */
+    lockedPatient   = signal<PatientBrief | null>(null);
 
     get f(): Record<string, AbstractControl> { return this.form.controls; }
 
@@ -78,13 +82,21 @@ export class AppointmentFormComponent implements OnInit {
             this.form.patchValue({ appointmentDate: new Date(y, m - 1, d) });
         }
 
+        // Pre-fill patient when navigating from patient profile (?patientId=<uuid>)
         const prefilledId = this.route.snapshot.queryParamMap.get('patientId');
         if (prefilledId) {
             this.form.patchValue({ patientId: prefilledId });
-            this.patSvc.search(prefilledId).subscribe(res => {
-                if (res.length > 0) {
-                    this.patientSearch.setValue(res[0].fullName, { emitEvent: false });
-                }
+            this.patSvc.getById(prefilledId).subscribe({
+                next: p => {
+                    const brief: PatientBrief = { id: p.id, fullName: p.fullName, phone: p.phone };
+                    this.lockedPatient.set(brief);
+                    this.patientSearch.setValue(p.fullName, { emitEvent: false });
+                    this.patientSearch.disable();  // lock — patient comes from profile context
+                },
+                error: () => {
+                    // Patient not found — let user search manually
+                    this.form.patchValue({ patientId: null });
+                },
             });
         }
 
@@ -109,6 +121,15 @@ export class AppointmentFormComponent implements OnInit {
         this.form.patchValue({ patientId: p.id });
     }
 
+    /** Unlock the patient field so the user can pick a different patient. */
+    unlockPatient(): void {
+        this.lockedPatient.set(null);
+        this.patientSearch.setValue('', { emitEvent: false });
+        this.patientSearch.enable();
+        this.form.patchValue({ patientId: null });
+        this.patientOptions.set([]);
+    }
+
     onSubmit(): void {
         if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
@@ -128,13 +149,21 @@ export class AppointmentFormComponent implements OnInit {
             next: () => {
                 this.submitting.set(false);
                 this.toast.success(this.langService.translate('APPOINTMENTS.BOOKED_SUCCESS'));
-                this.router.navigate(['/appointments']);
+                this.navigateBack();
             },
             error: () => this.submitting.set(false),
         });
     }
 
-    cancel(): void {
-        this.router.navigate(['/appointments']);
+    cancel(): void { this.navigateBack(); }
+
+    private navigateBack(): void {
+        // If we came from a patient profile, go back there; otherwise go to appointments list
+        const patId = this.route.snapshot.queryParamMap.get('patientId');
+        if (patId) {
+            this.router.navigate(['/patients', patId]);
+        } else {
+            this.router.navigate(['/appointments']);
+        }
     }
 }
