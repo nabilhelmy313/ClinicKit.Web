@@ -43,18 +43,30 @@ export class AppointmentsCalendarComponent implements OnInit {
     readonly themeService = inject(ThemeService);
 
     // ── State ─────────────────────────────────────────────────────────────────
-    /** Any date inside the week we want to display. */
     anchor       = signal(new Date());
     appointments = signal<Appointment[]>([]);
     loading      = signal(false);
+    viewMode     = signal<'week' | 'day'>('week');
 
-    /** Hidden date-picker control used by the "jump to date" button. */
     jumpControl = new FormControl<Date | null>(null);
 
+    // Work hours 8 AM → 8 PM
+    readonly WORK_START = 8;
+    readonly WORK_END   = 20;
+    readonly hours      = Array.from(
+        { length: this.WORK_END - this.WORK_START + 1 },
+        (_, i) => i + this.WORK_START,
+    );
+
     // ── Computed ──────────────────────────────────────────────────────────────
+    /**
+     * Egypt week starts on Saturday (getDay() === 6).
+     * Days to roll back: Sat→0, Sun→1, Mon→2, Tue→3, Wed→4, Thu→5, Fri→6
+     */
     weekStart = computed(() => {
         const d = new Date(this.anchor());
-        d.setDate(d.getDate() - d.getDay()); // roll back to Sunday
+        const daysBack = (d.getDay() + 1) % 7;
+        d.setDate(d.getDate() - daysBack);
         d.setHours(0, 0, 0, 0);
         return d;
     });
@@ -69,19 +81,24 @@ export class AppointmentsCalendarComponent implements OnInit {
 
     weekEnd = computed(() => this.weekDays()[6]);
 
-    /** RTL-aware chevron icons for prev/next navigation. */
     prevIcon = computed(() => this.langService.isRTL() ? 'chevron_right' : 'chevron_left');
     nextIcon = computed(() => this.langService.isRTL() ? 'chevron_left'  : 'chevron_right');
 
-    /** Localised "Month Year" label — e.g. "May 2026" / "مايو 2026". */
     monthLabel = computed(() =>
         new Intl.DateTimeFormat(
             this.langService.isRTL() ? 'ar-EG' : 'en-US',
             { month: 'long', year: 'numeric' },
-        ).format(this.weekStart()),
+        ).format(this.anchor()),
     );
 
-    /** Week-of-year number (ISO-ish: week 1 = week containing Jan 1). */
+    /** Full localised date for day view header. */
+    dayLabel = computed(() =>
+        new Intl.DateTimeFormat(
+            this.langService.isRTL() ? 'ar-EG' : 'en-US',
+            { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' },
+        ).format(this.anchor()),
+    );
+
     weekNumber = computed(() => {
         const d   = new Date(this.weekStart());
         const jan = new Date(d.getFullYear(), 0, 1);
@@ -111,6 +128,24 @@ export class AppointmentsCalendarComponent implements OnInit {
             .sort((a, b) => a.startTime.localeCompare(b.startTime));
     }
 
+    appointmentsAtHour(hour: number): Appointment[] {
+        const dayKey = this.fmt(this.anchor());
+        return this.appointments()
+            .filter(a => {
+                if (a.appointmentDate !== dayKey) return false;
+                return parseInt(a.startTime.substring(0, 2), 10) === hour;
+            })
+            .sort((a, b) => a.startTime.localeCompare(b.startTime));
+    }
+
+    isCurrentHour(hour: number): boolean {
+        return this.isToday(this.anchor()) && new Date().getHours() === hour;
+    }
+
+    formatHour(hour: number): string {
+        return `${String(hour).padStart(2, '0')}:00`;
+    }
+
     statusLabel(s: number): string {
         const key = AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels];
         return key ? this.langService.translate(key) : '—';
@@ -124,16 +159,18 @@ export class AppointmentsCalendarComponent implements OnInit {
     // ── Navigation ────────────────────────────────────────────────────────────
     ngOnInit(): void { this.load(); }
 
-    prevWeek(): void {
+    setView(mode: 'week' | 'day'): void { this.viewMode.set(mode); }
+
+    prevPeriod(): void {
         const d = new Date(this.anchor());
-        d.setDate(d.getDate() - 7);
+        d.setDate(d.getDate() - (this.viewMode() === 'week' ? 7 : 1));
         this.anchor.set(d);
         this.load();
     }
 
-    nextWeek(): void {
+    nextPeriod(): void {
         const d = new Date(this.anchor());
-        d.setDate(d.getDate() + 7);
+        d.setDate(d.getDate() + (this.viewMode() === 'week' ? 7 : 1));
         this.anchor.set(d);
         this.load();
     }
@@ -143,7 +180,12 @@ export class AppointmentsCalendarComponent implements OnInit {
         this.load();
     }
 
-    /** Called when the user picks a date from the jump-to-date picker. */
+    /** Click on a day number in week view → switch to day view for that date. */
+    switchToDay(date: Date): void {
+        this.anchor.set(new Date(date));
+        this.viewMode.set('day');
+    }
+
     onJump(event: MatDatepickerInputEvent<Date>): void {
         if (!event.value) return;
         this.anchor.set(event.value);
@@ -171,7 +213,7 @@ export class AppointmentsCalendarComponent implements OnInit {
         });
     }
 
-    viewPatient(appt: Appointment): void {
-        this.router.navigate(['/patients', appt.patientId]);
+    openAppointment(appt: Appointment): void {
+        this.router.navigate(['/appointments', appt.id]);
     }
 }

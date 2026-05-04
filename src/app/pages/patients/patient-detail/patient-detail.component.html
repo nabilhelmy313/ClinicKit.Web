@@ -13,7 +13,7 @@
                 (click)="router.navigate(['/patients', patientId, 'edit'])">
             {{ 'COMMON.EDIT' | translate }}
         </ck-btn>
-        <ck-btn icon="event_add" (click)="bookAppointment()">
+        <ck-btn icon="calendar_add_on" (click)="bookAppointment()">
             {{ 'APPOINTMENTS.BOOK_APPOINTMENT' | translate }}
         </ck-btn>
     </ck-page-header>
@@ -35,7 +35,7 @@
         <!-- Appointment history — uses ck-table generic wrapper -->
         <ck-card [title]="'PATIENTS.APPOINTMENT_HISTORY' | translate" [noPadding]="true">
             <div ck-card-actions>
-                <ck-btn size="sm" icon="event_add" (click)="bookAppointment()">
+                <ck-btn size="sm" icon="calendar_add_on" (click)="bookAppointment()">
                     {{ 'APPOINTMENTS.BOOK_APPOINTMENT' | translate }}
                 </ck-btn>
             </div>

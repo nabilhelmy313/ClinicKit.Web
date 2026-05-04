@@ -1,3 +1,38 @@
+// ── View toggle (Week | Day) in page-header slot ──────────────────────────────
+.cal-view-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-inline-end: 4px;
+}
+
+.cal-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 14px;
+    height: 36px;
+    border: none;
+    background: var(--whiteColor, #fff);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bodyColor, #6b7280);
+    transition: background 0.15s, color 0.15s;
+
+    .material-symbols-outlined { font-size: 16px; }
+
+    &:not(:last-child) { border-inline-end: 1px solid var(--border-color, #e5e7eb); }
+
+    &:hover { background: var(--primaryLight, #E8F3EE); color: var(--primaryColor, #1D9E75); }
+
+    &.active {
+        background: var(--primaryColor, #1D9E75);
+        color: #fff;
+    }
+}
+
 // ── Navigation bar ────────────────────────────────────────────────────────────
 .cal-nav {
     display: flex;
@@ -8,7 +43,6 @@
     background: var(--cardBG, #fff);
     flex-wrap: wrap;
 
-    // ── Title block ──────────────────────────────────────────────────────────
     &__title {
         display: flex;
         flex-direction: column;
@@ -27,7 +61,6 @@
         color: var(--bodyColor, #6b7280);
     }
 
-    // ── Center: jump-to-date ─────────────────────────────────────────────────
     &__center {
         flex: 1;
         display: flex;
@@ -61,7 +94,6 @@
             border-color: var(--primaryColor, #1D9E75);
             background: var(--primaryLight, #E8F3EE);
             box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.12);
-
             .cal-nav__jump-caret { transform: rotate(180deg); }
         }
     }
@@ -88,14 +120,12 @@
 
     &__spinner { flex-shrink: 0; }
 
-    // ── Prev / Today / Next — three separate buttons ─────────────────────────
     &__controls {
         display: flex;
         align-items: center;
         gap: 4px;
     }
 
-    // Square icon button — its own border-radius means hover is always clean
     &__arrow {
         width: 36px;
         height: 36px;
@@ -124,7 +154,6 @@
         }
     }
 
-    // "Today" text button — wider pill shape
     &__today {
         height: 36px;
         padding: 0 14px;
@@ -152,13 +181,11 @@
     }
 }
 
-// ── 7-day grid ────────────────────────────────────────────────────────────────
+// ── Week view: 7-day grid ─────────────────────────────────────────────────────
 .cal-grid {
     display: grid;
     grid-template-columns: repeat(7, minmax(130px, 1fr));
     overflow-x: auto;
-    // Fill the remaining viewport height so the grid never pushes the page down.
-    // 300px = main-content padding-top (118) + page-header+mb-25 (97) + cal-nav (61) + buffer (24)
     height: calc(100vh - 300px);
     min-height: 400px;
     align-items: stretch;
@@ -169,23 +196,19 @@
     border-inline-end: 1px solid var(--border-color, #e5e7eb);
     display: flex;
     flex-direction: column;
-    overflow: hidden;   // clip body so it scrolls inside, not the whole page
+    overflow: hidden;
 
-    &:last-child {
-        border-inline-end: none;
-    }
+    &:last-child { border-inline-end: none; }
 
-    // Today highlight
     &--today {
         background: color-mix(in srgb, var(--primary, #0d5238) 4%, transparent);
 
         .cal-day__num {
             background: var(--primary, #0d5238);
-            color: #fff;
+            color: #fff !important;
         }
     }
 
-    // ── Day header ────────────────────────────────────────────────────────────
     &__header {
         display: flex;
         align-items: center;
@@ -211,14 +234,22 @@
         width: 26px;
         height: 26px;
         border-radius: 50%;
+        border: none;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 13px;
         font-weight: 600;
         color: var(--ink-1, #111827);
+        background: transparent;
         flex-shrink: 0;
+        cursor: pointer;
         transition: background 0.15s, color 0.15s;
+
+        &:hover {
+            background: color-mix(in srgb, var(--primary, #0d5238) 15%, transparent);
+            color: var(--primary, #0d5238);
+        }
     }
 
     &__add {
@@ -235,37 +266,27 @@
         transition: opacity 0.15s, background 0.15s, border-color 0.15s;
         flex-shrink: 0;
 
-        .material-symbols-outlined {
-            font-size: 14px;
-            color: var(--ink-3, #6b7280);
-        }
+        .material-symbols-outlined { font-size: 14px; color: var(--ink-3, #6b7280); }
     }
 
     &:hover &__add,
-    &__add:focus {
-        opacity: 1;
-    }
+    &__add:focus { opacity: 1; }
 
     &__add:hover {
         background: var(--primary-light, #e8f2ed);
         border-color: var(--primary, #0d5238);
-
-        .material-symbols-outlined {
-            color: var(--primary, #0d5238);
-        }
+        .material-symbols-outlined { color: var(--primary, #0d5238); }
     }
 
-    // ── Day body ──────────────────────────────────────────────────────────────
     &__body {
         flex: 1;
-        min-height: 0;      // lets flex child shrink below its content height
+        min-height: 0;
         padding: 8px 6px;
         display: flex;
         flex-direction: column;
         gap: 5px;
         overflow-y: auto;
 
-        // Thin scrollbar per column
         &::-webkit-scrollbar       { width: 4px; }
         &::-webkit-scrollbar-track { background: transparent; }
         &::-webkit-scrollbar-thumb { background: var(--paper-4); border-radius: 2px; }
@@ -280,7 +301,93 @@
     }
 }
 
-// ── Appointment card ──────────────────────────────────────────────────────────
+// ── Day view: hourly timeline ─────────────────────────────────────────────────
+.cal-timeline {
+    height: calc(100vh - 300px);
+    min-height: 400px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar       { width: 6px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: var(--paper-4); border-radius: 3px; }
+}
+
+.cal-hour {
+    display: flex;
+    align-items: stretch;
+    min-height: 64px;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+
+    &:last-child { border-bottom: none; }
+
+    // Highlight the current hour row
+    &--now {
+        background: color-mix(in srgb, var(--primary, #0d5238) 4%, transparent);
+
+        .cal-hour__label {
+            color: var(--primary, #0d5238);
+            font-weight: 700;
+        }
+    }
+
+    &__label {
+        width: 64px;
+        flex-shrink: 0;
+        padding: 12px 14px 0;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3, #6b7280);
+        border-inline-end: 1px solid var(--border-color, #e5e7eb);
+        letter-spacing: 0.02em;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__slot {
+        flex: 1;
+        padding: 6px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        cursor: default;
+    }
+
+    // Empty slot — click to book
+    &__empty {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        border-radius: 6px;
+        transition: background 0.15s;
+        cursor: pointer;
+        min-height: 52px;
+
+        &:hover { background: color-mix(in srgb, var(--primary, #0d5238) 5%, transparent); }
+        &:hover .cal-hour__add { opacity: 1; }
+    }
+
+    &__add {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 1px dashed var(--border-color, #c8c8c8);
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        margin-inline-start: 8px;
+        transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+        pointer-events: none; // parent div handles the click
+
+        .material-symbols-outlined {
+            font-size: 14px;
+            color: var(--primary, #0d5238);
+        }
+    }
+}
+
+// ── Appointment card (shared week + day) ──────────────────────────────────────
 .cal-appt {
     border-radius: 6px;
     padding: 6px 8px;
@@ -288,19 +395,17 @@
     border: 1px solid var(--border-color, #e5e7eb);
     border-inline-start: 3px solid var(--primary, #0d5238);
     cursor: pointer;
-    transition: box-shadow 0.15s, opacity 0.15s;
+    transition: box-shadow 0.15s;
 
-    &:hover {
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
-    }
+    &:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10); }
 
-    // Status-based start-border color
-    &[data-status="0"] { border-inline-start-color: #f59e0b; } // Pending   → amber
-    &[data-status="1"] { border-inline-start-color: #22c55e; } // Confirmed → green
-    &[data-status="2"] { border-inline-start-color: #3b82f6; } // InProgress → blue
-    &[data-status="3"] { border-inline-start-color: #6b7280; } // Completed → gray
-    &[data-status="4"] { border-inline-start-color: #ef4444; } // Cancelled → red
-    &[data-status="5"] { border-inline-start-color: #f97316; } // NoShow    → orange
+    // Status-based left-border colors
+    &[data-status="0"] { border-inline-start-color: #f59e0b; }
+    &[data-status="1"] { border-inline-start-color: #22c55e; }
+    &[data-status="2"] { border-inline-start-color: #3b82f6; }
+    &[data-status="3"] { border-inline-start-color: #6b7280; }
+    &[data-status="4"] { border-inline-start-color: #ef4444; }
+    &[data-status="5"] { border-inline-start-color: #f97316; }
 
     &__time {
         display: block;
@@ -337,16 +442,71 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    // Timeline variant: row layout with status badge on the end
+    &--timeline {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+
+        .cal-appt__time {
+            flex-shrink: 0;
+            margin-bottom: 0;
+            font-size: 11px;
+            min-width: 90px;
+        }
+
+        .cal-appt__info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .cal-appt__name {
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cal-appt__type {
+            font-size: 11px;
+        }
+
+        ck-status-badge { flex-shrink: 0; }
+    }
 }
 
-// ── Dark mode overrides ───────────────────────────────────────────────────────
+// ── Dark mode ─────────────────────────────────────────────────────────────────
 :host-context(.dark-theme) {
+    .cal-view-toggle {
+        border-color: rgba(255, 255, 255, 0.10);
+    }
+
+    .cal-toggle-btn {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.50);
+        border-inline-end-color: rgba(255, 255, 255, 0.08);
+
+        &:hover { background: rgba(29, 158, 117, 0.18); color: #fff; }
+
+        &.active {
+            background: var(--primaryColor, #1D9E75);
+            color: #fff;
+        }
+    }
+
     .cal-nav {
         background: transparent;
         border-bottom-color: rgba(255, 255, 255, 0.08);
 
-        &__month { color: rgba(255, 255, 255, 0.90); }
-        &__range { color: rgba(255, 255, 255, 0.40); }
+        &__month      { color: rgba(255, 255, 255, 0.90); }
+        &__range      { color: rgba(255, 255, 255, 0.40); }
+        &__jump-label { color: rgba(255, 255, 255, 0.85); }
+        &__jump-caret { color: rgba(255, 255, 255, 0.40); }
 
         &__jump-btn {
             border-color: rgba(255, 255, 255, 0.10);
@@ -356,8 +516,6 @@
                 background: rgba(29, 158, 117, 0.18);
             }
         }
-        &__jump-label { color: rgba(255, 255, 255, 0.85); }
-        &__jump-caret { color: rgba(255, 255, 255, 0.40); }
 
         &__arrow {
             border-color: rgba(255, 255, 255, 0.10);
@@ -380,40 +538,40 @@
     .cal-day {
         border-inline-end-color: rgba(255, 255, 255, 0.10);
 
-        &--today {
-            background: color-mix(in srgb, var(--primary, #0d5238) 12%, transparent);
-        }
+        &--today { background: color-mix(in srgb, var(--primary, #0d5238) 12%, transparent); }
 
-        &__header {
-            border-bottom-color: rgba(255, 255, 255, 0.10);
-        }
+        &__header { border-bottom-color: rgba(255, 255, 255, 0.10); }
 
-        &__name   { color: rgba(255, 255, 255, 0.50); }
-        &__num    { color: rgba(255, 255, 255, 0.90); }
-        &__empty  { color: rgba(255, 255, 255, 0.30); }
+        &__name  { color: rgba(255, 255, 255, 0.50); }
+        &__num   { color: rgba(255, 255, 255, 0.90); }
+        &__empty { color: rgba(255, 255, 255, 0.30); }
 
         &__add {
             border-color: rgba(255, 255, 255, 0.15);
-
             .material-symbols-outlined { color: rgba(255, 255, 255, 0.40); }
         }
 
-        &__add:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--primary, #0d5238);
-        }
+        &__add:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--primary, #0d5238); }
+    }
+
+    .cal-hour {
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+
+        &--now { background: color-mix(in srgb, var(--primary, #0d5238) 12%, transparent); }
+
+        &__label { color: rgba(255, 255, 255, 0.45); border-inline-end-color: rgba(255, 255, 255, 0.08); }
+
+        &__empty:hover { background: color-mix(in srgb, var(--primary, #0d5238) 10%, transparent); }
     }
 
     .cal-appt {
         background: rgba(255, 255, 255, 0.04);
         border-color: rgba(255, 255, 255, 0.10);
 
-        &:hover {
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.40);
-        }
+        &:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.40); }
 
-        &__time   { color: rgba(255, 255, 255, 0.60); }
-        &__name   { color: rgba(255, 255, 255, 0.90); }
-        &__type   { color: rgba(255, 255, 255, 0.45); }
+        &__time { color: rgba(255, 255, 255, 0.60); }
+        &__name { color: rgba(255, 255, 255, 0.90); }
+        &__type { color: rgba(255, 255, 255, 0.45); }
     }
 }

@@ -1,0 +1,109 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="queue"
+        [title]="'QUEUE.TITLE' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('QUEUE.TITLE' | translate) }
+        ]">
+
+        <ck-btn variant="outline" icon="tv"
+                (click)="openDisplayScreen()">
+            {{ 'QUEUE.DISPLAY_SCREEN' | translate }}
+        </ck-btn>
+
+    </ck-page-header>
+
+    <!-- ── Summary strip ──────────────────────────────────────────────────── -->
+    <div class="queue-summary">
+        <div class="queue-stat queue-stat--waiting">
+            <span class="queue-stat__num">{{ waitingCnt() }}</span>
+            <span class="queue-stat__label">{{ 'QUEUE.WAITING' | translate }}</span>
+        </div>
+        <div class="queue-stat queue-stat--served">
+            <span class="queue-stat__num">{{ servedCnt() }}</span>
+            <span class="queue-stat__label">{{ 'QUEUE.SERVED' | translate }}</span>
+        </div>
+        <div class="queue-stat queue-stat--total">
+            <span class="queue-stat__num">{{ entries().length }}</span>
+            <span class="queue-stat__label">{{ 'QUEUE.TOTAL' | translate }}</span>
+        </div>
+
+        <!-- Call Next button lives in the summary strip -->
+        <ck-btn class="queue-call-btn"
+                icon="arrow_forward"
+                [disabled]="waitingCnt() === 0 || loading()"
+                [loading]="loading()"
+                (click)="callNext()">
+            {{ 'QUEUE.CALL_NEXT' | translate }}
+        </ck-btn>
+    </div>
+
+    <!-- ── Queue list ─────────────────────────────────────────────────────── -->
+    <ck-card [noPadding]="true">
+
+        @if (loading() && entries().length === 0) {
+            <div class="queue-spinner">
+                <mat-spinner diameter="36"></mat-spinner>
+            </div>
+        }
+
+        @if (!loading() && entries().length === 0) {
+            <ck-empty-state
+                icon="queue"
+                [message]="'QUEUE.NO_QUEUE' | translate">
+            </ck-empty-state>
+        }
+
+        @for (entry of entries(); track entry.id) {
+            <div class="queue-row"
+                 [attr.data-status]="entry.status"
+                 [class.queue-row--serving]="entry.status === QueueStatus.Serving"
+                 [class.queue-row--done]="entry.status === QueueStatus.Completed || entry.status === QueueStatus.Skipped">
+
+                <!-- Queue number badge -->
+                <div class="queue-row__num">#{{ entry.queueNumber }}</div>
+
+                <!-- Patient info -->
+                <div class="queue-row__info">
+                    <span class="queue-row__name">{{ entry.patientName }}</span>
+                    <span class="queue-row__meta" dir="ltr">
+                        {{ entry.patientPhone }} &nbsp;·&nbsp; {{ entry.startTime }}
+                    </span>
+                </div>
+
+                <!-- Serving pulse indicator -->
+                @if (entry.status === QueueStatus.Serving) {
+                    <div class="queue-row__pulse"></div>
+                }
+
+                <!-- Status badge -->
+                <ck-status-badge
+                    [status]="statusColor(entry.status)"
+                    [label]="statusLabel(entry.status)">
+                </ck-status-badge>
+
+                <!-- Action buttons (only on actionable entries) -->
+                @if (isActionable(entry)) {
+                    <div class="queue-row__actions">
+                        <ck-btn variant="ghost" size="sm"
+                                [loading]="actionId() === entry.id"
+                                (click)="skip(entry)">
+                            {{ 'QUEUE.SKIP' | translate }}
+                        </ck-btn>
+                        <ck-btn variant="outline" size="sm"
+                                [loading]="actionId() === entry.id"
+                                (click)="complete(entry)">
+                            {{ 'QUEUE.DONE' | translate }}
+                        </ck-btn>
+                    </div>
+                }
+
+            </div>
+        }
+
+    </ck-card>
+
+</div>

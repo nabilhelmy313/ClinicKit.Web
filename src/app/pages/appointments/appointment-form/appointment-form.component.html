@@ -2,12 +2,12 @@
      [class.component-dark-theme]="themeService.isDark()">
 
     <ck-page-header
-        icon="event_add"
-        [title]="'APPOINTMENTS.BOOK_APPOINTMENT' | translate"
+        [icon]="isEdit ? 'edit_calendar' : 'calendar_add_on'"
+        [title]="(isEdit ? 'APPOINTMENTS.EDIT_APPOINTMENT' : 'APPOINTMENTS.BOOK_APPOINTMENT') | translate"
         [breadcrumbs]="[
             { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
             { label: ('APPOINTMENTS.TITLE' | translate), link: '/appointments' },
-            { label: ('APPOINTMENTS.BOOK_APPOINTMENT' | translate) }
+            { label: (isEdit ? 'APPOINTMENTS.EDIT_APPOINTMENT' : 'APPOINTMENTS.BOOK_APPOINTMENT') | translate }
         ]">
         <button class="default-btn outline-btn" type="button" (click)="cancel()">
             <i class="material-symbols-outlined">
@@ -17,16 +17,22 @@
         </button>
     </ck-page-header>
 
-    <ck-card [title]="'APPOINTMENTS.BOOK_SUBTITLE' | translate">
+    <ck-card [title]="(isEdit ? 'APPOINTMENTS.EDIT_SUBTITLE' : 'APPOINTMENTS.BOOK_SUBTITLE') | translate">
+
+        @if (!formReady()) {
+            <div class="d-flex align-items-center justify-content-center py-40">
+                <mat-spinner diameter="40"></mat-spinner>
+            </div>
+        } @else {
 
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <div class="row">
 
-                <!-- Patient — locked chip when coming from profile, free search otherwise -->
+                <!-- Patient — always locked in edit mode; locked chip or free search in create mode -->
                 <div class="col-12 mb-20">
 
                     @if (lockedPatient(); as lp) {
-                        <!-- ── Locked patient (navigated from patient profile) ──────────── -->
+                        <!-- ── Locked patient chip ──────────────────────────────────────── -->
                         <div class="patient-locked-field">
                             <label class="patient-locked-label">
                                 <span class="material-symbols-outlined">person</span>
@@ -36,16 +42,12 @@
                                 <span class="material-symbols-outlined chip-icon">account_circle</span>
                                 <span class="chip-name">{{ lp.fullName }}</span>
                                 <span class="chip-phone" dir="ltr">{{ lp.phone }}</span>
-                                <button type="button" class="chip-change-btn"
-                                        (click)="unlockPatient()"
-                                        [title]="'APPOINTMENTS.CHANGE_PATIENT' | translate">
-                                    <span class="material-symbols-outlined">close</span>
-                                </button>
+
                             </div>
                         </div>
 
                     } @else {
-                        <!-- ── Free autocomplete search ─────────────────────────────────── -->
+                        <!-- ── Free autocomplete search (create mode only) ───────────────── -->
                         <mat-form-field appearance="outline" class="w-100">
                             <mat-label>{{ 'APPOINTMENTS.PATIENT' | translate }}</mat-label>
                             <input matInput
@@ -138,8 +140,8 @@
 
             <!-- Form actions bar -->
             <ck-form-actions
-                [saveLabel]="'APPOINTMENTS.BOOK_CONFIRM' | translate"
-                saveIcon="event_available"
+                [saveLabel]="(isEdit ? 'APPOINTMENTS.RESCHEDULE_CONFIRM' : 'APPOINTMENTS.BOOK_CONFIRM') | translate"
+                [saveIcon]="isEdit ? 'event_repeat' : 'event_available'"
                 [cancelLabel]="'COMMON.CANCEL' | translate"
                 [loading]="submitting()"
                 (cancel)="cancel()"
@@ -147,6 +149,8 @@
             </ck-form-actions>
 
         </form>
+
+        }
 
     </ck-card>
 

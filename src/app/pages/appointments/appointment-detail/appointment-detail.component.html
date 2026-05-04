@@ -1,0 +1,47 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="event_note"
+        [title]="'APPOINTMENTS.DETAIL_TITLE' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('APPOINTMENTS.TITLE' | translate), link: '/appointments' },
+            { label: ('APPOINTMENTS.DETAIL_TITLE' | translate) }
+        ]">
+        @if (canCancel()) {
+            <ck-btn variant="outline" icon="edit_calendar"
+                    (click)="router.navigate(['/appointments', appointmentId, 'edit'])">
+                {{ 'APPOINTMENTS.EDIT_APPOINTMENT' | translate }}
+            </ck-btn>
+            <ck-btn variant="danger" icon="event_busy"
+                    [disabled]="cancelling()"
+                    (click)="openCancelDialog()">
+                {{ 'APPOINTMENTS.CANCEL_CONFIRM' | translate }}
+            </ck-btn>
+        }
+        <ck-btn variant="outline" icon="arrow_back"
+                (click)="router.navigate(['/appointments'])">
+            {{ 'COMMON.BACK' | translate }}
+        </ck-btn>
+    </ck-page-header>
+
+    @if (loading()) {
+        <div class="d-flex align-items-center justify-content-center py-60">
+            <mat-spinner diameter="48"></mat-spinner>
+        </div>
+    } @else if (appointment()) {
+
+        <ck-card [title]="'APPOINTMENTS.DETAIL_TITLE' | translate">
+            <div ck-card-actions>
+                <ck-status-badge
+                    [status]="appointment()!.status.toString()"
+                    [label]="statusLabel(appointment()!.status)">
+                </ck-status-badge>
+            </div>
+            <ck-details [items]="details()" [columns]="2"></ck-details>
+        </ck-card>
+
+    }
+
+</div>

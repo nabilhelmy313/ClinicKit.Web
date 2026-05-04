@@ -95,6 +95,13 @@
                         </ul>
                     </mat-expansion-panel>
 
+                    <!-- Queue Manager — direct link (no sub-items) -->
+                    <a routerLink="/queue-manager" class="sidebar-menu-link"
+                       routerLinkActive="active">
+                        <i class="material-symbols-outlined">queue</i>
+                        <span class="title">{{ 'SIDEBAR.QUEUE_MANAGER' | translate }}</span>
+                    </a>
+
                     <!-- Doctors -->
                     <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
                         <mat-expansion-panel-header>

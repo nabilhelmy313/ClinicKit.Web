@@ -87,6 +87,20 @@ export const routes: Routes = [
                         .then(m => m.AppointmentFormComponent),
                 title: 'Book Appointment — ClinicKit',
             },
+            {
+                path: ':id',
+                loadComponent: () =>
+                    import('./pages/appointments/appointment-detail/appointment-detail.component')
+                        .then(m => m.AppointmentDetailComponent),
+                title: 'Appointment Details — ClinicKit',
+            },
+            {
+                path: ':id/edit',
+                loadComponent: () =>
+                    import('./pages/appointments/appointment-form/appointment-form.component')
+                        .then(m => m.AppointmentFormComponent),
+                title: 'Edit Appointment — ClinicKit',
+            },
         ],
     },
 
@@ -117,6 +131,25 @@ export const routes: Routes = [
                 title: 'Departments — ClinicKit',
             },
         ],
+    },
+
+    // ── Queue Manager ─────────────────────────────────────────────────────
+    {
+        path: 'queue-manager',
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import('./pages/queue-manager/queue-manager/queue-manager.component')
+                .then(m => m.QueueManagerComponent),
+        title: 'Queue Manager — ClinicKit',
+    },
+
+    // ── Queue Display — public, no auth, no sidebar ───────────────────────
+    {
+        path: 'queue-display',
+        loadComponent: () =>
+            import('./pages/queue-manager/queue-display/queue-display.component')
+                .then(m => m.QueueDisplayComponent),
+        title: 'Waiting Room — ClinicKit',
     },
 
     // ── Billing ───────────────────────────────────────────────────────────

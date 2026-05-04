@@ -1,0 +1,129 @@
+// Full-screen waiting room display — designed to be shown on a TV / monitor
+// No sidebar, no topbar — standalone page
+
+:host {
+    display: block;
+    min-height: 100vh;
+}
+
+.display-screen {
+    min-height: 100vh;
+    background: var(--primaryColor, #0d5238);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 40px 24px;
+    text-align: center;
+    font-family: 'IBM Plex Sans Arabic', 'Noto Naskh Arabic', sans-serif;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.display-header {
+    position: absolute;
+    top: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    &__title {
+        font-size: 22px;
+        font-weight: 600;
+        opacity: .7;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+}
+
+// ── Now Serving ───────────────────────────────────────────────────────────────
+.display-now {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    &__label {
+        font-size: clamp(18px, 3vw, 28px);
+        font-weight: 500;
+        opacity: .8;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+    }
+
+    &__number {
+        font-size: clamp(6rem, 22vw, 14rem);
+        font-weight: 900;
+        line-height: 1;
+        color: #fff;
+        text-shadow: 0 4px 24px rgba(0, 0, 0, .25);
+        animation: pop-in .3s ease-out;
+    }
+
+    &__patient {
+        font-size: clamp(16px, 2.5vw, 26px);
+        opacity: .75;
+        font-weight: 500;
+    }
+}
+
+// ── Divider ───────────────────────────────────────────────────────────────────
+.display-divider {
+    width: min(400px, 80%);
+    height: 1px;
+    background: rgba(255, 255, 255, .25);
+}
+
+// ── Next numbers ──────────────────────────────────────────────────────────────
+.display-next {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+
+    &__label {
+        font-size: clamp(14px, 2vw, 20px);
+        opacity: .7;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+
+    &__numbers {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    &__num {
+        font-size: clamp(2.5rem, 7vw, 5rem);
+        font-weight: 700;
+        background: rgba(255, 255, 255, .15);
+        border-radius: 12px;
+        padding: 8px 24px;
+        min-width: 90px;
+    }
+
+    &__empty {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        opacity: .4;
+    }
+}
+
+// ── Footer stats ──────────────────────────────────────────────────────────────
+.display-footer {
+    position: absolute;
+    bottom: 28px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: clamp(13px, 1.5vw, 18px);
+    opacity: .6;
+
+    &__dot { opacity: .5; }
+}
+
+// ── Pop-in animation ──────────────────────────────────────────────────────────
+@keyframes pop-in {
+    from { transform: scale(.85); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}

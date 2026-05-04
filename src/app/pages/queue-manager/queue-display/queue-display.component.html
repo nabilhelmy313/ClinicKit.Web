@@ -1,0 +1,48 @@
+<div class="display-screen" [dir]="langService.isRTL() ? 'rtl' : 'ltr'">
+
+    <!-- Clinic branding header -->
+    <div class="display-header">
+        <span class="display-header__title">{{ 'QUEUE.DISPLAY_TITLE' | translate }}</span>
+    </div>
+
+    <!-- Now Serving -->
+    <div class="display-now">
+        <span class="display-now__label">{{ 'QUEUE.NOW_SERVING' | translate }}</span>
+        <span class="display-now__number" dir="ltr">
+            @if (status()?.currentlyServing) {
+                {{ status()!.currentlyServing!.queueNumber }}
+            } @else {
+                —
+            }
+        </span>
+        @if (status()?.currentlyServing) {
+            <span class="display-now__patient">
+                {{ status()!.currentlyServing!.patientName }}
+            </span>
+        }
+    </div>
+
+    <!-- Divider -->
+    <div class="display-divider"></div>
+
+    <!-- Next in queue -->
+    <div class="display-next">
+        <span class="display-next__label">{{ 'QUEUE.NEXT' | translate }}</span>
+        <div class="display-next__numbers" dir="ltr">
+            @if ((status()?.next?.length ?? 0) === 0) {
+                <span class="display-next__empty">—</span>
+            }
+            @for (entry of status()?.next ?? []; track entry.id) {
+                <span class="display-next__num">{{ entry.queueNumber }}</span>
+            }
+        </div>
+    </div>
+
+    <!-- Stats footer -->
+    <div class="display-footer">
+        <span>{{ 'QUEUE.WAITING' | translate }}: {{ status()?.waitingCount ?? 0 }}</span>
+        <span class="display-footer__dot">·</span>
+        <span>{{ 'QUEUE.SERVED' | translate }}: {{ status()?.servedCount ?? 0 }}</span>
+    </div>
+
+</div>

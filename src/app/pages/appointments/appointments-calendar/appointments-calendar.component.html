@@ -9,11 +9,26 @@
             { label: ('APPOINTMENTS.TITLE' | translate), link: '/appointments' },
             { label: ('APPOINTMENTS.CALENDAR' | translate) }
         ]">
+
+        <!-- Week / Day toggle -->
+        <div class="cal-view-toggle">
+            <button class="cal-toggle-btn" [class.active]="viewMode() === 'week'"
+                    (click)="setView('week')">
+                <span class="material-symbols-outlined">view_week</span>
+                {{ 'APPOINTMENTS.WEEK' | translate }}
+            </button>
+            <button class="cal-toggle-btn" [class.active]="viewMode() === 'day'"
+                    (click)="setView('day')">
+                <span class="material-symbols-outlined">view_day</span>
+                {{ 'APPOINTMENTS.DAY' | translate }}
+            </button>
+        </div>
+
         <ck-btn variant="outline" icon="list"
                 (click)="router.navigate(['/appointments'])">
             {{ 'APPOINTMENTS.TITLE' | translate }}
         </ck-btn>
-        <ck-btn icon="event_add"
+        <ck-btn icon="calendar_add_on"
                 (click)="router.navigate(['/appointments/new'])">
             {{ 'APPOINTMENTS.ADD_APPOINTMENT' | translate }}
         </ck-btn>
@@ -21,12 +36,13 @@
 
     <ck-card [noPadding]="true">
 
-        <!-- ── Week navigation bar ──────────────────────────────────────── -->
+        <!-- ── Navigation bar ──────────────────────────────────────────────── -->
         <div class="cal-nav">
-             <!-- Right: Prev / Today / Next -->
+
+            <!-- Prev / Today / Next -->
             <div class="cal-nav__controls">
-                <button class="cal-nav__arrow" (click)="prevWeek()"
-                        [title]="'APPOINTMENTS.PREV_WEEK' | translate">
+                <button class="cal-nav__arrow" (click)="prevPeriod()"
+                        [title]="(viewMode() === 'week' ? 'APPOINTMENTS.PREV_WEEK' : 'APPOINTMENTS.PREV_DAY') | translate">
                     <span class="material-symbols-outlined">{{ prevIcon() }}</span>
                 </button>
 
@@ -34,17 +50,14 @@
                     {{ 'APPOINTMENTS.TODAY' | translate }}
                 </button>
 
-                <button class="cal-nav__arrow" (click)="nextWeek()"
-                        [title]="'APPOINTMENTS.NEXT_WEEK' | translate">
+                <button class="cal-nav__arrow" (click)="nextPeriod()"
+                        [title]="(viewMode() === 'week' ? 'APPOINTMENTS.NEXT_WEEK' : 'APPOINTMENTS.NEXT_DAY') | translate">
                     <span class="material-symbols-outlined">{{ nextIcon() }}</span>
                 </button>
             </div>
 
-
-
-            <!-- Center: Jump-to-date picker -->
+            <!-- Jump-to-date picker -->
             <div class="cal-nav__center">
-                <!-- Hidden real input wired to the datepicker -->
                 <input class="cal-nav__jump-input"
                        [formControl]="jumpControl"
                        [matDatepicker]="jumpPicker"
@@ -52,13 +65,16 @@
                        readonly />
                 <mat-datepicker #jumpPicker></mat-datepicker>
 
-                <!-- Visible styled trigger button -->
                 <button class="cal-nav__jump-btn" (click)="jumpPicker.open()"
                         [title]="'APPOINTMENTS.JUMP_TO_DATE' | translate">
                     <span class="material-symbols-outlined cal-nav__jump-icon">calendar_month</span>
-                    <span class="cal-nav__jump-label" dir="ltr">
-                        {{ weekStart() | date:'d MMM' }} – {{ weekEnd() | date:'d MMM yyyy' }}
-                    </span>
+                    @if (viewMode() === 'week') {
+                        <span class="cal-nav__jump-label" dir="ltr">
+                            {{ weekStart() | date:'d MMM' }} – {{ weekEnd() | date:'d MMM yyyy' }}
+                        </span>
+                    } @else {
+                        <span class="cal-nav__jump-label">{{ dayLabel() }}</span>
+                    }
                     <span class="material-symbols-outlined cal-nav__jump-caret">expand_more</span>
                 </button>
             </div>
@@ -67,68 +83,123 @@
                 <mat-spinner diameter="18" class="cal-nav__spinner"></mat-spinner>
             }
 
-            <!-- Left: Month / year title + week range -->
+            <!-- Month / year + week info -->
             <div class="cal-nav__title">
                 <span class="cal-nav__month">{{ monthLabel() }}</span>
-                <span class="cal-nav__range" dir="ltr">
-                    {{ weekStart() | date:'d MMM' }} – {{ weekEnd() | date:'d MMM' }}
-                    &nbsp;·&nbsp;
-                    {{ 'APPOINTMENTS.WEEK' | translate }} {{ weekNumber() }}
-                </span>
+                @if (viewMode() === 'week') {
+                    <span class="cal-nav__range" dir="ltr">
+                        {{ weekStart() | date:'d MMM' }} – {{ weekEnd() | date:'d MMM' }}
+                        &nbsp;·&nbsp;
+                        {{ 'APPOINTMENTS.WEEK' | translate }} {{ weekNumber() }}
+                    </span>
+                }
             </div>
 
         </div>
 
-        <!-- ── 7-day grid ───────────────────────────────────────────────── -->
-        <div class="cal-grid">
+        <!-- ── Week view: 7-day grid ────────────────────────────────────────── -->
+        @if (viewMode() === 'week') {
+            <div class="cal-grid">
 
-            @for (day of weekDays(); track day.toISOString()) {
-                <div class="cal-day" [class.cal-day--today]="isToday(day)">
+                @for (day of weekDays(); track day.toISOString()) {
+                    <div class="cal-day" [class.cal-day--today]="isToday(day)">
 
-                    <!-- Day header -->
-                    <div class="cal-day__header">
-                        <span class="cal-day__name">{{ dayName(day) }}</span>
-                        <span class="cal-day__num">{{ day | date:'d' }}</span>
-                        <button class="cal-day__add"
-                                [title]="'APPOINTMENTS.ADD_APPOINTMENT' | translate"
-                                (click)="bookOnDay(day)">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
-                    </div>
+                        <!-- Day header — click number to switch to day view -->
+                        <div class="cal-day__header">
+                            <span class="cal-day__name">{{ dayName(day) }}</span>
+                            <button class="cal-day__num"
+                                    (click)="switchToDay(day)"
+                                    [title]="'APPOINTMENTS.DAY' | translate">
+                                {{ day | date:'d' }}
+                            </button>
+                            <button class="cal-day__add"
+                                    [title]="'APPOINTMENTS.ADD_APPOINTMENT' | translate"
+                                    (click)="bookOnDay(day)">
+                                <span class="material-symbols-outlined">add</span>
+                            </button>
+                        </div>
 
-                    <!-- Appointment cards -->
-                    <div class="cal-day__body">
+                        <!-- Appointment cards -->
+                        <div class="cal-day__body">
 
-                        @if (appointmentsForDay(day).length === 0 && !loading()) {
-                            <span class="cal-day__empty">
-                                {{ 'APPOINTMENTS.NO_APPT_DAY' | translate }}
-                            </span>
-                        }
-
-                        @for (appt of appointmentsForDay(day); track appt.id) {
-                            <div class="cal-appt"
-                                 [attr.data-status]="appt.status"
-                                 (click)="viewPatient(appt)">
-                                <span class="cal-appt__time" dir="ltr">
-                                    {{ appt.startTime.substring(0, 5) }}
+                            @if (appointmentsForDay(day).length === 0 && !loading()) {
+                                <span class="cal-day__empty">
+                                    {{ 'APPOINTMENTS.NO_APPT_DAY' | translate }}
                                 </span>
-                                <span class="cal-appt__name">{{ appt.patientName }}</span>
-                                <div class="cal-appt__footer">
-                                    <span class="cal-appt__type">{{ typeLabel(appt.type) }}</span>
+                            }
+
+                            @for (appt of appointmentsForDay(day); track appt.id) {
+                                <div class="cal-appt"
+                                     [attr.data-status]="appt.status"
+                                     (click)="openAppointment(appt)">
+                                    <span class="cal-appt__time" dir="ltr">
+                                        {{ appt.startTime.substring(0, 5) }}
+                                    </span>
+                                    <span class="cal-appt__name">{{ appt.patientName }}</span>
+                                    <div class="cal-appt__footer">
+                                        <span class="cal-appt__type">{{ typeLabel(appt.type) }}</span>
+                                        <ck-status-badge
+                                            [status]="appt.status.toString()"
+                                            [label]="statusLabel(appt.status)">
+                                        </ck-status-badge>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+        }
+
+        <!-- ── Day view: hourly timeline ────────────────────────────────────── -->
+        @if (viewMode() === 'day') {
+            <div class="cal-timeline">
+
+                @for (hour of hours; track hour) {
+                    <div class="cal-hour" [class.cal-hour--now]="isCurrentHour(hour)">
+
+                        <!-- Time label -->
+                        <div class="cal-hour__label" dir="ltr">{{ formatHour(hour) }}</div>
+
+                        <!-- Slot area -->
+                        <div class="cal-hour__slot">
+
+                            @if (appointmentsAtHour(hour).length === 0) {
+                                <!-- Click empty slot to book at this time -->
+                                <div class="cal-hour__empty" (click)="bookOnDay(anchor())">
+                                    <button class="cal-hour__add"
+                                            [title]="'APPOINTMENTS.ADD_APPOINTMENT' | translate">
+                                        <span class="material-symbols-outlined">add</span>
+                                    </button>
+                                </div>
+                            }
+
+                            @for (appt of appointmentsAtHour(hour); track appt.id) {
+                                <div class="cal-appt cal-appt--timeline"
+                                     [attr.data-status]="appt.status"
+                                     (click)="openAppointment(appt)">
+                                    <span class="cal-appt__time" dir="ltr">
+                                        {{ appt.startTime.substring(0, 5) }} – {{ appt.endTime.substring(0, 5) }}
+                                    </span>
+                                    <div class="cal-appt__info">
+                                        <span class="cal-appt__name">{{ appt.patientName }}</span>
+                                        <span class="cal-appt__type">{{ typeLabel(appt.type) }}</span>
+                                    </div>
                                     <ck-status-badge
                                         [status]="appt.status.toString()"
                                         [label]="statusLabel(appt.status)">
                                     </ck-status-badge>
                                 </div>
-                            </div>
-                        }
+                            }
 
+                        </div>
                     </div>
+                }
 
-                </div>
-            }
-
-        </div>
+            </div>
+        }
 
     </ck-card>
 

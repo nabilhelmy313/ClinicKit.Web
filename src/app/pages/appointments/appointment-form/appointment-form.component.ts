@@ -54,13 +54,17 @@ export class AppointmentFormComponent implements OnInit {
     protected readonly AppointmentType = AppointmentType;
 
     form!: FormGroup;
-    patientSearch  = new FormControl('');
+    patientSearch   = new FormControl('');
     patientOptions  = signal<PatientBrief[]>([]);
     submitting      = signal(false);
+    formReady       = signal(false);
     today           = new Date();
 
+    isEdit        = false;
+    appointmentId = '';
+
     /** Set when navigating from a patient profile — locks the patient field. */
-    lockedPatient   = signal<PatientBrief | null>(null);
+    lockedPatient = signal<PatientBrief | null>(null);
 
     get f(): Record<string, AbstractControl> { return this.form.controls; }
 
@@ -74,30 +78,36 @@ export class AppointmentFormComponent implements OnInit {
             notes:           [null],
         });
 
-        // Pre-fill date when navigating from the calendar "+" button
-        const prefilledDate = this.route.snapshot.queryParamMap.get('date');
-        if (prefilledDate) {
-            // Parse as local date (avoid UTC midnight offset shifting the day)
-            const [y, m, d] = prefilledDate.split('-').map(Number);
-            this.form.patchValue({ appointmentDate: new Date(y, m - 1, d) });
-        }
+        this.appointmentId = this.route.snapshot.paramMap.get('id') ?? '';
 
-        // Pre-fill patient when navigating from patient profile (?patientId=<uuid>)
-        const prefilledId = this.route.snapshot.queryParamMap.get('patientId');
-        if (prefilledId) {
-            this.form.patchValue({ patientId: prefilledId });
-            this.patSvc.getById(prefilledId).subscribe({
-                next: p => {
-                    const brief: PatientBrief = { id: p.id, fullName: p.fullName, phone: p.phone };
-                    this.lockedPatient.set(brief);
-                    this.patientSearch.setValue(p.fullName, { emitEvent: false });
-                    this.patientSearch.disable();  // lock — patient comes from profile context
-                },
-                error: () => {
-                    // Patient not found — let user search manually
-                    this.form.patchValue({ patientId: null });
-                },
-            });
+        if (this.appointmentId) {
+            // Edit mode — route is /appointments/:id/edit
+            this.isEdit = true;
+            this.loadAppointment();
+        } else {
+            // Create mode — handle optional query params
+            const prefilledDate = this.route.snapshot.queryParamMap.get('date');
+            if (prefilledDate) {
+                const [y, m, d] = prefilledDate.split('-').map(Number);
+                this.form.patchValue({ appointmentDate: new Date(y, m - 1, d) });
+            }
+
+            const prefilledId = this.route.snapshot.queryParamMap.get('patientId');
+            if (prefilledId) {
+                this.form.patchValue({ patientId: prefilledId });
+                this.patSvc.getById(prefilledId).subscribe({
+                    next: p => {
+                        const brief: PatientBrief = { id: p.id, fullName: p.fullName, phone: p.phone };
+                        this.lockedPatient.set(brief);
+                        this.patientSearch.setValue(p.fullName, { emitEvent: false });
+                        this.patientSearch.disable();
+                    },
+                    error: () => {
+                        this.form.patchValue({ patientId: null });
+                    },
+                });
+            }
+            this.formReady.set(true);
         }
 
         this.patientSearch.valueChanges.pipe(
@@ -112,6 +122,34 @@ export class AppointmentFormComponent implements OnInit {
         });
     }
 
+    private loadAppointment(): void {
+        this.svc.getById(this.appointmentId).subscribe({
+            next: a => {
+                // Lock the patient — rescheduling doesn't change the patient
+                const brief: PatientBrief = { id: a.patientId, fullName: a.patientName, phone: a.patientPhone };
+                this.lockedPatient.set(brief);
+                this.patientSearch.setValue(a.patientName, { emitEvent: false });
+                this.patientSearch.disable();
+                this.form.patchValue({ patientId: a.patientId });
+
+                // Parse date string "YYYY-MM-DD" as local date
+                const [y, m, d] = a.appointmentDate.split('-').map(Number);
+                this.form.patchValue({
+                    appointmentDate: new Date(y, m - 1, d),
+                    startTime: a.startTime.substring(0, 5),
+                    endTime:   a.endTime.substring(0, 5),
+                    type:      a.type,
+                    notes:     a.notes,
+                });
+                this.formReady.set(true);
+            },
+            error: () => {
+                this.toast.error(this.langService.translate('ERRORS.NOT_FOUND'));
+                this.router.navigate(['/appointments']);
+            },
+        });
+    }
+
     displayPatient(p: PatientBrief | string | null): string {
         if (!p) return '';
         return typeof p === 'string' ? p : p.fullName;
@@ -121,7 +159,7 @@ export class AppointmentFormComponent implements OnInit {
         this.form.patchValue({ patientId: p.id });
     }
 
-    /** Unlock the patient field so the user can pick a different patient. */
+    /** Unlock the patient field so the user can pick a different patient (create mode only). */
     unlockPatient(): void {
         this.lockedPatient.set(null);
         this.patientSearch.setValue('', { emitEvent: false });
@@ -136,34 +174,54 @@ export class AppointmentFormComponent implements OnInit {
         this.submitting.set(true);
 
         const raw = this.form.value;
-        const body = {
-            patientId:       raw.patientId,
-            appointmentDate: (raw.appointmentDate as Date).toISOString().split('T')[0],
-            startTime:       raw.startTime + ':00',
-            endTime:         raw.endTime   + ':00',
-            type:            raw.type,
-            notes:           raw.notes || null,
-        };
+        const dateStr = (raw.appointmentDate as Date).toISOString().split('T')[0];
 
-        this.svc.create(body).subscribe({
-            next: () => {
-                this.submitting.set(false);
-                this.toast.success(this.langService.translate('APPOINTMENTS.BOOKED_SUCCESS'));
-                this.navigateBack();
-            },
-            error: () => this.submitting.set(false),
-        });
+        if (this.isEdit) {
+            const body = {
+                appointmentDate: dateStr,
+                startTime:       raw.startTime + ':00',
+                endTime:         raw.endTime   + ':00',
+                type:            raw.type,
+                notes:           raw.notes || null,
+            };
+            this.svc.update(this.appointmentId, body).subscribe({
+                next: () => {
+                    this.submitting.set(false);
+                    this.toast.success(this.langService.translate('APPOINTMENTS.RESCHEDULE_SUCCESS'));
+                    this.router.navigate(['/appointments', this.appointmentId]);
+                },
+                error: () => this.submitting.set(false),
+            });
+        } else {
+            const body = {
+                patientId:       raw.patientId,
+                appointmentDate: dateStr,
+                startTime:       raw.startTime + ':00',
+                endTime:         raw.endTime   + ':00',
+                type:            raw.type,
+                notes:           raw.notes || null,
+            };
+            this.svc.create(body).subscribe({
+                next: () => {
+                    this.submitting.set(false);
+                    this.toast.success(this.langService.translate('APPOINTMENTS.BOOKED_SUCCESS'));
+                    this.navigateBack();
+                },
+                error: () => this.submitting.set(false),
+            });
+        }
     }
 
     cancel(): void { this.navigateBack(); }
 
     private navigateBack(): void {
-        // If we came from a patient profile, go back there; otherwise go to appointments list
-        const patId = this.route.snapshot.queryParamMap.get('patientId');
-        if (patId) {
-            this.router.navigate(['/patients', patId]);
+        if (this.isEdit) {
+            this.router.navigate(['/appointments', this.appointmentId]);
         } else {
-            this.router.navigate(['/appointments']);
+            const patId = this.route.snapshot.queryParamMap.get('patientId');
+            patId
+                ? this.router.navigate(['/patients', patId])
+                : this.router.navigate(['/appointments']);
         }
     }
 }
