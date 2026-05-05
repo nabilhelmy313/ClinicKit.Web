@@ -5,6 +5,7 @@ import { MatDialog }             from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
+import { QueueService }        from '../../../core/services/queue.service';
 import { ToastService }        from '../../../core/services/toast.service';
 import {
     Appointment,
@@ -46,14 +47,24 @@ export class AppointmentDetailComponent implements OnInit {
     readonly langService     = inject(LanguageService);
     readonly themeService    = inject(ThemeService);
 
+    private readonly queueSvc = inject(QueueService);
+
     appointmentId = '';
     appointment   = signal<Appointment | null>(null);
     loading       = signal(false);
     cancelling    = signal(false);
+    enqueueing    = signal(false);
+    enqueued      = signal(false);
 
     canCancel = computed(() => {
         const s = this.appointment()?.status;
         return s === AppointmentStatus.Pending || s === AppointmentStatus.Confirmed;
+    });
+
+    canEnqueue = computed(() => {
+        const s = this.appointment()?.status;
+        return (s === AppointmentStatus.Pending || s === AppointmentStatus.Confirmed)
+            && !this.enqueued();
     });
 
     statusLabel(s: AppointmentStatus): string {
@@ -104,6 +115,18 @@ export class AppointmentDetailComponent implements OnInit {
         dialogRef.afterClosed().subscribe((result: CkCancelDialogResult | undefined) => {
             if (!result?.confirmed) return;
             this.doCancel(result.reason);
+        });
+    }
+
+    addToQueue(): void {
+        this.enqueueing.set(true);
+        this.queueSvc.enqueue(this.appointmentId).subscribe({
+            next: () => {
+                this.enqueued.set(true);
+                this.enqueueing.set(false);
+                this.toast.success(this.langService.translate('QUEUE.ENQUEUE_SUCCESS'));
+            },
+            error: () => this.enqueueing.set(false),
         });
     }
 

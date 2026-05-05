@@ -9,6 +9,19 @@
             { label: ('APPOINTMENTS.TITLE' | translate), link: '/appointments' },
             { label: ('APPOINTMENTS.DETAIL_TITLE' | translate) }
         ]">
+        @if (canEnqueue()) {
+            <ck-btn variant="primary" icon="queue"
+                    [disabled]="enqueueing()"
+                    [loading]="enqueueing()"
+                    (click)="addToQueue()">
+                {{ 'QUEUE.ADD_TO_QUEUE' | translate }}
+            </ck-btn>
+        }
+        @if (enqueued()) {
+            <ck-btn variant="outline" icon="check_circle" [disabled]="true">
+                {{ 'QUEUE.ENQUEUED' | translate }}
+            </ck-btn>
+        }
         @if (canCancel()) {
             <ck-btn variant="outline" icon="edit_calendar"
                     (click)="router.navigate(['/appointments', appointmentId, 'edit'])">

@@ -8,6 +8,8 @@ import { RouterOutlet, Router, Event, NavigationEnd } from '@angular/router';
 import { CustomizerSettingsService } from './customizer-settings/customizer-settings.service';
 import { LanguageService } from './core/services/language.service';
 
+const PUBLIC_ROUTE_PREFIXES = ['/authentication', '/queue-display'];
+
 @Component({
     selector: 'app-root',
     imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, NgClass],
@@ -19,8 +21,8 @@ export class App {
     protected readonly title = signal('Daxa - Angular 20 Material Design Admin Dashboard Template');
     readonly langService = inject(LanguageService);
 
-    // isSidebarToggled
     isSidebarToggled = false;
+    isPublicRoute = signal(false);
 
     private previousUrl: string | null = null;
 
@@ -33,7 +35,9 @@ export class App {
         this.router.events.subscribe((event: Event) => {
             if (event instanceof NavigationEnd) {
                 const currentUrl = event.urlAfterRedirects;
-                // Scroll to top ONLY if navigating to a different route (not on refresh)
+                this.isPublicRoute.set(
+                    PUBLIC_ROUTE_PREFIXES.some(p => currentUrl.startsWith(p))
+                );
                 if (this.previousUrl && this.previousUrl !== currentUrl) {
                     this.viewportScroller.scrollToPosition([0, 0]);
                 }

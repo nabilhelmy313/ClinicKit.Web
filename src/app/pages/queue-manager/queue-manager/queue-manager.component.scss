@@ -24,9 +24,11 @@
     border-radius: 8px;
 
     &__num {
+        font-family: 'Outfit', sans-serif;
         font-size: 28px;
         font-weight: 700;
         line-height: 1;
+        letter-spacing: -0.01em;
     }
 
     &__label {
@@ -91,6 +93,7 @@
         align-items: center;
         justify-content: center;
         border-radius: 50%;
+        font-family: 'Outfit', sans-serif;
         font-size: 18px;
         font-weight: 700;
         background: var(--surface-alt, #f3f4f6);
@@ -139,6 +142,108 @@
     }
 }
 
+// ── Search bar ────────────────────────────────────────────────────────────────
+.queue-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+
+    &__icon {
+        font-size: 20px;
+        color: var(--text-secondary, #6b7280);
+        flex-shrink: 0;
+        user-select: none;
+    }
+
+    &__input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        color: var(--text-primary, #111827);
+
+        &::placeholder { color: var(--text-secondary, #9ca3af); }
+        &::-webkit-search-cancel-button { display: none; }
+    }
+
+    &__clear {
+        font-size: 18px;
+        color: var(--text-secondary, #6b7280);
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 2px;
+        border-radius: 4px;
+        line-height: 1;
+
+        &:hover { color: var(--text-primary, #111827); }
+    }
+}
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+.queue-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color, #e5e7eb);
+
+    &__btn {
+        font-size: 20px;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text-primary, #374151);
+        cursor: pointer;
+        transition: background .15s;
+
+        &:hover:not(:disabled) { background: var(--surface-alt, #f3f4f6); }
+        &:disabled { opacity: .35; cursor: default; }
+    }
+
+    &__page {
+        font-family: 'Outfit', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        min-width: 32px;
+        height: 32px;
+        padding: 0 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text-primary, #374151);
+        cursor: pointer;
+        transition: background .15s, color .15s;
+
+        &:hover { background: var(--surface-alt, #f3f4f6); }
+
+        &--active {
+            background: var(--primaryColor, #0d5238);
+            border-color: var(--primaryColor, #0d5238);
+            color: #fff;
+        }
+    }
+
+    &__info {
+        font-size: 12px;
+        color: var(--text-secondary, #6b7280);
+        margin-inline-start: 8px;
+    }
+}
+
 @keyframes pulse {
     0%, 100% { transform: scale(1);    opacity: 1; }
     50%       { transform: scale(1.5); opacity: .5; }
@@ -180,5 +285,27 @@
     .queue-row--serving .queue-row__num {
         background: var(--primaryColor, #1D9E75);
         color: #fff;
+    }
+
+    .queue-search {
+        border-bottom-color: #334155;
+
+        &__input { color: #f1f5f9; }
+        &__icon, &__clear { color: #94a3b8; }
+    }
+
+    .queue-pagination {
+        border-top-color: #334155;
+
+        &__btn, &__page {
+            border-color: #334155;
+            color: #e2e8f0;
+
+            &:hover:not(:disabled):not(.queue-pagination__page--active) {
+                background: #334155;
+            }
+        }
+
+        &__info { color: #94a3b8; }
     }
 }

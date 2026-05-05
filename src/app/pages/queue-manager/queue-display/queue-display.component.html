@@ -7,18 +7,17 @@
 
     <!-- Now Serving -->
     <div class="display-now">
-        <span class="display-now__label">{{ 'QUEUE.NOW_SERVING' | translate }}</span>
-        <span class="display-now__number" dir="ltr">
-            @if (status()?.currentlyServing) {
-                {{ status()!.currentlyServing!.queueNumber }}
-            } @else {
-                —
-            }
-        </span>
         @if (status()?.currentlyServing) {
+            <span class="display-now__label">{{ 'QUEUE.NOW_SERVING' | translate }}</span>
+            <span class="display-now__number" dir="ltr">
+                {{ status()!.currentlyServing!.queueNumber }}
+            </span>
             <span class="display-now__patient">
                 {{ status()!.currentlyServing!.patientName }}
             </span>
+        } @else {
+            <span class="display-now__idle-icon">⏳</span>
+            <span class="display-now__idle-label">{{ 'QUEUE.IDLE' | translate }}</span>
         }
     </div>
 

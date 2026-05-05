@@ -1,25 +1,29 @@
 <div
-    [ngClass]="{'blank-page': router.url === '/authentication/sign-in' || router.url === '/authentication/sign-up' || router.url === '/authentication/forgot-password' || router.url === '/authentication/reset-password'}"
+    [ngClass]="{'blank-page': isPublicRoute()}"
     [class.card-borderd-theme]="themeService.isCardBorder()"
     [class.card-border-radius]="themeService.isCardBorderRadius()"
     [class.rtl-enabled]="langService.isRTL()"
 >
 
-    <!-- Sidebar -->
-    <app-sidebar />
+    @if (!isPublicRoute()) {
+        <!-- Sidebar -->
+        <app-sidebar />
+    }
 
     <!-- Main Content -->
     <div
         class="main-content transition d-flex flex-column"
-        [ngClass]="{'active': isSidebarToggled}"
-        [class.right-sidebar]="themeService.isRightSidebar() || langService.isRTL()"
-        [class.hide-sidebar]="themeService.isHideSidebar()"
+        [ngClass]="isPublicRoute() ? 'public-route' : {'active': isSidebarToggled}"
+        [class.right-sidebar]="!isPublicRoute() && (themeService.isRightSidebar() || langService.isRTL())"
+        [class.hide-sidebar]="!isPublicRoute() && themeService.isHideSidebar()"
     >
-        <app-header />
+        @if (!isPublicRoute()) {
+            <app-header />
+        }
         <router-outlet />
-        <div class="flex-grow-1"></div>
-        <!-- <app-footer /> -->
+        @if (!isPublicRoute()) {
+            <div class="flex-grow-1"></div>
+        }
     </div>
-
 
 </div>

@@ -17,7 +17,7 @@
     gap: 32px;
     padding: 40px 24px;
     text-align: center;
-    font-family: 'IBM Plex Sans Arabic', 'Noto Naskh Arabic', sans-serif;
+    font-family: 'Tajawal', sans-serif;
 }
 
 // ── Header ────────────────────────────────────────────────────────────────────
@@ -52,12 +52,14 @@
     }
 
     &__number {
+        font-family: 'Outfit', sans-serif;
         font-size: clamp(6rem, 22vw, 14rem);
         font-weight: 900;
         line-height: 1;
         color: #fff;
         text-shadow: 0 4px 24px rgba(0, 0, 0, .25);
         animation: pop-in .3s ease-out;
+        letter-spacing: -0.02em;
     }
 
     &__patient {
@@ -95,12 +97,14 @@
     }
 
     &__num {
+        font-family: 'Outfit', sans-serif;
         font-size: clamp(2.5rem, 7vw, 5rem);
         font-weight: 700;
         background: rgba(255, 255, 255, .15);
         border-radius: 12px;
         padding: 8px 24px;
         min-width: 90px;
+        letter-spacing: -0.01em;
     }
 
     &__empty {
@@ -120,6 +124,20 @@
     opacity: .6;
 
     &__dot { opacity: .5; }
+}
+
+// ── Idle state (no one being served) ─────────────────────────────────────────
+.display-now__idle-icon {
+    font-size: clamp(4rem, 12vw, 8rem);
+    line-height: 1;
+    opacity: .6;
+}
+
+.display-now__idle-label {
+    font-size: clamp(1.2rem, 3vw, 2.2rem);
+    font-weight: 500;
+    opacity: .55;
+    letter-spacing: .04em;
 }
 
 // ── Pop-in animation ──────────────────────────────────────────────────────────

@@ -31,7 +31,6 @@
             <span class="queue-stat__label">{{ 'QUEUE.TOTAL' | translate }}</span>
         </div>
 
-        <!-- Call Next button lives in the summary strip -->
         <ck-btn class="queue-call-btn"
                 icon="arrow_forward"
                 [disabled]="waitingCnt() === 0 || loading()"
@@ -41,8 +40,47 @@
         </ck-btn>
     </div>
 
+    <!-- ── Today's appointments not yet in queue ────────────────────────── -->
+    @if (notQueued().length > 0) {
+        <ck-card [title]="'QUEUE.TODAY_APPTS' | translate" [noPadding]="true">
+            @for (appt of notQueued(); track appt.id) {
+                <div class="queue-row queue-row--appt">
+                    <div class="queue-row__info">
+                        <span class="queue-row__name">{{ appt.patientName }}</span>
+                        <span class="queue-row__meta" dir="ltr">
+                            {{ appt.patientPhone }} &nbsp;·&nbsp; {{ appt.startTime.substring(0, 5) }}
+                        </span>
+                    </div>
+                    <div class="queue-row__actions">
+                        <ck-btn variant="primary" size="sm" icon="queue"
+                                [loading]="enqueuingId() === appt.id"
+                                [disabled]="enqueuingId() !== null"
+                                (click)="enqueue(appt)">
+                            {{ 'QUEUE.ADD_TO_QUEUE' | translate }}
+                        </ck-btn>
+                    </div>
+                </div>
+            }
+        </ck-card>
+    }
+
     <!-- ── Queue list ─────────────────────────────────────────────────────── -->
     <ck-card [noPadding]="true">
+
+        <!-- Search bar -->
+        <div class="queue-search">
+            <span class="queue-search__icon material-symbols-outlined">search</span>
+            <input
+                class="queue-search__input"
+                type="search"
+                [placeholder]="'QUEUE.SEARCH_PLACEHOLDER' | translate"
+                [value]="searchQuery()"
+                (input)="onSearch($event)" />
+            @if (searchQuery()) {
+                <button class="queue-search__clear material-symbols-outlined"
+                        (click)="clearSearch()">close</button>
+            }
+        </div>
 
         @if (loading() && entries().length === 0) {
             <div class="queue-spinner">
@@ -50,23 +88,21 @@
             </div>
         }
 
-        @if (!loading() && entries().length === 0) {
+        @if (!loading() && sortedFiltered().length === 0) {
             <ck-empty-state
                 icon="queue"
-                [message]="'QUEUE.NO_QUEUE' | translate">
+                [message]="searchQuery() ? ('QUEUE.NO_RESULTS' | translate) : ('QUEUE.NO_QUEUE' | translate)">
             </ck-empty-state>
         }
 
-        @for (entry of entries(); track entry.id) {
+        @for (entry of paginated(); track entry.id) {
             <div class="queue-row"
                  [attr.data-status]="entry.status"
                  [class.queue-row--serving]="entry.status === QueueStatus.Serving"
                  [class.queue-row--done]="entry.status === QueueStatus.Completed || entry.status === QueueStatus.Skipped">
 
-                <!-- Queue number badge -->
                 <div class="queue-row__num">#{{ entry.queueNumber }}</div>
 
-                <!-- Patient info -->
                 <div class="queue-row__info">
                     <span class="queue-row__name">{{ entry.patientName }}</span>
                     <span class="queue-row__meta" dir="ltr">
@@ -74,18 +110,15 @@
                     </span>
                 </div>
 
-                <!-- Serving pulse indicator -->
                 @if (entry.status === QueueStatus.Serving) {
                     <div class="queue-row__pulse"></div>
                 }
 
-                <!-- Status badge -->
                 <ck-status-badge
                     [status]="statusColor(entry.status)"
                     [label]="statusLabel(entry.status)">
                 </ck-status-badge>
 
-                <!-- Action buttons (only on actionable entries) -->
                 @if (isActionable(entry)) {
                     <div class="queue-row__actions">
                         <ck-btn variant="ghost" size="sm"
@@ -101,6 +134,35 @@
                     </div>
                 }
 
+            </div>
+        }
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+            <div class="queue-pagination">
+                <button class="queue-pagination__btn"
+                        [disabled]="page() === 1"
+                        (click)="goTo(page() - 1)">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+
+                @for (p of pageNumbers(); track p) {
+                    <button class="queue-pagination__page"
+                            [class.queue-pagination__page--active]="p === page()"
+                            (click)="goTo(p)">
+                        {{ p }}
+                    </button>
+                }
+
+                <button class="queue-pagination__btn"
+                        [disabled]="page() === totalPages()"
+                        (click)="goTo(page() + 1)">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+
+                <span class="queue-pagination__info">
+                    {{ sortedFiltered().length }} {{ 'QUEUE.RESULTS' | translate }}
+                </span>
             </div>
         }
 
