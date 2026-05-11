@@ -36,7 +36,16 @@
     "ADMINISTRATOR": "Administrator",
     "ROWS_PER_PAGE": "Rows per page",
     "OF": "of",
-    "TOTAL": "Total"
+    "RECORDS": "records",
+    "RELOAD": "Reload",
+    "TOTAL": "Total",
+    "CLEAR_FILTERS": "Clear Filters",
+    "APPLY": "Apply",
+    "NO_FILTER_RESULTS": "No results match your filters",
+    "SORT": "Sort",
+    "SORT_DESC": "Sort descending",
+    "CLEAR_SORT": "Clear sort",
+    "MORE_ACTIONS": "More actions"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -196,6 +205,7 @@
     "CANCELLED": "Cancelled",
     "NO_SHOW": "No Show",
     "NO_APPOINTMENTS": "No matching appointments found",
+    "CANCEL": "Cancel Appointment",
     "CHANGE_PATIENT": "Change patient",
   "CANCEL_TITLE": "Cancel Appointment",
   "CANCEL_WARNING": "Are you sure you want to cancel this appointment? This action cannot be undone.",

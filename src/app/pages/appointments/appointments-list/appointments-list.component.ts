@@ -1,16 +1,9 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe }  from '@angular/common';
 import { Router, RouterLink }       from '@angular/router';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog }               from '@angular/material/dialog';
-import { MatFormFieldModule }      from '@angular/material/form-field';
-import { MatInputModule }          from '@angular/material/input';
-import { MatSelectModule }         from '@angular/material/select';
 import { MatButtonModule }         from '@angular/material/button';
-import { MatTableModule }          from '@angular/material/table';
 import { MatMenuModule }           from '@angular/material/menu';
-import { MatDatepickerModule }     from '@angular/material/datepicker';
-import { MatNativeDateModule }     from '@angular/material/core';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
 import { ToastService }        from '../../../core/services/toast.service';
@@ -18,6 +11,7 @@ import {
     Appointment,
     AppointmentStatus,
     AppointmentStatusLabels,
+    AppointmentType,
     AppointmentTypeLabels,
 } from '../../../core/models/appointment.model';
 import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
@@ -27,8 +21,9 @@ import {
     CkPageHeaderComponent, CkCardComponent,
     CkBtnComponent, CkStatusBadgeComponent,
     CkTableComponent, CkCancelDialogComponent,
-    CkCancelDialogResult,
+    CkCancelDialogResult, CkCellDefDirective,
 } from '../../../shared/index';
+import type { CkColumnDef, CkTableAction, CkFilterOption, CkSortChange } from '../../../shared/index';
 
 @Component({
     selector: 'app-appointments-list',
@@ -36,14 +31,12 @@ import {
     templateUrl: './appointments-list.component.html',
     styleUrl:    './appointments-list.component.scss',
     imports: [
-        CommonModule, DatePipe, RouterLink, ReactiveFormsModule,
-        MatTableModule,
-        MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule,
-        MatMenuModule, MatDatepickerModule, MatNativeDateModule,
+        CommonModule, DatePipe, RouterLink,
+        MatButtonModule, MatMenuModule,
         TranslatePipe,
         CkPageHeaderComponent, CkCardComponent,
         CkBtnComponent, CkStatusBadgeComponent,
-        CkTableComponent, CkCancelDialogComponent,
+        CkTableComponent, CkCancelDialogComponent, CkCellDefDirective,
     ],
 })
 export class AppointmentsListComponent implements OnInit {
@@ -53,15 +46,6 @@ export class AppointmentsListComponent implements OnInit {
     private readonly dialog       = inject(MatDialog);
     readonly langService          = inject(LanguageService);
     readonly themeService         = inject(ThemeService);
-
-    fromDateControl = new FormControl<Date | null>(null);
-    toDateControl   = new FormControl<Date | null>(null);
-    statusControl   = new FormControl<AppointmentStatus | null>(null);
-
-    statusOptions = Object.entries(AppointmentStatusLabels).map(([value, label]) => ({
-        value: Number(value) as AppointmentStatus,
-        label,
-    }));
 
     // State machine — Cancelled removed; use the dedicated cancel button instead
     private readonly validTransitions: Record<AppointmentStatus, AppointmentStatus[]> = {
@@ -96,7 +80,58 @@ export class AppointmentsListComponent implements OnInit {
     loading      = signal(false);
     updatingId   = signal<string | null>(null);
 
-    displayedColumns = ['patient', 'date', 'time', 'type', 'status', 'actions'];
+    // ── Active backend filters ────────────────────────────────────────────────
+    private _filterDate          = signal<string | undefined>(undefined);
+    private _filterStatus        = signal<AppointmentStatus | undefined>(undefined);
+    private _filterType          = signal<AppointmentType | undefined>(undefined);
+    private _filterPatientSearch = signal<string | undefined>(undefined);
+    private _sortBy              = signal<string | undefined>(undefined);
+    private _sortDir             = signal<'asc' | 'desc' | undefined>(undefined);
+
+    // ── Select options for inline column filters ──────────────────────────────
+    private readonly statusFilterOptions: CkFilterOption[] =
+        Object.entries(AppointmentStatusLabels).map(([value, label]) => ({ value, label }));
+
+    private readonly typeFilterOptions: CkFilterOption[] =
+        Object.entries(AppointmentTypeLabels).map(([value, label]) => ({ value, label }));
+
+    colDefs: CkColumnDef[] = [
+        {
+            key: 'patient', label: 'APPOINTMENTS.PATIENT', sortable: true,
+            searchable: true, filterType: 'text',
+        },
+        {
+            key: 'date', label: 'APPOINTMENTS.DATE', sortable: true,
+            searchable: true, filterType: 'date',
+        },
+        { key: 'time', label: 'APPOINTMENTS.TIME', sortable: false },
+        {
+            key: 'type', label: 'APPOINTMENTS.TYPE', sortable: true,
+            searchable: true, filterType: 'select', filterOptions: this.typeFilterOptions,
+        },
+        {
+            key: 'status', label: 'APPOINTMENTS.STATUS', sortable: true,
+            searchable: true, filterType: 'select', filterOptions: this.statusFilterOptions,
+        },
+    ];
+
+    tableActions: CkTableAction<Appointment>[] = [
+        {
+            icon:   'visibility',
+            label:  'COMMON.VIEW',
+            inline: true,
+            click:  (a) => this.router.navigate(['/appointments', a.id]),
+        },
+        {
+            icon:     'event_busy',
+            label:    'APPOINTMENTS.CANCEL',
+            inline:   true,
+            danger:   true,
+            visible:  (a) => this.canCancel(a.status),
+            disabled: (a) => this.updatingId() === a.id,
+            click:    (a) => this.openCancelDialog(a),
+        },
+    ];
 
     statusLabel(s: number): string {
         const key = AppointmentStatusLabels[s as keyof typeof AppointmentStatusLabels];
@@ -109,18 +144,19 @@ export class AppointmentsListComponent implements OnInit {
 
     ngOnInit(): void { this.load(); }
 
-    search(): void { this.page.set(1); this.load(); }
-
     load(): void {
         this.loading.set(true);
-        const toDate = (d: Date | null) => d ? d.toISOString().split('T')[0] : undefined;
-
+        const date = this._filterDate();
         this.svc.list({
-            fromDate: toDate(this.fromDateControl.value),
-            toDate:   toDate(this.toDateControl.value),
-            status:   this.statusControl.value ?? undefined,
-            page:     this.page(),
-            pageSize: this.pageSize(),
+            fromDate:      date,
+            toDate:        date,
+            status:        this._filterStatus(),
+            type:          this._filterType(),
+            patientSearch: this._filterPatientSearch(),
+            sortBy:        this._sortBy(),
+            sortDir:       this._sortDir(),
+            page:          this.page(),
+            pageSize:      this.pageSize(),
         }).subscribe({
             next: res => {
                 this.appointments.set(res.items);
@@ -131,8 +167,39 @@ export class AppointmentsListComponent implements OnInit {
         });
     }
 
+    /** Fired by ck-table (filterChange) — maps column keys → API params. */
+    onFilterChange(filters: Record<string, string>): void {
+        this._filterDate.set(filters['date'] || undefined);
+        this._filterPatientSearch.set(filters['patient'] || undefined);
+        this._filterStatus.set(
+            filters['status'] !== undefined && filters['status'] !== ''
+                ? (Number(filters['status']) as AppointmentStatus)
+                : undefined,
+        );
+        this._filterType.set(
+            filters['type'] !== undefined && filters['type'] !== ''
+                ? (Number(filters['type']) as AppointmentType)
+                : undefined,
+        );
+        this.page.set(1);
+        this.load();
+    }
+
+    onSortChange(sort: CkSortChange): void {
+        this._sortBy.set(sort.col ?? undefined);
+        this._sortDir.set(sort.dir ?? undefined);
+        this.page.set(1);
+        this.load();
+    }
+
     prevPage(): void { this.page.update(p => p - 1); this.load(); }
     nextPage(): void { this.page.update(p => p + 1); this.load(); }
+
+    onPageSizeChange(size: number): void {
+        this.pageSize.set(size);
+        this.page.set(1);
+        this.load();
+    }
 
     // ── Status change (non-cancel transitions) ────────────────────────────────
     changeStatus(appointment: Appointment, newStatus: AppointmentStatus): void {

@@ -91,10 +91,14 @@ export interface CancelAppointmentRequest {
 // ── Query params ──────────────────────────────────────────────────────────────
 
 export interface AppointmentListQuery {
-  fromDate?: string;
-  toDate?:   string;
-  status?:   AppointmentStatus;
-  patientId?: string;
-  page?:     number;
-  pageSize?: number;
+  fromDate?:      string;
+  toDate?:        string;
+  status?:        AppointmentStatus;
+  type?:          AppointmentType;
+  patientId?:     string;
+  patientSearch?: string;
+  sortBy?:        string;
+  sortDir?:       'asc' | 'desc';
+  page?:          number;
+  pageSize?:      number;
 }

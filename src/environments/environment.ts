@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.clinickit.app',   // swap for production URL
+  apiUrl: 'http://localhost:5000',   // swap for production URL
 };

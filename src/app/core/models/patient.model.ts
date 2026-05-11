@@ -47,7 +47,11 @@ export type UpdatePatientRequest = CreatePatientRequest;
 // ── Query params ──────────────────────────────────────────────────────────────
 
 export interface PatientListQuery {
-  search?:   string;
-  page?:     number;
-  pageSize?: number;
+  search?:      string;
+  gender?:      Gender;
+  dateOfBirth?: string;   // YYYY-MM-DD
+  sortBy?:      string;
+  sortDir?:     'asc' | 'desc';
+  page?:        number;
+  pageSize?:    number;
 }

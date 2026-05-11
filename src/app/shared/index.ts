@@ -1,4 +1,6 @@
 export { CkTableComponent }                        from './ck-table/ck-table.component';
+export { CkCellDefDirective }                      from './ck-table/ck-cell-def.directive';
+export type { CkColumnDef, CkFilterType, CkFilterOption, CkSortDir, CkSortChange, CkTableAction } from './ck-table/ck-column-def.model';
 export { CkBtnComponent }                          from './ck-btn/ck-btn.component';
 export { CkCardComponent }                         from './ck-card/ck-card.component';
 export { CkPageHeaderComponent }                   from './ck-page-header/ck-page-header.component';

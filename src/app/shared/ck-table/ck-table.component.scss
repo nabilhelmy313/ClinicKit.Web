@@ -22,9 +22,306 @@
     100% { transform: translateX(350%); }
 }
 
+// ── Toolbar (reload button row) ───────────────────────────────────────────────
+.ckt-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px 6px 20px;
+    border-bottom: 1px solid var(--paper-2);
+    min-height: 38px;
+
+    &__count {
+        font-size: 12px;
+        color: var(--ink-3);
+    }
+
+    &__reload {
+        color: var(--ink-3);
+
+        &:hover { color: var(--sage-500); }
+
+        .material-symbols-outlined { font-size: 18px; }
+    }
+
+    // Action pill — floating icon toolbar on the right
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-inline-start: auto;
+        background: var(--paper-1, #fff);
+        border: 1px solid var(--paper-2, #e8e4dc);
+        border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+        padding: 2px;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+        // Elevated look when filters are active
+        &--filtered {
+            border-color: var(--sage-200, #b2dfcc);
+            box-shadow: 0 2px 10px rgba(13, 82, 56, 0.13);
+        }
+    }
+}
+
+// ── Action pill buttons (icon-only) ───────────────────────────────────────────
+.ckt-action-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: 7px;
+    cursor: pointer;
+    color: var(--ink-3);
+    transition: background 0.15s, color 0.15s;
+
+    .material-symbols-outlined { font-size: 17px; }
+
+    &:hover {
+        background: var(--sage-50, #e8f5ee);
+        color: var(--sage-600, #1a6b47);
+    }
+
+    // Clear-filters variant — accented to signal active state
+    &--clear {
+        color: var(--sage-600, #1a6b47);
+
+        &:hover {
+            background: rgba(13, 82, 56, 0.10);
+            color: var(--sage-800, #0d5238);
+        }
+    }
+}
+
+// Thin vertical divider between clear and reload
+.ckt-action-pill-divider {
+    display: inline-block;
+    width: 1px;
+    height: 16px;
+    background: var(--paper-2, #e8e4dc);
+    margin: 0 1px;
+    flex-shrink: 0;
+}
+
+// ── No-data row (replaces standalone empty-state) ────────────────────────────
+.ckt-no-data-cell {
+    border-bottom: none !important;
+    padding: 0 !important;
+    text-align: center;
+}
+
 // ── Clickable rows ────────────────────────────────────────────────────────────
 .ckt-row--clickable {
     cursor: pointer;
+}
+
+// ── Column header ─────────────────────────────────────────────────────────────
+.ckt-th {
+    vertical-align: top;
+    padding-top: 12px !important;
+    padding-bottom: 8px !important;
+
+    &__label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    &__icons {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        flex-shrink: 0;
+    }
+
+    &--actions {
+        width: 1px;   // shrink to content
+        text-align: center !important;
+    }
+}
+
+// ── Small icon buttons (header sort/search + toolbar reload) ──────────────────
+.ckt-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+    color: var(--ink-3);
+    transition: color 0.15s, background 0.15s;
+
+    &:hover {
+        background: var(--sage-50);
+        color: var(--sage-500);
+    }
+
+    &--active {
+        color: var(--sage-500);
+
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+    }
+
+    .material-symbols-outlined { font-size: 16px; }
+}
+
+// ── Sort icon ─────────────────────────────────────────────────────────────────
+.ckt-sort-icon {
+    color: var(--ink-3);
+    opacity: 0.45;
+    transition: opacity 0.15s, color 0.15s;
+
+    &--active {
+        color: var(--sage-500);
+        opacity: 1;
+    }
+}
+
+// ── Column search — text input wrapped with Apply button ──────────────────────
+.ckt-col-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 6px;
+}
+
+.ckt-col-search {
+    flex: 1;
+    min-width: 0;
+    padding: 3px 0;
+    text-align: start;
+    border: none;
+    border-bottom: 1.5px solid var(--sage-500);
+    background: transparent;
+    font-size: 12px;
+    color: var(--ink-1);
+    outline: none;
+
+    &::placeholder { color: var(--ink-3); opacity: 0.6; }
+
+    // Date picker — prevent browser chrome from overflowing narrow columns
+    &--date {
+        display: block;
+        width: 100%;
+        margin-top: 6px;
+        padding: 2px 4px;
+        cursor: pointer;
+        min-width: 0;
+        &::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+    }
+
+    // Select dropdown
+    &--select {
+        display: block;
+        width: 100%;
+        margin-top: 6px;
+        appearance: none;
+        -webkit-appearance: none;
+        padding: 2px 20px 2px 4px;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 4px center;
+    }
+}
+
+// ── Apply button (Enter icon) next to text search input ───────────────────────
+.ckt-apply-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 4px;
+    background: var(--sage-500);
+    color: #fff;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.15s;
+
+    &:hover { background: var(--sage-700, #0d5238); }
+
+    .material-symbols-outlined { font-size: 13px; }
+}
+
+// ── Built-in actions cell — hover card toolbar ────────────────────────────────
+.ckt-actions-cell {
+    white-space: nowrap;
+    text-align: end !important;
+    // Keep the cell narrow; actual width is driven by button content
+    width: 1%;
+    padding-inline-end: 8px !important;
+
+    &__toolbar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: 3px 6px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        background: transparent;
+        box-shadow: none;
+        transition: background 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+
+        ck-btn { display: inline-flex; }
+    }
+}
+
+// Reveal the card when the row is hovered or has keyboard focus inside it
+tr:hover .ckt-actions-cell__toolbar,
+tr:focus-within .ckt-actions-cell__toolbar {
+    background: var(--paper-1, #fff);
+    border-color: var(--paper-2, #e8e4dc);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+}
+
+// ── 3-dots (kebab) button ─────────────────────────────────────────────────────
+.ckt-dots-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--ink-3);
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+        background: var(--sage-50);
+        color: var(--sage-500);
+    }
+
+    .material-symbols-outlined { font-size: 20px; }
+}
+
+// ── Action menu items ─────────────────────────────────────────────────────────
+.ckt-menu-icon {
+    font-size: 18px;
+    vertical-align: middle;
+    margin-inline-end: 8px;
+    color: var(--ink-2);
+
+    &--danger { color: var(--color-danger, #d32f2f); }
+}
+
+::ng-deep .ckt-action-menu .ckt-menu-item--danger {
+    color: var(--color-danger, #d32f2f);
 }
 
 // ── Pagination ────────────────────────────────────────────────────────────────
@@ -34,6 +331,12 @@
     justify-content: space-between;
     padding: 12px 20px;
     border-top: 1px solid var(--paper-2);
+
+    &__left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
     &__info {
         font-size: 13px;
@@ -55,16 +358,102 @@
     }
 }
 
+// ── Page-size selector ────────────────────────────────────────────────────────
+.ckt-page-size {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--paper-2);
+    border-radius: 6px;
+    background: var(--paper-1, #fff);
+    color: var(--ink-1);
+    font-size: 13px;
+    padding: 3px 24px 3px 10px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    transition: border-color 0.15s;
+
+    &:focus { outline: none; border-color: var(--sage-500); }
+}
+
 // ── Dark mode ─────────────────────────────────────────────────────────────────
 :host-context(.dark-theme) {
-    .ckt-loading {
-        background: rgba(255, 255, 255, 0.05);
+    .ckt-loading { background: rgba(255,255,255,0.05); }
+
+    .ckt-toolbar {
+        border-bottom-color: rgba(255,255,255,0.07);
+        &__count { color: rgba(255,255,255,0.35); }
     }
 
     .ck-pagination {
-        border-top-color: rgba(255, 255, 255, 0.07);
+        border-top-color: rgba(255,255,255,0.07);
+        &__info { color: rgba(255,255,255,0.40); }
+        &__page  { color: rgba(255,255,255,0.70); }
+    }
 
-        &__info { color: rgba(255, 255, 255, 0.40); }
-        &__page  { color: rgba(255, 255, 255, 0.70); }
+    .ckt-icon-btn {
+        color: rgba(255,255,255,0.40);
+        &:hover { background: rgba(255,255,255,0.06); color: var(--sage-500); }
+        &--active { color: var(--sage-500); }
+    }
+
+    .ckt-sort-icon { color: rgba(255,255,255,0.30); }
+    .ckt-sort-icon--active { color: var(--sage-500); }
+
+    .ckt-col-search {
+        color: rgba(255,255,255,0.85);
+        border-bottom-color: var(--sage-500);
+
+        &--date::-webkit-calendar-picker-indicator { filter: invert(0.7); }
+        &--select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); }
+    }
+
+    .ckt-apply-btn {
+        background: var(--sage-600, #1a6b47);
+        &:hover { background: var(--sage-700, #0d5238); }
+    }
+
+    tr:hover .ckt-actions-cell__toolbar,
+    tr:focus-within .ckt-actions-cell__toolbar {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.10);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.30);
+    }
+
+    .ckt-toolbar__actions {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.10);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.20);
+
+        &--filtered {
+            border-color: rgba(13, 82, 56, 0.35);
+            box-shadow: 0 2px 10px rgba(13, 82, 56, 0.20);
+        }
+    }
+
+    .ckt-action-pill-btn {
+        color: rgba(255,255,255,0.40);
+        &:hover { background: rgba(255,255,255,0.08); color: var(--sage-400, #6ab68f); }
+
+        &--clear {
+            color: var(--sage-400, #6ab68f);
+            &:hover { background: rgba(13, 82, 56, 0.20); color: var(--sage-300, #9dd3b4); }
+        }
+    }
+
+    .ckt-action-pill-divider {
+        background: rgba(255,255,255,0.12);
+    }
+
+    .ckt-dots-btn {
+        color: rgba(255,255,255,0.40);
+        &:hover { background: rgba(255,255,255,0.06); color: var(--sage-500); }
+    }
+
+    .ckt-page-size {
+        background-color: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.12);
+        color: rgba(255,255,255,0.70);
     }
 }

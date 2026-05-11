@@ -10,7 +10,7 @@ import {
   TokenPayload,
   CurrentUser,
 } from '../models/auth.models';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 const ACCESS_TOKEN_KEY  = 'ck_access_token';
 const REFRESH_TOKEN_KEY = 'ck_refresh_token';

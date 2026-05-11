@@ -36,7 +36,16 @@
     "ADMINISTRATOR": "مدير النظام",
     "ROWS_PER_PAGE": "صفوف في الصفحة",
     "OF": "من",
-    "TOTAL": "الإجمالي"
+    "RECORDS": "سجل",
+    "RELOAD": "تحديث",
+    "TOTAL": "الإجمالي",
+    "CLEAR_FILTERS": "مسح الفلاتر",
+    "APPLY": "تطبيق",
+    "NO_FILTER_RESULTS": "لا توجد نتائج تطابق الفلاتر المحددة",
+    "SORT": "ترتيب",
+    "SORT_DESC": "ترتيب تنازلي",
+    "CLEAR_SORT": "إزالة الترتيب",
+    "MORE_ACTIONS": "المزيد"
   },
   "AUTH": {
     "LOGIN": "تسجيل الدخول",
@@ -196,6 +205,7 @@
     "CANCELLED": "ملغي",
     "NO_SHOW": "لم يحضر",
     "NO_APPOINTMENTS": "لا توجد مواعيد مطابقة للبحث",
+    "CANCEL": "إلغاء الموعد",
   "CHANGE_PATIENT": "تغيير المريض",
   "CANCEL_TITLE": "إلغاء الموعد",
   "CANCEL_WARNING": "هل أنت متأكد من إلغاء هذا الموعد؟ لا يمكن التراجع عن هذا الإجراء.",
