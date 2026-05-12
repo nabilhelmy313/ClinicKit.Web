@@ -1,32 +1,32 @@
 import { Injectable, inject } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar }        from '@angular/material/snack-bar';
+import { LanguageService }    from './language.service';
+import { CkToastComponent, CkToastData, CkToastType } from '../../shared/ck-toast/ck-toast.component';
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
   private readonly snackBar = inject(MatSnackBar);
+  private readonly lang     = inject(LanguageService);
 
-  success(message: string): void {
-    this.open(message, 'toast-success', 3000);
-  }
+  success(message: string, title?: string): void { this.open('success', message, title, 3500); }
+  error  (message: string, title?: string): void { this.open('error',   message, title, 6000); }
+  info   (message: string, title?: string): void { this.open('info',    message, title, 3500); }
+  warn   (message: string, title?: string): void { this.open('warn',    message, title, 4000); }
 
-  error(message: string): void {
-    this.open(message, 'toast-error', 5000);
-  }
+  private open(type: CkToastType, message: string, title: string | undefined, duration: number): void {
+    const data: CkToastData = {
+      type,
+      message,
+      title,
+      isRtl: this.lang.isRTL(),
+    };
 
-  info(message: string): void {
-    this.open(message, 'toast-info', 3000);
-  }
-
-  warn(message: string): void {
-    this.open(message, 'toast-warn', 3000);
-  }
-
-  private open(message: string, panelClass: string, duration: number): void {
-    this.snackBar.open(message, '✕', {
+    this.snackBar.openFromComponent(CkToastComponent, {
+      data,
       duration,
-      panelClass: [panelClass],
+      panelClass:         ['ck-toast-panel'],
       horizontalPosition: 'center',
-      verticalPosition: 'bottom',
+      verticalPosition:   'bottom',
     });
   }
 }

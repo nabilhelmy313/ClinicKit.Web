@@ -128,7 +128,7 @@
     &__label {
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         gap: 4px;
         white-space: nowrap;
     }
@@ -227,11 +227,13 @@
         margin-top: 6px;
         appearance: none;
         -webkit-appearance: none;
-        padding: 2px 20px 2px 4px;
+        padding-block: 2px;
+        padding-inline-start: 4px;
+        padding-inline-end: 20px;
         cursor: pointer;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 4px center;
+        background-position: end 4px center;
     }
 }
 
@@ -367,11 +369,13 @@ tr:focus-within .ckt-actions-cell__toolbar {
     background: var(--paper-1, #fff);
     color: var(--ink-1);
     font-size: 13px;
-    padding: 3px 24px 3px 10px;
+    padding-block: 3px;
+    padding-inline-start: 10px;
+    padding-inline-end: 24px;
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 6px center;
+    background-position: end 6px center;
     transition: border-color 0.15s;
 
     &:focus { outline: none; border-color: var(--sage-500); }
@@ -406,7 +410,10 @@ tr:focus-within .ckt-actions-cell__toolbar {
         border-bottom-color: var(--sage-500);
 
         &--date::-webkit-calendar-picker-indicator { filter: invert(0.7); }
-        &--select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); }
+        &--select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-position: end 4px center;
+        }
     }
 
     .ckt-apply-btn {

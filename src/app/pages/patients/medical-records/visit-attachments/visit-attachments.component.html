@@ -1,0 +1,111 @@
+<div class="attachments-section">
+
+    <!-- Section header -->
+    <div class="att-header">
+        <div class="att-header-title">
+            <span class="att-header-icon">
+                <i class="material-symbols-outlined">attach_file</i>
+            </span>
+            <span class="fw-semibold">{{ 'ATTACHMENTS.TITLE' | translate }}</span>
+            @if (attachments().length > 0) {
+                <span class="badge-count">{{ attachments().length }}</span>
+            }
+        </div>
+    </div>
+
+    <!-- Category chips — outside the upload bar -->
+    <div class="cat-chips-row">
+        @for (cat of categories; track cat.value) {
+            <button class="cat-chip-btn"
+                    [class.active]="selectedCategory() === cat.value"
+                    (click)="selectedCategory.set(cat.value)">
+                {{ cat.label | translate }}
+            </button>
+        }
+    </div>
+
+    <!-- Upload bar (file picker + button only) -->
+    <div class="upload-bar">
+        <label class="file-pick-label">
+            <i class="material-symbols-outlined">upload_file</i>
+            <span class="file-pick-text">
+                @if (selectedFile()) {
+                    {{ selectedFile()!.name }}
+                } @else {
+                    {{ 'ATTACHMENTS.CHOOSE_FILE' | translate }}
+                }
+            </span>
+            <input type="file" hidden
+                   accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx"
+                   (change)="onFileSelected($event)" />
+        </label>
+
+        <button class="upload-btn default-btn small-btn"
+                [disabled]="!selectedFile() || uploading()"
+                (click)="upload()">
+            @if (uploading()) {
+                <mat-spinner diameter="14"></mat-spinner>
+                {{ 'ATTACHMENTS.UPLOADING' | translate }}
+            } @else {
+                <i class="material-symbols-outlined">cloud_upload</i>
+                {{ 'ATTACHMENTS.UPLOAD' | translate }}
+            }
+        </button>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+        <div class="d-flex justify-content-center py-20">
+            <mat-spinner diameter="28"></mat-spinner>
+        </div>
+    }
+
+    <!-- Empty state -->
+    @else if (attachments().length === 0) {
+        <div class="att-empty">
+            <i class="material-symbols-outlined">folder_open</i>
+            <span>{{ 'ATTACHMENTS.NO_ATTACHMENTS' | translate }}</span>
+        </div>
+    }
+
+    <!-- Attachment list -->
+    @else {
+        <div class="attachment-list">
+            @for (att of attachments(); track att.id) {
+                <div class="attachment-card">
+                    <div class="att-icon-wrap" [attr.data-type]="fileIconType(att.contentType)">
+                        <i class="material-symbols-outlined">{{ fileIcon(att.contentType) }}</i>
+                    </div>
+
+                    <div class="att-info">
+                        <div class="att-name" [title]="att.fileName">{{ att.fileName }}</div>
+                        <div class="att-meta">
+                            <span class="att-size">{{ formatSize(att.fileSize) }}</span>
+                            <span class="cat-label" [attr.data-cat]="att.category">
+                                {{ categoryLabel(att.category) | translate }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="att-actions">
+                        <button class="att-action-btn view"
+                                [matTooltip]="'COMMON.VIEW' | translate"
+                                (click)="view(att)">
+                            <i class="material-symbols-outlined">visibility</i>
+                        </button>
+                        <button class="att-action-btn download"
+                                [matTooltip]="'ATTACHMENTS.DOWNLOAD' | translate"
+                                (click)="download(att)">
+                            <i class="material-symbols-outlined">download</i>
+                        </button>
+                        <button class="att-action-btn delete"
+                                [matTooltip]="'COMMON.DELETE' | translate"
+                                (click)="deleteAttachment(att)">
+                            <i class="material-symbols-outlined">delete</i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

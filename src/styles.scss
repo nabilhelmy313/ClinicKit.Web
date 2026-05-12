@@ -350,3 +350,156 @@ button {
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {}
 html, body { height: 100%; }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CK-DIALOG — unified dialog design system
+// Usage: open with panelClass: 'ck-dialog-panel'
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Strip Material's default padding & give rounded corners
+.ck-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: 14px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.18) !important;
+}
+
+// Dark mode: dialog surface background
+.dark-theme .ck-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: #1a2330 !important;
+}
+
+// ── Layout shell ─────────────────────────────────────────────────────────────
+.ck-dialog {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ── Header (colored band) ────────────────────────────────────────────────────
+.ck-dialog__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 24px 22px;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(135deg, #0D5238 0%, #1a7a52 100%);
+
+  &.ck-dialog__header--danger {
+    background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+  }
+
+  &.ck-dialog__header--warning {
+    background: linear-gradient(135deg, #92400e 0%, #d97706 100%);
+  }
+}
+
+.ck-dialog__icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+
+  .material-icons,
+  .material-symbols-outlined { font-size: 26px; color: #fff; }
+}
+
+.ck-dialog__title {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.ck-dialog__subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.75);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+// ── Body ─────────────────────────────────────────────────────────────────────
+.ck-dialog__body {
+  padding: 24px 24px 8px;
+  background: #fff;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+.dark-theme .ck-dialog__body {
+  background: #1a2330;
+  color: rgba(255,255,255,0.87);
+}
+
+// patient / warning text inside body
+.ck-dialog__patient {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.ck-dialog__warning {
+  font-size: 13px;
+  color: #555;
+  margin: 0 0 20px;
+  line-height: 1.6;
+}
+
+.dark-theme .ck-dialog__warning {
+  color: rgba(255,255,255,0.5);
+}
+
+// hint row (info icon + text)
+.ck-dialog__hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #777;
+  margin: 4px 0 16px;
+
+  .material-icons { font-size: 15px; color: #C8893A; }
+}
+
+.dark-theme .ck-dialog__hint { color: rgba(255,255,255,0.45); }
+
+// ── Actions ──────────────────────────────────────────────────────────────────
+.ck-dialog__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 12px 24px 20px;
+  background: #fff;
+}
+
+.dark-theme .ck-dialog__actions {
+  background: #1a2330;
+}
+
+// ── Confirm dialog legacy wrapper ─────────────────────────────────────────────
+// Keep .confirm-* classes working for any call sites that don't use ck-dialog-panel
+.confirm-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.confirm-content p {
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 8px;
+}

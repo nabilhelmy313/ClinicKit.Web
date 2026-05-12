@@ -19,9 +19,10 @@ export interface PagedQuery {
   sortDir?:  'asc' | 'desc';
 }
 
-/** API error shape returned by the backend GlobalExceptionHandler. */
+/** API error shape returned by the backend GlobalExceptionHandler (RFC-7807 ProblemDetails). */
 export interface ApiError {
-  status:  number;
-  message: string;
-  errors?: Record<string, string[]>;
+  status:   number;
+  title?:   string;                        // ProblemDetails main message
+  message?: string;                        // legacy fallback
+  errors?:  Record<string, string[]>;      // ValidationException field errors
 }

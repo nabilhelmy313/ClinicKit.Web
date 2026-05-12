@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
-import { ToastService } from './toast.service';
-import { ApiError } from '../models/api.models';
-import { environment } from '../../../environments/environment';
+import { ToastService }    from './toast.service';
+import { LanguageService } from './language.service';
+import { ApiError }        from '../models/api.models';
+import { environment }     from '../../../environments/environment';
 
 /**
  * Base HTTP helper shared by all feature API services.
@@ -15,8 +16,9 @@ import { environment } from '../../../environments/environment';
  */
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  protected readonly http   = inject(HttpClient);
-  private   readonly toast  = inject(ToastService);
+  protected readonly http = inject(HttpClient);
+  private readonly toast  = inject(ToastService);
+  private readonly lang   = inject(LanguageService);
 
   protected readonly base = environment.apiUrl;
 
@@ -49,8 +51,36 @@ export class ApiService {
   // ── Error handling ────────────────────────────────────────────────────────
 
   private handleError(err: { status?: number; error?: ApiError }): Observable<never> {
-    const message = err.error?.message ?? 'حدث خطأ غير متوقع';
-    this.toast.error(message);
+    const apiErr = err.error;
+    const status = err.status ?? 0;
+    let message: string;
+    let title:   string | undefined;
+
+    if (apiErr?.errors) {
+      // 422 — field-level validation: show every message, one per line
+      const msgs = Object.values(apiErr.errors).flat().filter(Boolean);
+      title   = this.lang.translate('ERRORS.VALIDATION');
+      message = msgs.length > 0 ? msgs.join('\n') : this.lang.translate('ERRORS.VALIDATION');
+
+    } else if (status === 400 && apiErr?.title) {
+      // 400 Bad Request — backend message is specific, show it as-is
+      message = apiErr.title;
+
+    } else if (status === 401) {
+      message = this.lang.translate('ERRORS.UNAUTHORIZED');
+
+    } else if (status === 404) {
+      message = this.lang.translate('ERRORS.NOT_FOUND');
+
+    } else if (status === 0) {
+      message = this.lang.translate('ERRORS.NETWORK');
+
+    } else {
+      // 500 or anything else — generic translated message
+      message = this.lang.translate('ERRORS.SERVER_ERROR');
+    }
+
+    this.toast.error(message, title);
     return throwError(() => err);
   }
 

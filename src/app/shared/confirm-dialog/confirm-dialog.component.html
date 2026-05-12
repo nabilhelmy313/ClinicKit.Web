@@ -1,17 +1,29 @@
-<h1 mat-dialog-title class="confirm-title">{{ data.title }}</h1>
+<div class="ck-dialog">
 
-<div mat-dialog-content class="confirm-content">
-    <p>{{ data.message }}</p>
-</div>
+  <!-- Header -->
+  <div class="ck-dialog__header" [class.ck-dialog__header--danger]="data.danger">
+    <div class="ck-dialog__icon-wrap">
+      <span class="material-icons">{{ data.danger ? 'warning' : 'help_outline' }}</span>
+    </div>
+    <h2 class="ck-dialog__title">{{ data.title }}</h2>
+  </div>
 
-<div mat-dialog-actions class="confirm-actions">
-    <button mat-flat-button class="cancel-btn" (click)="cancel()">
-        {{ data.cancelLabel ?? 'Cancel' }}
+  <!-- Body -->
+  <div class="ck-dialog__body">
+    <p class="ck-dialog__warning">{{ data.message }}</p>
+  </div>
+
+  <!-- Actions -->
+  <div class="ck-dialog__actions">
+    <button mat-stroked-button class="ck-confirm-cancel" (click)="cancel()">
+      {{ data.cancelLabel ?? 'Cancel' }}
     </button>
     <button mat-flat-button
-        [class.confirm-btn]="!data.danger"
-        [class.danger-btn]="data.danger"
-        (click)="confirm()">
-        {{ data.confirmLabel ?? 'Confirm' }}
+      [class.ck-confirm-primary]="!data.danger"
+      [class.ck-confirm-danger]="data.danger"
+      (click)="confirm()">
+      {{ data.confirmLabel ?? 'Confirm' }}
     </button>
+  </div>
+
 </div>

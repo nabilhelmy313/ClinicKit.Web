@@ -1,5 +1,5 @@
 import {
-    Component, Input, Output, EventEmitter,
+    Component, Input, Output, EventEmitter, inject,
     ContentChildren, QueryList, AfterContentInit, ViewChild,
     ChangeDetectionStrategy, TemplateRef,
     signal, computed,
@@ -13,6 +13,7 @@ import { CkBtnComponent }             from '../ck-btn/ck-btn.component';
 import { CkEmptyStateComponent }      from '../ck-empty-state/ck-empty-state.component';
 import { CkCellDefDirective }         from './ck-cell-def.directive';
 import { CkColumnDef, CkSortChange, CkSortDir, CkTableAction } from './ck-column-def.model';
+import { LanguageService }            from '../../core/services/language.service';
 
 @Component({
     selector: 'ck-table',
@@ -27,6 +28,8 @@ import { CkColumnDef, CkSortChange, CkSortDir, CkTableAction } from './ck-column
     ],
 })
 export class CkTableComponent<T> implements AfterContentInit {
+
+    readonly lang = inject(LanguageService);
 
     // ── Column definitions (new pattern) ──────────────────────────────────────
     @Input() columnDefs: CkColumnDef[] = [];
@@ -221,6 +224,11 @@ export class CkTableComponent<T> implements AfterContentInit {
     // ── Cell template lookup ──────────────────────────────────────────────────
     getCellTemplate(key: string): TemplateRef<any> | null {
         return this.cellDefs.find(d => d.column === key)?.template ?? null;
+    }
+
+    /** Fallback: read a plain field value when no custom ckCell template exists. */
+    getCellValue(row: T, key: string): unknown {
+        return (row as Record<string, unknown>)[key] ?? '';
     }
 
     // ── Sort ──────────────────────────────────────────────────────────────────

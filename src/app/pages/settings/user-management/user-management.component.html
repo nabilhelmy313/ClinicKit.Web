@@ -1,0 +1,53 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+  <ck-page-header
+      icon="manage_accounts"
+      [title]="'USERS.TITLE' | translate"
+      [breadcrumbs]="[
+          { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+          { label: ('SETTINGS.TITLE'   | translate), link: '/settings' },
+          { label: ('USERS.TITLE'      | translate) }
+      ]">
+    <ck-btn variant="primary" icon="person_add"
+            (clicked)="router.navigate(['/settings/users/new'])">
+      {{ 'USERS.ADD_USER' | translate }}
+    </ck-btn>
+  </ck-page-header>
+
+  <ck-card [noPadding]="true">
+    <ck-table
+        [serverSide]="true"
+        [columnDefs]="colDefs"
+        [data]="users()"
+        [loading]="loading()"
+        [totalCount]="totalCount()"
+        [page]="page()"
+        [pageSize]="pageSize()"
+        [actions]="tableActions"
+        [emptyIcon]="'group'"
+        [emptyMessage]="'USERS.TITLE' | translate"
+        (filterChange)="onFilterChange($event)"
+        (sortChange)="onSortChange($event)"
+        (prevPage)="prevPage()"
+        (nextPage)="nextPage()"
+        (pageSizeChange)="onPageSizeChange($event)"
+        (reload)="load()">
+
+      <!-- Role cell -->
+      <ng-template ckCell="role" let-u>
+        <span class="role-badge">{{ roleLabel(u.role) }}</span>
+      </ng-template>
+
+      <!-- Status cell -->
+      <ng-template ckCell="isActive" let-u>
+        <ck-status-badge
+            [status]="u.isActive ? 'active' : 'inactive'"
+            [label]="(u.isActive ? 'USERS.ACTIVE' : 'USERS.INACTIVE') | translate">
+        </ck-status-badge>
+      </ng-template>
+
+    </ck-table>
+  </ck-card>
+
+</div>

@@ -9,7 +9,7 @@ export class DialogService {
 
   confirm(data: ConfirmDialogData): Observable<boolean> {
     return this.dialog
-      .open(ConfirmDialogComponent, { data, width: '420px', disableClose: true })
+      .open(ConfirmDialogComponent, { data, width: '420px', maxWidth: '95vw', panelClass: 'ck-dialog-panel', disableClose: true })
       .afterClosed()
       .pipe(map(result => result === true));
   }

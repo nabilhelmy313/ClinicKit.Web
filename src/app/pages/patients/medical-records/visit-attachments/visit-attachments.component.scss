@@ -1,0 +1,288 @@
+// ── Section wrapper ────────────────────────────────────────────────────────────
+.attachments-section {
+    border-top: 1px dashed #e2e8e4;
+    padding-top: 18px;
+    margin-top: 20px;
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────────
+.att-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.att-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.att-header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: #e8f2ed;
+    i { font-size: 16px; color: #0D5238; }
+}
+
+.badge-count {
+    background: #0D5238;
+    color: #fff;
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+}
+
+// ── Category chips row (outside upload bar) ────────────────────────────────────
+.cat-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.cat-chip-btn {
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 20px;
+    border: 1.5px solid #d0dcd6;
+    background: #fff;
+    color: #555;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+        border-color: #0D5238;
+        color: #0D5238;
+        background: #f0f7f4;
+    }
+
+    &.active {
+        background: #0D5238;
+        border-color: #0D5238;
+        color: #fff;
+        font-weight: 600;
+    }
+}
+
+// ── Upload bar ─────────────────────────────────────────────────────────────────
+.upload-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f9fafb;
+    border: 1px solid #e8eae9;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+}
+
+.file-pick-label {
+    flex: 1;
+    min-width: 140px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 36px;
+    padding: 0 14px;
+    border: 1.5px dashed #b0c4bb;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #fff;
+    color: #555;
+    font-size: 13px;
+    transition: border-color 0.18s, background 0.18s;
+
+    i { font-size: 18px; color: #0D5238; flex-shrink: 0; }
+
+    .file-pick-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &:hover {
+        border-color: #0D5238;
+        background: #f0f7f4;
+    }
+}
+
+.upload-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    mat-spinner { flex-shrink: 0; }
+    i { font-size: 17px; }
+}
+
+// ── Empty state ────────────────────────────────────────────────────────────────
+.att-empty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9e9e9e;
+    font-size: 13px;
+    padding: 6px 2px;
+    i { font-size: 18px; }
+}
+
+// ── Attachment list ────────────────────────────────────────────────────────────
+.attachment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.attachment-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid #e8eae9;
+    border-radius: 10px;
+    transition: box-shadow 0.18s, border-color 0.18s;
+
+    &:hover {
+        border-color: #c3d9ce;
+        box-shadow: 0 2px 8px rgba(13, 82, 56, 0.07);
+    }
+}
+
+// ── File type icon bubble ──────────────────────────────────────────────────────
+.att-icon-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    i { font-size: 20px; }
+
+    &[data-type='image'] { background: #e6f4f1; i { color: #0f8c6e; } }
+    &[data-type='pdf']   { background: #fdecea; i { color: #c0392b; } }
+    &[data-type='doc']   { background: #e8eef8; i { color: #2c5ea8; } }
+    &[data-type='other'] { background: #f2f2f2; i { color: #777; } }
+}
+
+// ── File info ──────────────────────────────────────────────────────────────────
+.att-info {
+    flex: 1;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.att-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.att-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 3px;
+}
+
+.att-size {
+    font-size: 11px;
+    color: #888;
+}
+
+// ── Inline category label ──────────────────────────────────────────────────────
+.cat-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 1px 9px;
+    line-height: 18px;
+    white-space: nowrap;
+
+    &[data-cat='1'] { background: #e6f4f1; color: #0f8c6e; }
+    &[data-cat='2'] { background: #fff4e5; color: #b56a00; }
+    &[data-cat='3'] { background: #e8eef8; color: #2c5ea8; }
+    &[data-cat='4'] { background: #f2f2f2; color: #666;    }
+}
+
+// ── Row action buttons ─────────────────────────────────────────────────────────
+.att-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.att-action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    i { font-size: 18px; }
+
+    &.view     { color: #2c5ea8; &:hover { background: #e8eef8; } }
+    &.download { color: #0D5238; &:hover { background: #e8f2ed; } }
+    &.delete   { color: #c0392b; &:hover { background: #fdecea; } }
+}
+
+// ── Dark mode ──────────────────────────────────────────────────────────────────
+:host-context(.component-dark-theme) {
+    .attachments-section { border-top-color: #3a3a3a; }
+    .att-header-title    { color: #e0e0e0; }
+    .att-header-icon     { background: #1e3329; i { color: #4caf82; } }
+
+    .cat-chip-btn {
+        background: #2a2a2a;
+        border-color: #444;
+        color: #aaa;
+        &:hover  { border-color: #4caf82; color: #4caf82; background: #1e3329; }
+        &.active { background: #0D5238; border-color: #0D5238; color: #fff; }
+    }
+
+    .upload-bar        { background: #1e1e1e; border-color: #333; }
+    .file-pick-label   { background: #2a2a2a; border-color: #444; color: #aaa;
+                         &:hover { border-color: #4caf82; background: #1e3329; } }
+
+    .attachment-card   { background: #252525; border-color: #333;
+                         &:hover { border-color: #4caf82; } }
+    .att-name          { color: #e0e0e0; }
+    .att-size          { color: #777; }
+
+    .att-icon-wrap {
+        &[data-type='image'] { background: #1a3330; }
+        &[data-type='pdf']   { background: #3a2020; }
+        &[data-type='doc']   { background: #1e2a3a; }
+        &[data-type='other'] { background: #2a2a2a; }
+    }
+
+    .att-action-btn {
+        &.view:hover     { background: #1e2a3a; }
+        &.download:hover { background: #1e3329; }
+        &.delete:hover   { background: #3a2020; }
+    }
+}

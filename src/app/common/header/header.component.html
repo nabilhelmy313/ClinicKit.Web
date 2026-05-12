@@ -113,7 +113,7 @@
                                     {{ authService.currentUser()?.email ?? ('COMMON.ADMINISTRATOR' | translate) }}
                                 </span>
                                 <span class="designation d-block text-body">
-                                    {{ authService.currentUser()?.roles?.[0] ?? ('COMMON.ADMINISTRATOR' | translate) }}
+                                    {{ roleLabel() | translate }}
                                 </span>
                             </div>
                         </div>

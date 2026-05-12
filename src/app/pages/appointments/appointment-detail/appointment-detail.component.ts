@@ -107,9 +107,11 @@ export class AppointmentDetailComponent implements OnInit {
         if (!a) return;
 
         const dialogRef = this.dialog.open(CkCancelDialogComponent, {
-            width:     '440px',
-            direction: this.langService.isRTL() ? 'rtl' : 'ltr',
-            data:      { patientName: a.patientName },
+            width:      '440px',
+            maxWidth:   '95vw',
+            panelClass: 'ck-dialog-panel',
+            direction:  this.langService.isRTL() ? 'rtl' : 'ltr',
+            data:       { patientName: a.patientName },
         });
 
         dialogRef.afterClosed().subscribe((result: CkCancelDialogResult | undefined) => {

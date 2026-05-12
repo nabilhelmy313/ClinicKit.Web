@@ -38,13 +38,6 @@ export const routes: Routes = [
                 title: 'Register Patient — ClinicKit',
             },
             {
-                path: 'records',
-                loadComponent: () =>
-                    import('./pages/patients/medical-records/medical-records.component')
-                        .then(m => m.MedicalRecordsComponent),
-                title: 'Medical Records — ClinicKit',
-            },
-            {
                 path: ':id',
                 loadComponent: () =>
                     import('./pages/patients/patient-detail/patient-detail.component')
@@ -57,6 +50,13 @@ export const routes: Routes = [
                     import('./pages/patients/patient-form/patient-form.component')
                         .then(m => m.PatientFormComponent),
                 title: 'Edit Patient — ClinicKit',
+            },
+            {
+                path: ':id/records',
+                loadComponent: () =>
+                    import('./pages/patients/medical-records/medical-records.component')
+                        .then(m => m.MedicalRecordsComponent),
+                title: 'Patient File — ClinicKit',
             },
         ],
     },
@@ -211,6 +211,20 @@ export const routes: Routes = [
                     import('./pages/settings/user-management/user-management.component')
                         .then(m => m.UserManagementComponent),
                 title: 'Users & Roles — ClinicKit',
+            },
+            {
+                path: 'users/new',
+                loadComponent: () =>
+                    import('./pages/settings/user-management/user-form/user-form.component')
+                        .then(m => m.UserFormComponent),
+                title: 'New User — ClinicKit',
+            },
+            {
+                path: 'users/:id/edit',
+                loadComponent: () =>
+                    import('./pages/settings/user-management/user-form/user-form.component')
+                        .then(m => m.UserFormComponent),
+                title: 'Edit User — ClinicKit',
             },
             {
                 path: 'tenants',

@@ -169,6 +169,17 @@ export class AppointmentFormComponent implements OnInit {
     }
 
     onSubmit(): void {
+        console.log('onSubmit called');
+        console.log('submitting:', this.submitting());
+        console.log('form valid:', this.form.valid);
+        console.log('form errors:', JSON.stringify(this.form.errors));
+        console.log('form value:', this.form.value);
+        Object.keys(this.form.controls).forEach(key => {
+            const ctrl = this.form.get(key);
+            if (ctrl?.invalid) console.log(`  INVALID field: ${key}`, ctrl.errors);
+        });
+
+        if (this.submitting()) return;
         if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
         this.submitting.set(true);

@@ -230,9 +230,11 @@ export class AppointmentsListComponent implements OnInit {
     // ── Cancel (opens reason dialog first) ───────────────────────────────────
     openCancelDialog(appointment: Appointment): void {
         const dialogRef = this.dialog.open(CkCancelDialogComponent, {
-            width:     '440px',
-            direction: this.langService.isRTL() ? 'rtl' : 'ltr',
-            data:      { patientName: appointment.patientName },
+            width:      '440px',
+            maxWidth:   '95vw',
+            panelClass: 'ck-dialog-panel',
+            direction:  this.langService.isRTL() ? 'rtl' : 'ltr',
+            data:       { patientName: appointment.patientName },
         });
 
         dialogRef.afterClosed().subscribe((result: CkCancelDialogResult | undefined) => {

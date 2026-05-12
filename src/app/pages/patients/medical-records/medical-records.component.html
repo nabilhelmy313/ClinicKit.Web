@@ -3,19 +3,140 @@
 
     <ck-page-header
         icon="folder_open"
-        [title]="'SIDEBAR.MEDICAL_RECORDS' | translate"
+        [title]="(patient()?.fullName ?? ('VISITS.MEDICAL_FILE' | translate)) + ' — ' + ('VISITS.MEDICAL_FILE' | translate)"
         [breadcrumbs]="[
             { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
-            { label: ('SIDEBAR.MEDICAL_RECORDS' | translate) }
+            { label: ('PATIENTS.TITLE' | translate), link: '/patients' },
+            { label: patient()?.fullName ?? '...', link: '/patients/' + patientId },
+            { label: ('VISITS.MEDICAL_FILE' | translate) }
         ]">
+        <ck-btn icon="add" (clicked)="showForm.set(true)" [disabled]="showForm()">
+            {{ 'VISITS.NEW_VISIT' | translate }}
+        </ck-btn>
     </ck-page-header>
 
-    <ck-card>
-        <p class="text-body mb-0">{{ 'PATIENTS.MEDICAL_HISTORY' | translate }}</p>
-        <div class="alert alert-info mt-15" role="alert">
-            <i class="material-symbols-outlined me-2">construction</i>
-            Week 2 sprint
-        </div>
-    </ck-card>
+    <!-- New visit form (inline, shown when button clicked) -->
+    @if (showForm()) {
+        <app-visit-form
+            [patientId]="patientId"
+            (saved)="onVisitSaved($event)"
+            (cancelled)="showForm.set(false)">
+        </app-visit-form>
+    }
 
+    <!-- Visit history -->
+    <ck-card [title]="'VISITS.HISTORY' | translate">
+
+        @if (visitsLoading()) {
+            <div class="d-flex align-items-center justify-content-center py-40">
+                <mat-spinner diameter="36"></mat-spinner>
+            </div>
+        } @else if (visits().length === 0) {
+            <ck-empty-state
+                icon="medical_services"
+                [message]="'VISITS.NO_VISITS' | translate"
+                [actionLabel]="'VISITS.NEW_VISIT' | translate"
+                actionIcon="add"
+                (action)="showForm.set(true)">
+            </ck-empty-state>
+        } @else {
+            <mat-accordion multi>
+                @for (visit of visits(); track visit.id) {
+                    <mat-expansion-panel class="visit-panel mb-10">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title class="d-flex gap-20 align-items-center">
+                                <span class="visit-date fw-semibold">
+                                    {{ visit.visitDate | date:'dd/MM/yyyy' }}
+                                </span>
+                                @if (visit.diagnosis) {
+                                    <span class="text-muted">{{ visit.diagnosis }}</span>
+                                }
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ visit.medications.length }} {{ 'VISITS.MEDICINES' | translate }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div class="visit-body pt-15">
+                            <!-- Complaint -->
+                            @if (visit.chiefComplaint) {
+                                <div class="visit-field mb-15">
+                                    <label class="field-label">{{ 'VISITS.CHIEF_COMPLAINT' | translate }}</label>
+                                    <p class="field-value">{{ visit.chiefComplaint }}</p>
+                                </div>
+                            }
+
+                            <!-- Diagnosis -->
+                            @if (visit.diagnosis) {
+                                <div class="visit-field mb-15">
+                                    <label class="field-label">{{ 'VISITS.DIAGNOSIS' | translate }}</label>
+                                    <p class="field-value">{{ visit.diagnosis }}</p>
+                                </div>
+                            }
+
+                            <!-- Notes -->
+                            @if (visit.notes) {
+                                <div class="visit-field mb-15">
+                                    <label class="field-label">{{ 'VISITS.NOTES' | translate }}</label>
+                                    <p class="field-value">{{ visit.notes }}</p>
+                                </div>
+                            }
+
+                            <!-- Medications table -->
+                            @if (visit.medications.length > 0) {
+                                <div class="visit-field mb-5">
+                                    <label class="field-label mb-10">{{ 'VISITS.PRESCRIPTION' | translate }}</label>
+                                    <table class="med-table w-100">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ 'VISITS.MEDICINE_NAME' | translate }}</th>
+                                                <th>{{ 'VISITS.DOSAGE' | translate }}</th>
+                                                <th>{{ 'VISITS.FREQUENCY' | translate }}</th>
+                                                <th>{{ 'VISITS.DURATION' | translate }}</th>
+                                                <th>{{ 'VISITS.INSTRUCTIONS' | translate }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for (med of visit.medications; track med.id) {
+                                                <tr>
+                                                    <td class="fw-semibold">{{ med.medicineName }}</td>
+                                                    <td>{{ med.dosage ?? '—' }}</td>
+                                                    <td>{{ med.frequency ?? '—' }}</td>
+                                                    <td>{{ med.duration ?? '—' }}</td>
+                                                    <td>{{ med.instructions ?? '—' }}</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            <!-- Attachments -->
+                            <app-visit-attachments [visitId]="visit.id"></app-visit-attachments>
+                        </div>
+                    </mat-expansion-panel>
+                }
+            </mat-accordion>
+
+            <!-- Pagination -->
+            @if (totalPages() > 1) {
+                <div class="d-flex align-items-center justify-content-end gap-10 mt-20">
+                    <button class="default-btn outline-btn small-btn"
+                            [disabled]="page() <= 1"
+                            (click)="prevPage()">
+                        <i class="material-symbols-outlined">
+                            {{ langService.isRTL() ? 'chevron_right' : 'chevron_left' }}
+                        </i>
+                    </button>
+                    <span class="text-sm text-muted">{{ page() }} / {{ totalPages() }}</span>
+                    <button class="default-btn outline-btn small-btn"
+                            [disabled]="page() >= totalPages()"
+                            (click)="nextPage()">
+                        <i class="material-symbols-outlined">
+                            {{ langService.isRTL() ? 'chevron_left' : 'chevron_right' }}
+                        </i>
+                    </button>
+                </div>
+            }
+        }
+    </ck-card>
 </div>

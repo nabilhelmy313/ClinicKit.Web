@@ -89,7 +89,7 @@ export class PatientFormComponent implements OnInit {
                 this.formReady.set(true);
             },
             error: () => {
-                this.toast.error('تعذّر تحميل بيانات المريض');
+                this.toast.error(this.langService.translate('PATIENTS.LOAD_ERROR'));
                 this.router.navigate(['/patients']);
             },
         });
@@ -119,7 +119,9 @@ export class PatientFormComponent implements OnInit {
         req$.subscribe({
             next: patient => {
                 this.submitting.set(false);
-                this.toast.success(this.isEdit ? 'تم تعديل بيانات المريض' : 'تم تسجيل المريض بنجاح');
+                this.toast.success(this.langService.translate(
+                    this.isEdit ? 'PATIENTS.SAVE_SUCCESS' : 'PATIENTS.CREATE_SUCCESS'
+                ));
                 this.router.navigate(['/patients', patient.id]);
             },
             error: () => this.submitting.set(false),

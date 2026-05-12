@@ -1,0 +1,59 @@
+.visit-panel {
+    border-radius: 8px !important;
+    border: 1px solid var(--border-color, #e5e7eb) !important;
+    box-shadow: none !important;
+}
+
+.visit-date {
+    color: var(--primary-color, #0D5238);
+    font-size: 0.95rem;
+}
+
+.visit-body {
+    padding: 0 8px 8px;
+}
+
+.visit-field {
+    .field-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-muted, #6b7280);
+        margin-bottom: 4px;
+    }
+
+    .field-value {
+        margin: 0;
+        color: var(--text-primary, #111827);
+        white-space: pre-line;
+    }
+}
+
+.med-table {
+    border-collapse: collapse;
+    font-size: 0.875rem;
+
+    th {
+        text-align: start;
+        padding: 8px 12px;
+        background: var(--surface-secondary, #f9fafb);
+        color: var(--text-muted, #6b7280);
+        font-weight: 600;
+        font-size: 0.75rem;
+        border-bottom: 1px solid var(--border-color, #e5e7eb);
+    }
+
+    td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border-color, #e5e7eb);
+        color: var(--text-primary, #111827);
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+}
+
+.text-sm { font-size: 0.875rem; }

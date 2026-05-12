@@ -1,6 +1,6 @@
 import { NgClass } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, computed, inject } from '@angular/core';
 import { ToggleService } from '../sidebar/toggle.service';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
@@ -19,6 +19,20 @@ export class HeaderComponent {
 
     readonly langService  = inject(LanguageService);
     readonly authService  = inject(AuthService);
+
+    // Maps the first role in the JWT to its i18n translation key
+    private static readonly ROLE_KEY_MAP: Record<string, string> = {
+        Admin:        'USERS.ROLE_ADMIN',
+        Doctor:       'USERS.ROLE_DOCTOR',
+        Receptionist: 'USERS.ROLE_RECEPTIONIST',
+    };
+
+    readonly roleLabel = computed(() => {
+        const role = this.authService.currentUser()?.roles?.[0];
+        return role
+            ? (HeaderComponent.ROLE_KEY_MAP[role] ?? role)
+            : 'COMMON.ADMINISTRATOR';
+    });
 
     // isSidebarToggled
     isSidebarToggled = false;

@@ -11,8 +11,9 @@ import {
     withInterceptors,
 } from '@angular/common/http';
 
-import { routes } from './app.routes';
-import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { routes }              from './app.routes';
+import { jwtInterceptor }      from './core/interceptors/jwt.interceptor';
+import { languageInterceptor } from './core/interceptors/language.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -22,7 +23,7 @@ export const appConfig: ApplicationConfig = {
         provideClientHydration(withEventReplay()),
         provideAnimationsAsync(),
         provideHttpClient(
-            withInterceptors([jwtInterceptor]),
+            withInterceptors([jwtInterceptor, languageInterceptor]),
         ),
     ],
 };

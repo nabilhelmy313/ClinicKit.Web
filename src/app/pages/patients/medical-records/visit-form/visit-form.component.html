@@ -1,0 +1,119 @@
+<!-- Step 1 — visit details form -->
+@if (!savedVisit()) {
+    <ck-card [title]="'VISITS.NEW_VISIT' | translate">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <!-- Visit date -->
+            <div class="row mb-20">
+                <div class="col-md-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'VISITS.VISIT_DATE' | translate }}</mat-label>
+                        <input matInput [matDatepicker]="datePicker" formControlName="visitDate" />
+                        <mat-datepicker-toggle matIconSuffix [for]="datePicker" />
+                        <mat-datepicker #datePicker />
+                        @if (f['visitDate'].invalid && f['visitDate'].touched) {
+                            <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Complaint + Diagnosis -->
+            <div class="row mb-20">
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'VISITS.CHIEF_COMPLAINT' | translate }}</mat-label>
+                        <textarea matInput formControlName="chiefComplaint" rows="3"></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'VISITS.DIAGNOSIS' | translate }}</mat-label>
+                        <textarea matInput formControlName="diagnosis" rows="3"></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="row mb-20">
+                <div class="col-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'VISITS.NOTES' | translate }}</mat-label>
+                        <textarea matInput formControlName="notes" rows="2"></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Medications -->
+            <div class="mb-20">
+                <div class="d-flex align-items-center justify-content-between mb-15">
+                    <h6 class="mb-0 fw-semibold">{{ 'VISITS.PRESCRIPTION' | translate }}</h6>
+                    <button type="button" class="default-btn small-btn" (click)="addMedication()">
+                        <i class="material-symbols-outlined">add</i>
+                        {{ 'VISITS.ADD_MEDICINE' | translate }}
+                    </button>
+                </div>
+
+                @if (meds.length === 0) {
+                    <p class="text-muted text-sm mb-0">{{ 'VISITS.NO_MEDICINES' | translate }}</p>
+                }
+
+                <div formArrayName="medications">
+                    @for (med of meds.controls; track $index) {
+                        <div [formGroupName]="$index" class="medication-row d-flex gap-10 align-items-start mb-10">
+                            <mat-form-field appearance="outline" class="flex-grow-1">
+                                <mat-label>{{ 'VISITS.MEDICINE_NAME' | translate }}</mat-label>
+                                <input matInput formControlName="medicineName" />
+                                @if (med.get('medicineName')?.invalid && med.get('medicineName')?.touched) {
+                                    <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                                }
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" style="width: 130px">
+                                <mat-label>{{ 'VISITS.DOSAGE' | translate }}</mat-label>
+                                <input matInput formControlName="dosage" />
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" style="width: 140px">
+                                <mat-label>{{ 'VISITS.FREQUENCY' | translate }}</mat-label>
+                                <input matInput formControlName="frequency" />
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" style="width: 120px">
+                                <mat-label>{{ 'VISITS.DURATION' | translate }}</mat-label>
+                                <input matInput formControlName="duration" />
+                            </mat-form-field>
+                            <button type="button" class="icon-btn danger mt-8" (click)="removeMedication($index)"
+                                    title="{{ 'COMMON.DELETE' | translate }}">
+                                <i class="material-symbols-outlined">delete</i>
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Form actions -->
+            <ck-form-actions
+                [loading]="submitting"
+                [saveLabel]="'VISITS.SAVE_VISIT' | translate"
+                (cancel)="onCancel()">
+            </ck-form-actions>
+        </form>
+    </ck-card>
+}
+
+<!-- Step 2 — attachments after visit is saved -->
+@if (savedVisit()) {
+    <ck-card [title]="'VISITS.NEW_VISIT' | translate">
+        <div class="step2-banner mb-16">
+            <i class="material-symbols-outlined">check_circle</i>
+            <span>{{ 'VISITS.SAVE_VISIT' | translate }} — {{ savedVisit()!.visitDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <app-visit-attachments [visitId]="savedVisit()!.id"></app-visit-attachments>
+
+        <div class="d-flex justify-content-end mt-20">
+            <button class="default-btn" (click)="onDone()">
+                <i class="material-symbols-outlined">done</i>
+                {{ 'COMMON.CLOSE' | translate }}
+            </button>
+        </div>
+    </ck-card>
+}

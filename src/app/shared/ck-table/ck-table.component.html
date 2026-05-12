@@ -6,7 +6,7 @@
 }
 
 <!-- Toolbar — always visible so filters remain accessible even when empty -->
-<div class="ckt-toolbar">
+<div class="ckt-toolbar" [dir]="lang.isRTL() ? 'rtl' : 'ltr'">
     <span class="ckt-toolbar__count">
         @if (!loading) {
             {{ effectiveTotal }} {{ 'COMMON.RECORDS' | translate }}
@@ -42,7 +42,7 @@
     Table — always in DOM so @ViewChild(MatTable) resolves.
     Headers stay visible even when empty — the no-data row replaces the empty-state.
 -->
-<div class="table-responsive" [style.display]="showTable ? '' : 'none'">
+<div class="table-responsive" [style.display]="showTable ? '' : 'none'" [dir]="lang.isRTL() ? 'rtl' : 'ltr'">
     <table mat-table [dataSource]="displayData()" class="w-100">
 
         <!-- ── Column defs from columnDefs input ────────────────────────── -->
@@ -131,7 +131,8 @@
 
                 <td mat-cell *matCellDef="let row">
                     <ng-container
-                        *ngTemplateOutlet="getCellTemplate(col.key); context: { $implicit: row }">
+                        *ngTemplateOutlet="getCellTemplate(col.key) ?? defaultCell;
+                                          context: { $implicit: row, colKey: col.key }">
                     </ng-container>
                 </td>
 
@@ -201,6 +202,9 @@
         <!-- Legacy projected column defs (old pattern) -->
         <ng-content></ng-content>
 
+        <!-- Default cell — renders plain text when no ckCell template is provided -->
+        <ng-template #defaultCell let-row let-colKey="colKey">{{ getCellValue(row, colKey) }}</ng-template>
+
         <tr mat-header-row *matHeaderRowDef="getColumns()"></tr>
         <tr mat-row *matRowDef="let row; columns: getColumns();"
             [class.ckt-row--clickable]="clickable"
@@ -234,7 +238,7 @@
 
 <!-- Pagination -->
 @if (showPagination) {
-    <div class="ck-pagination">
+    <div class="ck-pagination" [dir]="lang.isRTL() ? 'rtl' : 'ltr'">
         <div class="ck-pagination__left">
             <span class="ck-pagination__info">
                 {{ (page - 1) * pageSize + 1 }}–{{ min(page * pageSize, effectiveTotal) }}

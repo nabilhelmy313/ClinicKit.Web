@@ -1,0 +1,73 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+  <ck-page-header
+      [icon]="isEdit ? 'manage_accounts' : 'person_add'"
+      [title]="(isEdit ? 'USERS.EDIT_SUBTITLE' : 'USERS.ADD_SUBTITLE') | translate"
+      [breadcrumbs]="[
+          { label: ('SIDEBAR.DASHBOARD'  | translate), link: '/dashboard' },
+          { label: ('SETTINGS.TITLE'     | translate), link: '/settings' },
+          { label: ('USERS.TITLE'        | translate), link: '/settings/users' },
+          { label: ((isEdit ? 'USERS.EDIT_SUBTITLE' : 'USERS.ADD_SUBTITLE') | translate) }
+      ]">
+    <ck-btn variant="outline" icon="arrow_back" (clicked)="cancel()">
+      {{ 'COMMON.BACK' | translate }}
+    </ck-btn>
+  </ck-page-header>
+
+  <ck-card [title]="(isEdit ? 'USERS.EDIT_SUBTITLE' : 'USERS.ADD_SUBTITLE') | translate">
+
+    @if (isEdit && !formReady()) {
+      <div class="d-flex align-items-center justify-content-center py-40">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="w-100 mb-15">
+          <mat-label>{{ 'USERS.EMAIL' | translate }}</mat-label>
+          <input matInput type="email" formControlName="email"
+                 [placeholder]="'USERS.EMAIL' | translate" />
+          @if (f['email'].invalid && f['email'].touched) {
+            <mat-error>{{ 'ERRORS.INVALID_EMAIL' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Password (create only) -->
+        @if (!isEdit) {
+          <mat-form-field appearance="outline" class="w-100 mb-15">
+            <mat-label>{{ 'USERS.PASSWORD' | translate }}</mat-label>
+            <input matInput type="password" formControlName="password" />
+            @if (f['password'].invalid && f['password'].touched) {
+              <mat-error>{{ 'ERRORS.MIN_LENGTH' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        }
+
+        <!-- Role -->
+        <mat-form-field appearance="outline" class="w-100 mb-20">
+          <mat-label>{{ 'USERS.ROLE' | translate }}</mat-label>
+          <mat-select formControlName="role">
+            @for (r of roles; track r) {
+              <mat-option [value]="r">{{ roleLabels[r] | translate }}</mat-option>
+            }
+          </mat-select>
+          @if (f['role'].invalid && f['role'].touched) {
+            <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <ck-form-actions
+            [saveLabel]="(isEdit ? 'COMMON.UPDATE' : 'USERS.ADD_USER') | translate"
+            [saveIcon]="isEdit ? 'save' : 'person_add'"
+            [loading]="submitting()"
+            (cancel)="cancel()"
+            (save)="onSubmit()">
+        </ck-form-actions>
+
+      </form>
+    }
+  </ck-card>
+
+</div>

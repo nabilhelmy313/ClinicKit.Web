@@ -13,6 +13,10 @@
                 (click)="router.navigate(['/patients', patientId, 'edit'])">
             {{ 'COMMON.EDIT' | translate }}
         </ck-btn>
+        <ck-btn variant="outline" icon="folder_open"
+                (click)="router.navigate(['/patients', patientId, 'records'])">
+            {{ 'VISITS.MEDICAL_FILE' | translate }}
+        </ck-btn>
         <ck-btn icon="calendar_add_on" (click)="bookAppointment()">
             {{ 'APPOINTMENTS.BOOK_APPOINTMENT' | translate }}
         </ck-btn>

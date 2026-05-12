@@ -1,47 +1,18 @@
-.confirm-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--ink-0);
-    margin-bottom: 4px;
+.ck-confirm-cancel {
+  color: #555;
+  border-color: #ccc;
 }
 
-.confirm-content p {
-    color: var(--ink-2);
-    font-size: 14px;
-    margin: 0;
-    line-height: 1.6;
+.ck-confirm-primary {
+  background-color: #0D5238;
+  color: #fff;
+
+  &:hover { background-color: #0a3f2c; }
 }
 
-.confirm-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding-top: 8px;
+.ck-confirm-danger {
+  background-color: #dc2626;
+  color: #fff;
 
-    .cancel-btn {
-        background-color: var(--paper-2);
-        color: var(--ink-1);
-
-        &:hover {
-            background-color: var(--paper-3);
-        }
-    }
-
-    .confirm-btn {
-        background-color: var(--sage-500);
-        color: #fff;
-
-        &:hover {
-            background-color: var(--sage-600);
-        }
-    }
-
-    .danger-btn {
-        background-color: var(--pom-500);
-        color: #fff;
-
-        &:hover {
-            background-color: #a33020;
-        }
-    }
+  &:hover { background-color: #b91c1c; }
 }

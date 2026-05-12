@@ -53,11 +53,21 @@ export class AuthService {
     if (!token) return null;
     try {
       const p = this.decodeToken(token);
+
+      // .NET JwtSecurityTokenHandler maps ClaimTypes.Role →  "role" via OutboundClaimTypeMap.
+      // Some .NET versions emit the full URI key instead of the short "role" key.
+      // We check both so the sidebar role guards work regardless of the .NET version.
+      const ROLE_URI = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
+      const rawRole = p.role ?? (p as Record<string, unknown>)[ROLE_URI];
+      const roles = rawRole
+        ? (Array.isArray(rawRole) ? rawRole as string[] : [rawRole as string])
+        : [];
+
       return {
         userId:   p.sub,
         email:    p.email,
         tenantId: p.tenant_id,
-        roles:    Array.isArray(p.role) ? p.role : [p.role],
+        roles,
       };
     } catch {
       return null;

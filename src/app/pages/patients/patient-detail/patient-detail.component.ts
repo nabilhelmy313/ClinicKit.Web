@@ -93,7 +93,7 @@ export class PatientDetailComponent implements OnInit {
         this.svc.getById(this.patientId).subscribe({
             next: p  => { this.patient.set(p);  this.loading.set(false); },
             error: () => {
-                this.toast.error('تعذّر تحميل بيانات المريض');
+                this.toast.error(this.langService.translate('PATIENTS.LOAD_ERROR'));
                 this.router.navigate(['/patients']);
             },
         });

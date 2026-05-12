@@ -39,7 +39,7 @@
                     <!-- ══════════════════════════════════ CLINICAL ══ -->
                     <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_CLINICAL' | translate }}</span>
 
-                    <!-- Patients -->
+                    <!-- Patients — visible to all roles -->
                     <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -48,26 +48,33 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <ul class="sidebar-sub-menu">
+                            <!-- All roles: view patient list -->
                             <li class="sidemenu-item">
                                 <a routerLink="/patients" routerLinkActive="active"
                                    [routerLinkActiveOptions]="{exact:true}" class="sidemenu-link">
                                     {{ 'SIDEBAR.ALL_PATIENTS' | translate }}
                                 </a>
                             </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/patients/new" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.REGISTER_PATIENT' | translate }}
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/patients/records" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.MEDICAL_RECORDS' | translate }}
-                                </a>
-                            </li>
+                            <!-- Admin + Receptionist: register new patient -->
+                            @if (isAdminOrReceptionist()) {
+                                <li class="sidemenu-item">
+                                    <a routerLink="/patients/new" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.REGISTER_PATIENT' | translate }}
+                                    </a>
+                                </li>
+                            }
+                            <!-- Admin + Doctor: access medical records -->
+                            @if (isAdminOrDoctor()) {
+                                <li class="sidemenu-item">
+                                    <a routerLink="/patients/records" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.MEDICAL_RECORDS' | translate }}
+                                    </a>
+                                </li>
+                            }
                         </ul>
                     </mat-expansion-panel>
 
-                    <!-- Appointments -->
+                    <!-- Appointments — visible to all roles -->
                     <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
@@ -76,6 +83,7 @@
                             </mat-panel-title>
                         </mat-expansion-panel-header>
                         <ul class="sidebar-sub-menu">
+                            <!-- All roles: view + calendar -->
                             <li class="sidemenu-item">
                                 <a routerLink="/appointments" routerLinkActive="active"
                                    [routerLinkActiveOptions]="{exact:true}" class="sidemenu-link">
@@ -87,117 +95,126 @@
                                     {{ 'SIDEBAR.CALENDAR_VIEW' | translate }}
                                 </a>
                             </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/appointments/new" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.BOOK_APPOINTMENT' | translate }}
-                                </a>
-                            </li>
+                            <!-- Admin + Receptionist: book new appointment -->
+                            @if (isAdminOrReceptionist()) {
+                                <li class="sidemenu-item">
+                                    <a routerLink="/appointments/new" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.BOOK_APPOINTMENT' | translate }}
+                                    </a>
+                                </li>
+                            }
                         </ul>
                     </mat-expansion-panel>
 
-                    <!-- Queue Manager — direct link (no sub-items) -->
+                    <!-- Queue Manager — all roles -->
                     <a routerLink="/queue-manager" class="sidebar-menu-link"
                        routerLinkActive="active">
                         <i class="material-symbols-outlined">queue</i>
                         <span class="title">{{ 'SIDEBAR.QUEUE_MANAGER' | translate }}</span>
                     </a>
 
-                    <!-- Doctors -->
-                    <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                <i class="material-symbols-outlined">stethoscope</i>
-                                <span class="title">{{ 'SIDEBAR.DOCTORS' | translate }}</span>
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <ul class="sidebar-sub-menu">
-                            <li class="sidemenu-item">
-                                <a routerLink="/doctors" routerLinkActive="active"
-                                   [routerLinkActiveOptions]="{exact:true}" class="sidemenu-link">
-                                    {{ 'SIDEBAR.ALL_DOCTORS' | translate }}
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/doctors/schedule" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.SCHEDULES' | translate }}
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/doctors/departments" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.DEPARTMENTS' | translate }}
-                                </a>
-                            </li>
-                        </ul>
-                    </mat-expansion-panel>
+                    <!-- Doctors — Admin only -->
+                    @if (isAdmin()) {
+                        <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <i class="material-symbols-outlined">stethoscope</i>
+                                    <span class="title">{{ 'SIDEBAR.DOCTORS' | translate }}</span>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <ul class="sidebar-sub-menu">
+                                <li class="sidemenu-item">
+                                    <a routerLink="/doctors" routerLinkActive="active"
+                                       [routerLinkActiveOptions]="{exact:true}" class="sidemenu-link">
+                                        {{ 'SIDEBAR.ALL_DOCTORS' | translate }}
+                                    </a>
+                                </li>
+                                <li class="sidemenu-item">
+                                    <a routerLink="/doctors/schedule" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.SCHEDULES' | translate }}
+                                    </a>
+                                </li>
+                                <li class="sidemenu-item">
+                                    <a routerLink="/doctors/departments" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.DEPARTMENTS' | translate }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </mat-expansion-panel>
+                    }
 
-                    <!-- ══════════════════════════════════ FINANCE ══ -->
-                    <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_FINANCE' | translate }}</span>
+                    <!-- ══════════════════════════════════ FINANCE ══ Admin + Receptionist -->
+                    @if (isAdminOrReceptionist()) {
+                        <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_FINANCE' | translate }}</span>
 
-                    <!-- Billing -->
-                    <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                <i class="material-symbols-outlined">receipt_long</i>
-                                <span class="title">{{ 'SIDEBAR.BILLING' | translate }}</span>
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <ul class="sidebar-sub-menu">
-                            <li class="sidemenu-item">
-                                <a routerLink="/billing/invoices" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.INVOICES' | translate }}
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/billing/payments" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.PAYMENTS' | translate }}
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/billing/insurance" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.INSURANCE' | translate }}
-                                </a>
-                            </li>
-                        </ul>
-                    </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <i class="material-symbols-outlined">receipt_long</i>
+                                    <span class="title">{{ 'SIDEBAR.BILLING' | translate }}</span>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <ul class="sidebar-sub-menu">
+                                <li class="sidemenu-item">
+                                    <a routerLink="/billing/invoices" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.INVOICES' | translate }}
+                                    </a>
+                                </li>
+                                <li class="sidemenu-item">
+                                    <a routerLink="/billing/payments" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.PAYMENTS' | translate }}
+                                    </a>
+                                </li>
+                                <li class="sidemenu-item">
+                                    <a routerLink="/billing/insurance" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.INSURANCE' | translate }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </mat-expansion-panel>
+                    }
 
-                    <!-- ══════════════════════════════════ ANALYTICS ══ -->
-                    <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_ANALYTICS' | translate }}</span>
+                    <!-- ══════════════════════════════════ ANALYTICS ══ Admin only -->
+                    @if (isAdmin()) {
+                        <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_ANALYTICS' | translate }}</span>
 
-                    <a routerLink="/reports" class="sidebar-menu-link"
-                       routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
-                        <i class="material-symbols-outlined">bar_chart</i>
-                        <span class="title">{{ 'SIDEBAR.REPORTS' | translate }}</span>
-                    </a>
+                        <a routerLink="/reports" class="sidebar-menu-link"
+                           routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+                            <i class="material-symbols-outlined">bar_chart</i>
+                            <span class="title">{{ 'SIDEBAR.REPORTS' | translate }}</span>
+                        </a>
+                    }
 
-                    <!-- ══════════════════════════════════ SYSTEM ══ -->
-                    <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_SYSTEM' | translate }}</span>
+                    <!-- ══════════════════════════════════ SYSTEM ══ Admin only -->
+                    @if (isAdmin()) {
+                        <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_SYSTEM' | translate }}</span>
 
-                    <!-- Settings -->
-                    <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                <i class="material-symbols-outlined">settings</i>
-                                <span class="title">{{ 'SIDEBAR.SETTINGS' | translate }}</span>
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-                        <ul class="sidebar-sub-menu">
-                            <li class="sidemenu-item">
-                                <a routerLink="/settings/clinic" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.CLINIC_PROFILE' | translate }}
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/settings/users" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.USERS_ROLES' | translate }}
-                                </a>
-                            </li>
-                            <li class="sidemenu-item">
-                                <a routerLink="/settings/tenants" routerLinkActive="active" class="sidemenu-link">
-                                    {{ 'SIDEBAR.TENANTS' | translate }}
-                                </a>
-                            </li>
-                        </ul>
-                    </mat-expansion-panel>
+                        <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <i class="material-symbols-outlined">settings</i>
+                                    <span class="title">{{ 'SIDEBAR.SETTINGS' | translate }}</span>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <ul class="sidebar-sub-menu">
+                                <li class="sidemenu-item">
+                                    <a routerLink="/settings/clinic" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.CLINIC_PROFILE' | translate }}
+                                    </a>
+                                </li>
+                                <li class="sidemenu-item">
+                                    <a routerLink="/settings/users" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.USERS_ROLES' | translate }}
+                                    </a>
+                                </li>
+                                <li class="sidemenu-item">
+                                    <a routerLink="/settings/tenants" routerLinkActive="active" class="sidemenu-link">
+                                        {{ 'SIDEBAR.TENANTS' | translate }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </mat-expansion-panel>
+                    }
 
                 </mat-accordion>
             </div>

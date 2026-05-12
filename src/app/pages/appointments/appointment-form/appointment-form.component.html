@@ -25,7 +25,7 @@
             </div>
         } @else {
 
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <form [formGroup]="form">
             <div class="row">
 
                 <!-- Patient — always locked in edit mode; locked chip or free search in create mode -->
@@ -79,7 +79,8 @@
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>{{ 'APPOINTMENTS.DATE' | translate }}</mat-label>
                         <input matInput [matDatepicker]="datePicker"
-                               formControlName="appointmentDate" [min]="today" />
+                               formControlName="appointmentDate"
+                               [min]="isEdit ? null : today" />
                         <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                         <mat-datepicker #datePicker></mat-datepicker>
                         @if (f['appointmentDate'].invalid && f['appointmentDate'].touched) {
