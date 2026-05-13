@@ -1,0 +1,70 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="receipt_long"
+        [title]="'BILLING.TITLE' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/' },
+            { label: ('BILLING.TITLE'     | translate) }
+        ]">
+        <ck-btn icon="add" (clicked)="router.navigate(['/billing/invoices/new'])">
+            {{ 'BILLING.NEW_INVOICE' | translate }}
+        </ck-btn>
+    </ck-page-header>
+
+    <ck-card [noPadding]="true">
+        <ck-table
+            [serverSide]="true"
+            [columnDefs]="colDefs"
+            [data]="invoices()"
+            [loading]="loading()"
+            [totalCount]="totalCount()"
+            [page]="page()"
+            [pageSize]="pageSize()"
+            [actions]="tableActions"
+            emptyIcon="receipt_long"
+            [emptyMessage]="'BILLING.TITLE' | translate"
+            [emptyActionLabel]="'BILLING.NEW_INVOICE' | translate"
+            emptyActionIcon="add"
+            [clickable]="true"
+            (filterChange)="onFilterChange($event)"
+            (sortChange)="onSortChange($event)"
+            (prevPage)="prevPage()"
+            (nextPage)="nextPage()"
+            (pageSizeChange)="onPageSizeChange($event)"
+            (reload)="load()"
+            (emptyAction)="router.navigate(['/billing/invoices/new'])"
+            (rowClick)="router.navigate(['/billing/invoices', $event.id])">
+
+            <!-- Invoice Number — linked -->
+            <ng-template ckCell="invoiceNumber" let-inv>
+                <a [routerLink]="['/billing/invoices', inv.id]" class="ck-table-link">
+                    {{ inv.invoiceNumber }}
+                </a>
+            </ng-template>
+
+            <!-- Date -->
+            <ng-template ckCell="invoiceDate" let-inv>
+                {{ inv.invoiceDate | date:'dd/MM/yyyy' }}
+            </ng-template>
+
+            <!-- Status badge -->
+            <ng-template ckCell="status" let-inv>
+                <ck-status-badge
+                    [status]="inv.status"
+                    [label]="statusLabel(inv.status) | translate"
+                    [colorMap]="invoiceColorMap">
+                </ck-status-badge>
+            </ng-template>
+
+            <!-- Total in EGP -->
+            <ng-template ckCell="total" let-inv>
+                {{ inv.total | number:'1.2-2' }}
+                {{ 'BILLING.CURRENCY' | translate }}
+            </ng-template>
+
+        </ck-table>
+    </ck-card>
+
+</div>

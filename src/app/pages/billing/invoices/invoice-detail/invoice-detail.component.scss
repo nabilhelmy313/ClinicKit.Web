@@ -1,0 +1,122 @@
+// ── Invoice header ───────────────────────────────────────────────────────────
+.inv-header {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inv-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.inv-number {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ck-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.inv-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.inv-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &.inv-notes {
+        grid-column: 1 / -1;
+    }
+}
+
+.info-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ck-text-secondary);
+}
+
+.info-value {
+    font-size: 0.95rem;
+    color: var(--ck-text-primary);
+    font-weight: 500;
+}
+
+// ── Items table ───────────────────────────────────────────────────────────────
+.items-table {
+    width: 100%;
+}
+
+.items-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 130px 130px;
+    align-items: center;
+    border-bottom: 1px solid var(--ck-border);
+
+    &:last-child { border-bottom: none; }
+
+    &.items-header {
+        background: var(--ck-surface-alt, #f5f5f5);
+
+        span {
+            padding: 10px 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--ck-text-secondary);
+        }
+    }
+}
+
+.col-desc,
+.col-qty,
+.col-price,
+.col-amount {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+}
+
+.col-qty,
+.col-price,
+.col-amount { text-align: end; }
+
+.amount-cell {
+    font-weight: 600;
+    color: var(--ck-primary);
+}
+
+// ── Totals ────────────────────────────────────────────────────────────────────
+.totals-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 2px solid var(--ck-border);
+}
+
+.totals-row {
+    display: flex;
+    gap: 32px;
+    font-size: 0.95rem;
+
+    span   { color: var(--ck-text-secondary); min-width: 120px; text-align: end; }
+    strong { min-width: 130px; text-align: start; }
+
+    &.totals-total {
+        border-top: 2px solid var(--ck-border);
+        padding-top: 8px;
+        margin-top: 4px;
+        font-size: 1.1rem;
+        font-weight: 700;
+
+        span, strong { color: var(--ck-primary); }
+    }
+}

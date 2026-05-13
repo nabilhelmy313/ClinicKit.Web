@@ -47,7 +47,7 @@ export interface ResetPasswordDialogData { userId: string; userEmail: string; }
               <mat-icon>{{ showNew() ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
             @if (form.get('newPassword')?.invalid && form.get('newPassword')?.touched) {
-              <mat-error>{{ 'ERRORS.MIN_LENGTH' | translate }}</mat-error>
+              <mat-error>{{ 'ERRORS.MIN_LENGTH' | translate:{ length: form.get('newPassword')?.errors?.['minlength']?.requiredLength ?? 6 } }}</mat-error>
             }
           </mat-form-field>
 

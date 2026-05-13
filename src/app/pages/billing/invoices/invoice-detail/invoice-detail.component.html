@@ -1,0 +1,118 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    @if (invoice(); as inv) {
+
+    <ck-page-header
+        icon="receipt_long"
+        [title]="inv.invoiceNumber"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/' },
+            { label: ('BILLING.TITLE'     | translate), link: '/billing/invoices' },
+            { label: inv.invoiceNumber }
+        ]">
+
+        <ck-btn variant="outline" icon="arrow_back" (clicked)="back()">
+            {{ 'COMMON.BACK' | translate }}
+        </ck-btn>
+
+        @if (isDraft()) {
+            <ck-btn variant="outline"
+                    icon="cancel"
+                    color="warn"
+                    [loading]="actioning()"
+                    (clicked)="cancelInvoice()">
+                {{ 'BILLING.CANCEL_INVOICE' | translate }}
+            </ck-btn>
+            <ck-btn icon="payments"
+                    [loading]="actioning()"
+                    (clicked)="markPaid()">
+                {{ 'BILLING.MARK_PAID' | translate }}
+            </ck-btn>
+        }
+    </ck-page-header>
+
+    <!-- ── Invoice header card ── -->
+    <ck-card>
+        <div class="inv-header">
+            <div class="inv-meta">
+                <div class="inv-number">{{ inv.invoiceNumber }}</div>
+                <ck-status-badge
+                    [status]="inv.status"
+                    [label]="statusLabel() | translate"
+                    [colorMap]="invoiceColorMap">
+                </ck-status-badge>
+            </div>
+            <div class="inv-info-grid">
+                <div class="inv-info-item">
+                    <span class="info-label">{{ 'BILLING.PATIENT' | translate }}</span>
+                    <span class="info-value">{{ inv.patientName }}</span>
+                </div>
+                <div class="inv-info-item">
+                    <span class="info-label">{{ 'BILLING.DATE' | translate }}</span>
+                    <span class="info-value">{{ inv.invoiceDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+                @if (inv.paidAt) {
+                    <div class="inv-info-item">
+                        <span class="info-label">{{ 'BILLING.PAID_AT' | translate }}</span>
+                        <span class="info-value">{{ inv.paidAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                }
+                @if (inv.notes) {
+                    <div class="inv-info-item inv-notes">
+                        <span class="info-label">{{ 'BILLING.NOTES' | translate }}</span>
+                        <span class="info-value">{{ inv.notes }}</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </ck-card>
+
+    <!-- ── Items table ── -->
+    <ck-card [title]="'BILLING.ITEMS' | translate" [noPadding]="true">
+        <div class="items-table">
+            <!-- Header -->
+            <div class="items-row items-header">
+                <span class="col-desc">{{ 'BILLING.ITEM_DESCRIPTION' | translate }}</span>
+                <span class="col-qty">{{ 'BILLING.ITEM_QTY' | translate }}</span>
+                <span class="col-price">{{ 'BILLING.ITEM_UNIT_PRICE' | translate }}</span>
+                <span class="col-amount">{{ 'BILLING.ITEM_AMOUNT' | translate }}</span>
+            </div>
+
+            @for (item of inv.items; track item.id) {
+                <div class="items-row">
+                    <div class="col-desc">{{ item.description }}</div>
+                    <div class="col-qty">{{ item.quantity }}</div>
+                    <div class="col-price">{{ item.unitPrice | number:'1.2-2' }}</div>
+                    <div class="col-amount amount-cell">{{ item.amount | number:'1.2-2' }}</div>
+                </div>
+            }
+        </div>
+
+        <!-- Totals -->
+        <div class="totals-section">
+            <div class="totals-row">
+                <span>{{ 'BILLING.SUBTOTAL' | translate }}</span>
+                <strong>{{ inv.subTotal | number:'1.2-2' }} {{ 'BILLING.CURRENCY' | translate }}</strong>
+            </div>
+            @if (inv.discount > 0) {
+                <div class="totals-row">
+                    <span>{{ 'BILLING.DISCOUNT' | translate }}</span>
+                    <strong>{{ inv.discount | number:'1.2-2' }} {{ 'BILLING.CURRENCY' | translate }}</strong>
+                </div>
+            }
+            <div class="totals-row totals-total">
+                <span>{{ 'BILLING.TOTAL' | translate }}</span>
+                <strong>{{ inv.total | number:'1.2-2' }} {{ 'BILLING.CURRENCY' | translate }}</strong>
+            </div>
+        </div>
+    </ck-card>
+
+    } @else if (!loading()) {
+        <!-- Not found state -->
+        <ck-card>
+            <p>{{ 'COMMON.NOT_FOUND' | translate }}</p>
+        </ck-card>
+    }
+
+</div>

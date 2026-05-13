@@ -166,6 +166,20 @@ export const routes: Routes = [
                 title: 'Invoices — ClinicKit',
             },
             {
+                path: 'invoices/new',
+                loadComponent: () =>
+                    import('./pages/billing/invoices/invoice-form/invoice-form.component')
+                        .then(m => m.InvoiceFormComponent),
+                title: 'New Invoice — ClinicKit',
+            },
+            {
+                path: 'invoices/:id',
+                loadComponent: () =>
+                    import('./pages/billing/invoices/invoice-detail/invoice-detail.component')
+                        .then(m => m.InvoiceDetailComponent),
+                title: 'Invoice — ClinicKit',
+            },
+            {
                 path: 'payments',
                 loadComponent: () =>
                     import('./pages/billing/payments/payments.component')

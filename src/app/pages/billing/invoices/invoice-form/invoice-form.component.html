@@ -1,0 +1,146 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="receipt_long"
+        [title]="'BILLING.NEW_INVOICE' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/' },
+            { label: ('BILLING.TITLE'     | translate), link: '/billing/invoices' },
+            { label: ('BILLING.NEW_INVOICE' | translate) }
+        ]">
+        <ck-btn variant="outline" icon="arrow_back" (clicked)="cancel()">
+            {{ 'COMMON.BACK' | translate }}
+        </ck-btn>
+    </ck-page-header>
+
+    <ck-card [title]="'BILLING.NEW_INVOICE' | translate">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <!-- ── Patient autocomplete ── -->
+            <mat-form-field appearance="outline" class="w-100 mb-15">
+                <mat-label>{{ 'BILLING.PATIENT' | translate }}</mat-label>
+                <input matInput
+                       formControlName="patientInput"
+                       [matAutocomplete]="patientAuto"
+                       (input)="onPatientInput($event)"
+                       [placeholder]="'PATIENTS.SEARCH_PLACEHOLDER' | translate" />
+                <mat-autocomplete #patientAuto="matAutocomplete"
+                                  [displayWith]="displayPatient.bind(this)"
+                                  (optionSelected)="onPatientSelected($event.option.value)">
+                    @for (p of patientOptions(); track p.id) {
+                        <mat-option [value]="p">{{ p.fullName }} — {{ p.phone }}</mat-option>
+                    }
+                </mat-autocomplete>
+                <mat-icon matSuffix>search</mat-icon>
+                @if (form.get('patientInput')?.invalid && form.get('patientInput')?.touched) {
+                    <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
+                }
+            </mat-form-field>
+
+            <!-- ── Visit select (اختياري) ── -->
+            <mat-form-field appearance="outline" class="w-100 mb-5">
+                <mat-label>
+                    {{ 'BILLING.VISIT' | translate }}
+                    <span class="optional-label">({{ 'COMMON.OPTIONAL' | translate }})</span>
+                </mat-label>
+                @if (loadingVisits()) {
+                    <mat-spinner diameter="20" style="margin: auto;"></mat-spinner>
+                }
+                <mat-select formControlName="visitId">
+                    <mat-option [value]="null">{{ 'BILLING.NO_VISIT' | translate }}</mat-option>
+                    @for (v of visitOptions(); track v.id) {
+                        <mat-option [value]="v.id">{{ visitLabel(v) }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <p class="visit-hint mb-20">
+                <mat-icon class="hint-icon">info_outline</mat-icon>
+                {{ 'BILLING.VISIT_HINT' | translate }}
+            </p>
+
+            <!-- ── Invoice items ── -->
+            <div class="section-label mb-10">{{ 'BILLING.ITEMS' | translate }}</div>
+
+            <div class="items-table mb-5">
+                <div class="items-row items-header">
+                    <span class="col-desc">{{ 'BILLING.ITEM_DESCRIPTION' | translate }}</span>
+                    <span class="col-qty">{{ 'BILLING.ITEM_QTY' | translate }}</span>
+                    <span class="col-price">{{ 'BILLING.ITEM_UNIT_PRICE' | translate }}</span>
+                    <span class="col-amount">{{ 'BILLING.ITEM_AMOUNT' | translate }}</span>
+                    <span class="col-action"></span>
+                </div>
+
+                <div formArrayName="items">
+                    @for (item of itemsArray.controls; track $index) {
+                        <div class="items-row" [formGroupName]="$index">
+                            <div class="col-desc">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <input matInput formControlName="description"
+                                           [placeholder]="'BILLING.ITEM_DESCRIPTION' | translate" />
+                                </mat-form-field>
+                            </div>
+                            <div class="col-qty">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <input matInput type="number" formControlName="quantity" min="1" />
+                                </mat-form-field>
+                            </div>
+                            <div class="col-price">
+                                <mat-form-field appearance="outline" class="w-100">
+                                    <input matInput type="number" formControlName="unitPrice"
+                                           min="0.01" step="0.01" />
+                                </mat-form-field>
+                            </div>
+                            <div class="col-amount amount-cell">
+                                {{ lineTotal($index) | number:'1.2-2' }}
+                            </div>
+                            <div class="col-action">
+                                @if (itemsArray.length > 1) {
+                                    <button mat-icon-button type="button"
+                                            class="remove-btn"
+                                            (click)="removeItem($index)"
+                                            [title]="'BILLING.REMOVE_ITEM' | translate">
+                                        <mat-icon>delete_outline</mat-icon>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <ck-btn variant="outline" icon="add" (clicked)="addItem()" class="mb-20">
+                {{ 'BILLING.ADD_ITEM' | translate }}
+            </ck-btn>
+
+            <!-- ── Totals ── -->
+            <div class="totals-section mb-20">
+                <div class="totals-row">
+                    <span>{{ 'BILLING.SUBTOTAL' | translate }}</span>
+                    <strong>{{ subTotal | number:'1.2-2' }} {{ 'BILLING.CURRENCY' | translate }}</strong>
+                </div>
+                <div class="totals-row totals-total">
+                    <span>{{ 'BILLING.TOTAL' | translate }}</span>
+                    <strong>{{ subTotal | number:'1.2-2' }} {{ 'BILLING.CURRENCY' | translate }}</strong>
+                </div>
+            </div>
+
+            <!-- ── Notes ── -->
+            <mat-form-field appearance="outline" class="w-100 mb-20">
+                <mat-label>{{ 'BILLING.NOTES' | translate }}</mat-label>
+                <textarea matInput formControlName="notes" rows="3"></textarea>
+            </mat-form-field>
+
+            <ck-form-actions
+                [saveLabel]="'BILLING.NEW_INVOICE' | translate"
+                saveIcon="receipt_long"
+                [loading]="submitting()"
+                (cancel)="cancel()"
+                (save)="onSubmit()">
+            </ck-form-actions>
+
+        </form>
+    </ck-card>
+
+</div>
