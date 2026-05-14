@@ -11,15 +11,17 @@ import {
   CurrentUser,
 } from '../models/auth.models';
 import { environment } from '../../../environments/environment';
+import { TenantConfigService } from './tenant-config.service';
 
 const ACCESS_TOKEN_KEY  = 'ck_access_token';
 const REFRESH_TOKEN_KEY = 'ck_refresh_token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly http       = inject(HttpClient);
-  private readonly router     = inject(Router);
-  private readonly platformId = inject(PLATFORM_ID);
+  private readonly http         = inject(HttpClient);
+  private readonly router       = inject(Router);
+  private readonly platformId   = inject(PLATFORM_ID);
+  private readonly tenantConfig = inject(TenantConfigService);
 
   // Evaluated lazily after inject() so platformId is available
   private readonly isBrowser = isPlatformBrowser(this.platformId);
@@ -106,6 +108,7 @@ export class AuthService {
         .subscribe({ error: () => {} });
     }
     this.clearTokens();
+    this.tenantConfig.clear();   // clear feature flags so next login reloads fresh
     this.router.navigate(['/authentication/sign-in']);
   }
 

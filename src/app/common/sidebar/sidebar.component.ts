@@ -8,17 +8,20 @@ import { CustomizerSettingsService } from '../../customizer-settings/customizer-
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { LanguageService } from '../../core/services/language.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TenantConfigService } from '../../core/services/tenant-config.service';
+import { HasFeatureDirective } from '../../core/directives/has-feature.directive';
 
 @Component({
     selector: 'app-sidebar',
-    imports: [NgScrollbarModule, MatExpansionModule, RouterLinkActive, RouterModule, RouterLink, NgClass, TranslatePipe],
+    imports: [NgScrollbarModule, MatExpansionModule, RouterLinkActive, RouterModule, RouterLink, NgClass, TranslatePipe, HasFeatureDirective],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
 
-    readonly langService  = inject(LanguageService);
-    private readonly auth = inject(AuthService);
+    readonly langService    = inject(LanguageService);
+    readonly tenantConfig   = inject(TenantConfigService);
+    private readonly auth   = inject(AuthService);
 
     // Role helpers — computed from the JWT signal, reactive to login/logout
     readonly isAdmin        = computed(() => this.auth.currentUser()?.roles.includes('Admin')        ?? false);

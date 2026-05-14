@@ -19,12 +19,15 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
 import { PatientsService }     from '../../../core/services/patients.service';
+import { DoctorsService }      from '../../../core/services/doctors.service';
 import { ToastService }        from '../../../core/services/toast.service';
 import { PatientBrief }        from '../../../core/models/patient.model';
 import { AppointmentType }     from '../../../core/models/appointment.model';
+import { Doctor }              from '../../../core/models/doctor.model';
 import { TranslatePipe }       from '../../../core/pipes/translate.pipe';
 import { LanguageService }     from '../../../core/services/language.service';
 import { ThemeService }        from '../../../core/services/theme.service';
+import { TenantConfigService } from '../../../core/services/tenant-config.service';
 import { CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent } from '../../../shared/index';
 
 @Component({
@@ -43,19 +46,22 @@ import { CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent } from '
 })
 export class AppointmentFormComponent implements OnInit {
     private readonly fb       = inject(FormBuilder);
-    private readonly svc      = inject(AppointmentsService);
-    private readonly patSvc   = inject(PatientsService);
-    private readonly toast    = inject(ToastService);
-    readonly         router   = inject(Router);
-    private readonly route    = inject(ActivatedRoute);
-    readonly langService      = inject(LanguageService);
-    readonly themeService     = inject(ThemeService);
+    private readonly svc        = inject(AppointmentsService);
+    private readonly patSvc     = inject(PatientsService);
+    private readonly doctorsSvc = inject(DoctorsService);
+    private readonly toast      = inject(ToastService);
+    readonly         router     = inject(Router);
+    private readonly route      = inject(ActivatedRoute);
+    readonly langService        = inject(LanguageService);
+    readonly themeService       = inject(ThemeService);
+    readonly tenantConfig       = inject(TenantConfigService);
 
     protected readonly AppointmentType = AppointmentType;
 
     form!: FormGroup;
     patientSearch   = new FormControl('');
     patientOptions  = signal<PatientBrief[]>([]);
+    doctors         = signal<Doctor[]>([]);
     submitting      = signal(false);
     formReady       = signal(false);
     today           = new Date();
@@ -71,12 +77,20 @@ export class AppointmentFormComponent implements OnInit {
     ngOnInit(): void {
         this.form = this.fb.group({
             patientId:       ['', Validators.required],
+            doctorId:        [null],  // optional — required only when multiDoctorEnabled
             appointmentDate: [null, Validators.required],
             startTime:       ['', Validators.required],
             endTime:         ['', Validators.required],
             type:            [AppointmentType.FirstVisit, Validators.required],
             notes:           [null],
         });
+
+        // Load active doctors when multi-doctor feature is enabled
+        if (this.tenantConfig.isEnabled('multiDoctorEnabled')) {
+            this.doctorsSvc.list(true).subscribe({
+                next: docs => this.doctors.set(docs),
+            });
+        }
 
         this.appointmentId = this.route.snapshot.paramMap.get('id') ?? '';
 
@@ -140,6 +154,7 @@ export class AppointmentFormComponent implements OnInit {
                     endTime:   a.endTime.substring(0, 5),
                     type:      a.type,
                     notes:     a.notes,
+                    doctorId:  a.doctorId ?? null,
                 });
                 this.formReady.set(true);
             },
@@ -206,6 +221,7 @@ export class AppointmentFormComponent implements OnInit {
         } else {
             const body = {
                 patientId:       raw.patientId,
+                doctorId:        raw.doctorId || null,
                 appointmentDate: dateStr,
                 startTime:       raw.startTime + ':00',
                 endTime:         raw.endTime   + ':00',

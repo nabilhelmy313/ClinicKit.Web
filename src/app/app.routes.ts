@@ -117,6 +117,20 @@ export const routes: Routes = [
                 title: 'Doctors — ClinicKit',
             },
             {
+                path: 'new',
+                loadComponent: () =>
+                    import('./pages/doctors/doctor-form/doctor-form.component')
+                        .then(m => m.DoctorFormComponent),
+                title: 'Add Doctor — ClinicKit',
+            },
+            {
+                path: ':id/edit',
+                loadComponent: () =>
+                    import('./pages/doctors/doctor-form/doctor-form.component')
+                        .then(m => m.DoctorFormComponent),
+                title: 'Edit Doctor — ClinicKit',
+            },
+            {
                 path: 'schedule',
                 loadComponent: () =>
                     import('./pages/doctors/doctors-schedule/doctors-schedule.component')

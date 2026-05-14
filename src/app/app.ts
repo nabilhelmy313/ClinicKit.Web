@@ -7,6 +7,8 @@ import { CommonModule, NgClass, ViewportScroller } from '@angular/common';
 import { RouterOutlet, Router, Event, NavigationEnd } from '@angular/router';
 import { CustomizerSettingsService } from './customizer-settings/customizer-settings.service';
 import { LanguageService } from './core/services/language.service';
+import { TenantConfigService } from './core/services/tenant-config.service';
+import { AuthService } from './core/services/auth.service';
 
 const PUBLIC_ROUTE_PREFIXES = ['/authentication', '/queue-display'];
 
@@ -18,8 +20,10 @@ const PUBLIC_ROUTE_PREFIXES = ['/authentication', '/queue-display'];
 })
 export class App {
 
-    protected readonly title = signal('Daxa - Angular 20 Material Design Admin Dashboard Template');
-    readonly langService = inject(LanguageService);
+    protected readonly title = signal('طَبَّبَ — Clinic Management');
+    readonly langService      = inject(LanguageService);
+    private readonly auth     = inject(AuthService);
+    private readonly tenantConfig = inject(TenantConfigService);
 
     isSidebarToggled = false;
     isPublicRoute = signal(false);
@@ -42,6 +46,10 @@ export class App {
                     this.viewportScroller.scrollToPosition([0, 0]);
                 }
                 this.previousUrl = currentUrl;
+                // Load tenant config once — only if authenticated AND not yet loaded
+                if (this.auth.isAuthenticated() && !this.tenantConfig.config()) {
+                    this.tenantConfig.load();
+                }
             }
         });
         this.toggleService.isSidebarToggled$.subscribe(isSidebarToggled => {

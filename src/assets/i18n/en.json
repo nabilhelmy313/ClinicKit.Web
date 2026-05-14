@@ -163,15 +163,30 @@
   },
   "DOCTORS": {
     "TITLE": "Doctors",
+    "ADD": "Add Doctor",
+    "EDIT": "Edit Doctor",
     "ADD_DOCTOR": "Add Doctor",
     "EDIT_DOCTOR": "Edit Doctor",
     "DOCTOR_NAME": "Doctor Name",
+    "FULL_NAME": "Full Name",
+    "SPECIALTY": "Specialty",
+    "PHONE": "Phone",
+    "FEE": "Consultation Fee",
+    "COLOR": "Calendar Color",
+    "STATUS": "Status",
+    "USER_ACCOUNT": "User Account",
     "SPECIALIZATION": "Specialization",
     "SCHEDULE": "Schedule",
     "AVAILABLE": "Available",
     "BUSY": "Busy",
     "EXPERIENCE": "Years of Experience",
-    "CONTACT": "Contact Info"
+    "CONTACT": "Contact Info",
+    "DEACTIVATE": "Deactivate",
+    "DEACTIVATE_CONFIRM_TITLE": "Deactivate Doctor",
+    "DEACTIVATE_CONFIRM_MESSAGE": "Are you sure you want to deactivate this doctor? They will no longer appear in bookings.",
+    "DEACTIVATED": "Doctor deactivated",
+    "CREATED": "Doctor created successfully",
+    "UPDATED": "Doctor updated successfully"
   },
   "APPOINTMENTS": {
     "TITLE": "Appointments",
@@ -231,7 +246,9 @@
   "RESCHEDULE_SUCCESS": "Appointment updated successfully",
   "DAY": "Day",
   "PREV_DAY": "Previous day",
-  "NEXT_DAY": "Next day"
+  "NEXT_DAY": "Next day",
+  "ALL_DOCTORS": "All Doctors",
+  "NO_DOCTOR": "— No specific doctor —"
   },
   "QUEUE": {
     "TITLE": "Queue Manager",
@@ -262,7 +279,8 @@
     "DISPLAY_TITLE": "Waiting Room",
     "ENQUEUE_SUCCESS": "Patient added to queue",
     "CALL_NEXT_SUCCESS": "Next patient called",
-    "QUEUE_EMPTY": "Queue is empty"
+    "QUEUE_EMPTY": "Queue is empty",
+    "NO_DOCTOR_GROUP": "No assigned doctor"
   },
   "SETTINGS": {
     "TITLE": "Settings",

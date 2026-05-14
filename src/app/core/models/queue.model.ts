@@ -36,6 +36,9 @@ export interface QueueEntry {
   startTime:     string;          // "HH:mm"
   calledAt:      string | null;
   completedAt:   string | null;
+  doctorId:      string | null;
+  doctorName:    string | null;
+  doctorColor:   string | null;
 }
 
 export interface QueueStatusResponse {

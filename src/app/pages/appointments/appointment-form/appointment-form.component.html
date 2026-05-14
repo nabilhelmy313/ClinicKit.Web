@@ -74,6 +74,31 @@
 
                 </div>
 
+                <!-- Doctor selector — visible only when multiDoctorEnabled -->
+                @if (tenantConfig.isEnabled('multiDoctorEnabled')) {
+                <div class="col-md-6 mb-20">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>{{ 'APPOINTMENTS.DOCTOR' | translate }}</mat-label>
+                        <mat-select formControlName="doctorId">
+                            <mat-option [value]="null">{{ 'APPOINTMENTS.NO_DOCTOR' | translate }}</mat-option>
+                            @for (doc of doctors(); track doc.id) {
+                                <mat-option [value]="doc.id">
+                                    <span class="doctor-dot"
+                                          [style.background]="doc.color"
+                                          style="display:inline-block;width:10px;height:10px;
+                                                 border-radius:50%;margin-inline-end:8px;">
+                                    </span>
+                                    {{ doc.fullName }}
+                                    @if (doc.specialty) {
+                                        <span class="text-body ms-5">({{ doc.specialty }})</span>
+                                    }
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                }
+
                 <!-- Appointment date -->
                 <div class="col-md-4 mb-20">
                     <mat-form-field appearance="outline" class="w-100">

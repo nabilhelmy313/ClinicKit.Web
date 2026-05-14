@@ -51,6 +51,9 @@ export interface Appointment {
   patientId:          string;
   patientName:        string;
   patientPhone:       string;
+  doctorId:           string | null;
+  doctorName:         string | null;
+  doctorColor:        string | null;  // hex "#RRGGBB" — for calendar colour-coding
   appointmentDate:    string;   // DateOnly → "YYYY-MM-DD"
   startTime:          string;   // TimeOnly → "HH:mm:ss"
   endTime:            string;
@@ -65,6 +68,7 @@ export interface Appointment {
 
 export interface CreateAppointmentRequest {
   patientId:       string;
+  doctorId:        string | null;
   appointmentDate: string;
   startTime:       string;
   endTime:         string;
@@ -96,6 +100,7 @@ export interface AppointmentListQuery {
   status?:        AppointmentStatus;
   type?:          AppointmentType;
   patientId?:     string;
+  doctorId?:      string;
   patientSearch?: string;
   sortBy?:        string;
   sortDir?:       'asc' | 'desc';

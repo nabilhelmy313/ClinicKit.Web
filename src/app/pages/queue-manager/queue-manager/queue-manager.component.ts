@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { AuthService }          from '../../../core/services/auth.service';
 import { AppointmentsService }  from '../../../core/services/appointments.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
-import { LanguageService } from '../../../core/services/language.service';
-import { ThemeService }    from '../../../core/services/theme.service';
-import { ToastService }    from '../../../core/services/toast.service';
-import { QueueService }    from '../../../core/services/queue.service';
+import { TranslatePipe }       from '../../../core/pipes/translate.pipe';
+import { LanguageService }     from '../../../core/services/language.service';
+import { ThemeService }        from '../../../core/services/theme.service';
+import { ToastService }        from '../../../core/services/toast.service';
+import { QueueService }        from '../../../core/services/queue.service';
+import { TenantConfigService } from '../../../core/services/tenant-config.service';
 import {
   QueueEntry,
   QueueStatus,
@@ -50,9 +51,10 @@ const PAGE_SIZE = 10;
 export class QueueManagerComponent implements OnInit {
 
   // ── DI ──────────────────────────────────────────────────────────────────────
-  readonly router       = inject(Router);
-  readonly langService  = inject(LanguageService);
-  readonly themeService = inject(ThemeService);
+  readonly router        = inject(Router);
+  readonly langService   = inject(LanguageService);
+  readonly themeService  = inject(ThemeService);
+  readonly tenantConfig  = inject(TenantConfigService);
   private readonly svc        = inject(QueueService);
   private readonly apptSvc    = inject(AppointmentsService);
   private readonly auth       = inject(AuthService);
@@ -111,6 +113,32 @@ export class QueueManagerComponent implements OnInit {
       a.status !== AppointmentStatus.Cancelled &&
       a.status !== AppointmentStatus.NoShow
     );
+  });
+
+  /**
+   * Groups the full entry list by doctorId when multiDoctorEnabled.
+   * Each group: { doctorId, doctorName, doctorColor, entries[] }
+   * Entries without a doctor go into a "No Doctor" group.
+   */
+  doctorGroups = computed((): { doctorId: string | null; doctorName: string | null; doctorColor: string | null; entries: QueueEntry[] }[] => {
+    if (!this.tenantConfig.isEnabled('multiDoctorEnabled')) return [];
+    const map = new Map<string, { doctorId: string | null; doctorName: string | null; doctorColor: string | null; entries: QueueEntry[] }>();
+    for (const e of this.entries()) {
+      const key = e.doctorId ?? '__none__';
+      if (!map.has(key)) {
+        map.set(key, { doctorId: e.doctorId, doctorName: e.doctorName, doctorColor: e.doctorColor, entries: [] });
+      }
+      map.get(key)!.entries.push(e);
+    }
+    // Sort entries within each group by status priority then queue number
+    for (const g of map.values()) {
+      g.entries.sort((a, b) => {
+        const pa = sortPriority(a.status), pb = sortPriority(b.status);
+        if (pa !== pb) return pa - pb;
+        return a.queueNumber - b.queueNumber;
+      });
+    }
+    return [...map.values()];
   });
 
   // ── Constants exposed to template ────────────────────────────────────────────

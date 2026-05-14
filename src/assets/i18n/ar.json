@@ -163,15 +163,30 @@
   },
   "DOCTORS": {
     "TITLE": "الأطباء",
+    "ADD": "إضافة طبيب",
+    "EDIT": "تعديل بيانات الطبيب",
     "ADD_DOCTOR": "إضافة طبيب",
     "EDIT_DOCTOR": "تعديل بيانات الطبيب",
     "DOCTOR_NAME": "اسم الطبيب",
+    "FULL_NAME": "الاسم الكامل",
+    "SPECIALTY": "التخصص",
+    "PHONE": "الهاتف",
+    "FEE": "سعر الكشف",
+    "COLOR": "لون الجدول",
+    "STATUS": "الحالة",
+    "USER_ACCOUNT": "حساب المستخدم",
     "SPECIALIZATION": "التخصص",
     "SCHEDULE": "الجدول الزمني",
     "AVAILABLE": "متاح",
     "BUSY": "مشغول",
     "EXPERIENCE": "سنوات الخبرة",
-    "CONTACT": "بيانات التواصل"
+    "CONTACT": "بيانات التواصل",
+    "DEACTIVATE": "تعطيل",
+    "DEACTIVATE_CONFIRM_TITLE": "تعطيل الطبيب",
+    "DEACTIVATE_CONFIRM_MESSAGE": "هل أنت متأكد من تعطيل هذا الطبيب؟ لن يظهر في الحجوزات بعد ذلك.",
+    "DEACTIVATED": "تم تعطيل الطبيب",
+    "CREATED": "تم إضافة الطبيب بنجاح",
+    "UPDATED": "تم تحديث بيانات الطبيب بنجاح"
   },
   "APPOINTMENTS": {
     "TITLE": "المواعيد",
@@ -231,7 +246,9 @@
   "RESCHEDULE_SUCCESS": "تم تعديل الموعد بنجاح",
   "DAY": "يوم",
   "PREV_DAY": "اليوم السابق",
-  "NEXT_DAY": "اليوم التالي"
+  "NEXT_DAY": "اليوم التالي",
+  "ALL_DOCTORS": "كل الأطباء",
+  "NO_DOCTOR": "— بدون دكتور محدد —"
   },
   "QUEUE": {
     "TITLE": "إدارة الطابور",
@@ -262,7 +279,8 @@
     "DISPLAY_TITLE": "غرفة الانتظار",
     "ENQUEUE_SUCCESS": "تمت إضافة المريض إلى الطابور",
     "CALL_NEXT_SUCCESS": "تم استدعاء المريض التالي",
-    "QUEUE_EMPTY": "الطابور فارغ"
+    "QUEUE_EMPTY": "الطابور فارغ",
+    "NO_DOCTOR_GROUP": "بدون دكتور محدد"
   },
   "SETTINGS": {
     "TITLE": "الإعدادات",

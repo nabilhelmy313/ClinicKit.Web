@@ -113,8 +113,8 @@
                         <span class="title">{{ 'SIDEBAR.QUEUE_MANAGER' | translate }}</span>
                     </a>
 
-                    <!-- Doctors — Admin only -->
-                    @if (isAdmin()) {
+                    <!-- Doctors — Admin only + multiDoctorEnabled feature flag -->
+                    @if (isAdmin() && tenantConfig.isEnabled('multiDoctorEnabled')) {
                         <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>

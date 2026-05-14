@@ -309,3 +309,39 @@
         &__info { color: #94a3b8; }
     }
 }
+
+// ── Doctor group header (multi-doctor mode) ───────────────────────────────────
+.queue-doctor-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-1, #111827);
+    background: var(--primaryLight, #E8F3EE);
+}
+
+.queue-doctor-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.queue-doctor-name {
+    flex: 1;
+}
+
+.queue-doctor-count {
+    font-weight: 400;
+    color: var(--ink-3, #6b7280);
+    font-size: 12px;
+}
+
+.component-dark-theme .queue-doctor-header {
+    background: rgba(13, 82, 56, 0.15);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+}

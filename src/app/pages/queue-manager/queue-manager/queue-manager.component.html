@@ -64,7 +64,74 @@
         </ck-card>
     }
 
-    <!-- ── Queue list ─────────────────────────────────────────────────────── -->
+    <!-- ── Multi-doctor grouped view ───────────────────────────────────────── -->
+    @if (tenantConfig.isEnabled('multiDoctorEnabled') && doctorGroups().length > 0) {
+        @for (group of doctorGroups(); track (group.doctorId ?? '__none__')) {
+            <ck-card [noPadding]="true">
+                <!-- Group header -->
+                <div class="queue-doctor-header">
+                    <span class="queue-doctor-dot"
+                          [style.background]="group.doctorColor ?? '#0D5238'">
+                    </span>
+                    <span class="queue-doctor-name">
+                        @if (group.doctorName) {
+                            د. {{ group.doctorName }}
+                        } @else {
+                            {{ 'QUEUE.NO_DOCTOR_GROUP' | translate }}
+                        }
+                    </span>
+                    <span class="queue-doctor-count">
+                        ({{ group.entries.length }})
+                    </span>
+                </div>
+
+                @for (entry of group.entries; track entry.id) {
+                    <div class="queue-row"
+                         [attr.data-status]="entry.status"
+                         [class.queue-row--serving]="entry.status === QueueStatus.Serving"
+                         [class.queue-row--done]="entry.status === QueueStatus.Completed || entry.status === QueueStatus.Skipped">
+
+                        <div class="queue-row__num">#{{ entry.queueNumber }}</div>
+
+                        <div class="queue-row__info">
+                            <span class="queue-row__name">{{ entry.patientName }}</span>
+                            <span class="queue-row__meta" dir="ltr">
+                                {{ entry.patientPhone }} &nbsp;·&nbsp; {{ entry.startTime }}
+                            </span>
+                        </div>
+
+                        @if (entry.status === QueueStatus.Serving) {
+                            <div class="queue-row__pulse"></div>
+                        }
+
+                        <ck-status-badge
+                            [status]="statusColor(entry.status)"
+                            [label]="statusLabel(entry.status)">
+                        </ck-status-badge>
+
+                        @if (isActionable(entry)) {
+                            <div class="queue-row__actions">
+                                <ck-btn variant="ghost" size="sm"
+                                        [loading]="actionId() === entry.id"
+                                        (click)="skip(entry)">
+                                    {{ 'QUEUE.SKIP' | translate }}
+                                </ck-btn>
+                                <ck-btn variant="outline" size="sm"
+                                        [loading]="actionId() === entry.id"
+                                        (click)="complete(entry)">
+                                    {{ 'QUEUE.DONE' | translate }}
+                                </ck-btn>
+                            </div>
+                        }
+
+                    </div>
+                }
+            </ck-card>
+        }
+    }
+
+    <!-- ── Queue list (single-doctor / search view) ──────────────────────── -->
+    @if (!tenantConfig.isEnabled('multiDoctorEnabled')) {
     <ck-card [noPadding]="true">
 
         <!-- Search bar -->
@@ -167,5 +234,6 @@
         }
 
     </ck-card>
+    }
 
 </div>

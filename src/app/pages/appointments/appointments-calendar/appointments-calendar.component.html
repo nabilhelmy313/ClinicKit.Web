@@ -97,6 +97,26 @@
 
         </div>
 
+        <!-- ── Doctor filter bar (multiDoctorEnabled only) ──────────────────── -->
+        @if (tenantConfig.isEnabled('multiDoctorEnabled') && doctors().length > 0) {
+            <div class="cal-doctor-bar">
+                <button class="cal-doctor-chip"
+                        [class.cal-doctor-chip--active]="selectedDoctorId() === null"
+                        (click)="filterByDoctor(null)">
+                    <span class="material-symbols-outlined" style="font-size:16px">groups</span>
+                    {{ 'APPOINTMENTS.ALL_DOCTORS' | translate }}
+                </button>
+                @for (doc of doctors(); track doc.id) {
+                    <button class="cal-doctor-chip"
+                            [class.cal-doctor-chip--active]="selectedDoctorId() === doc.id"
+                            (click)="filterByDoctor(doc.id)">
+                        <span class="cal-doctor-chip__dot" [style.background]="doc.color"></span>
+                        {{ doc.fullName }}
+                    </button>
+                }
+            </div>
+        }
+
         <!-- ── Week view: 7-day grid ────────────────────────────────────────── -->
         @if (viewMode() === 'week') {
             <div class="cal-grid">
@@ -131,11 +151,15 @@
                             @for (appt of appointmentsForDay(day); track appt.id) {
                                 <div class="cal-appt"
                                      [attr.data-status]="appt.status"
+                                     [style.border-inline-start-color]="eventColor(appt)"
                                      (click)="openAppointment(appt)">
                                     <span class="cal-appt__time" dir="ltr">
                                         {{ appt.startTime.substring(0, 5) }}
                                     </span>
                                     <span class="cal-appt__name">{{ appt.patientName }}</span>
+                                    @if (appt.doctorName) {
+                                        <span class="cal-appt__doctor">د. {{ appt.doctorName }}</span>
+                                    }
                                     <div class="cal-appt__footer">
                                         <span class="cal-appt__type">{{ typeLabel(appt.type) }}</span>
                                         <ck-status-badge
@@ -179,12 +203,16 @@
                             @for (appt of appointmentsAtHour(hour); track appt.id) {
                                 <div class="cal-appt cal-appt--timeline"
                                      [attr.data-status]="appt.status"
+                                     [style.border-inline-start-color]="eventColor(appt)"
                                      (click)="openAppointment(appt)">
                                     <span class="cal-appt__time" dir="ltr">
                                         {{ appt.startTime.substring(0, 5) }} – {{ appt.endTime.substring(0, 5) }}
                                     </span>
                                     <div class="cal-appt__info">
                                         <span class="cal-appt__name">{{ appt.patientName }}</span>
+                                        @if (appt.doctorName) {
+                                            <span class="cal-appt__doctor">د. {{ appt.doctorName }}</span>
+                                        }
                                         <span class="cal-appt__type">{{ typeLabel(appt.type) }}</span>
                                     </div>
                                     <ck-status-badge

@@ -7,14 +7,17 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
+import { DoctorsService }      from '../../../core/services/doctors.service';
 import {
     Appointment,
     AppointmentStatusLabels,
     AppointmentTypeLabels,
 } from '../../../core/models/appointment.model';
-import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
-import { LanguageService } from '../../../core/services/language.service';
-import { ThemeService }    from '../../../core/services/theme.service';
+import { Doctor }              from '../../../core/models/doctor.model';
+import { TranslatePipe }       from '../../../core/pipes/translate.pipe';
+import { LanguageService }     from '../../../core/services/language.service';
+import { ThemeService }        from '../../../core/services/theme.service';
+import { TenantConfigService } from '../../../core/services/tenant-config.service';
 import {
     CkPageHeaderComponent, CkCardComponent,
     CkBtnComponent, CkStatusBadgeComponent,
@@ -37,16 +40,20 @@ import {
     ],
 })
 export class AppointmentsCalendarComponent implements OnInit {
-    readonly router       = inject(Router);
-    private readonly svc  = inject(AppointmentsService);
-    readonly langService  = inject(LanguageService);
-    readonly themeService = inject(ThemeService);
+    readonly router         = inject(Router);
+    private readonly svc    = inject(AppointmentsService);
+    private readonly docSvc = inject(DoctorsService);
+    readonly langService    = inject(LanguageService);
+    readonly themeService   = inject(ThemeService);
+    readonly tenantConfig   = inject(TenantConfigService);
 
     // ── State ─────────────────────────────────────────────────────────────────
-    anchor       = signal(new Date());
-    appointments = signal<Appointment[]>([]);
-    loading      = signal(false);
-    viewMode     = signal<'week' | 'day'>('week');
+    anchor           = signal(new Date());
+    appointments     = signal<Appointment[]>([]);
+    doctors          = signal<Doctor[]>([]);
+    selectedDoctorId = signal<string | null>(null);
+    loading          = signal(false);
+    viewMode         = signal<'week' | 'day'>('week');
 
     jumpControl = new FormControl<Date | null>(null);
 
@@ -156,8 +163,25 @@ export class AppointmentsCalendarComponent implements OnInit {
         return key ? this.langService.translate(key) : '—';
     }
 
+    /** Colour for a calendar event chip — uses doctor's colour when available, falls back to primary. */
+    eventColor(appt: Appointment): string {
+        return appt.doctorColor ?? '#0D5238';
+    }
+
+    /** Toggle doctor filter — selecting the active doctor resets to "All". */
+    filterByDoctor(doctorId: string | null): void {
+        this.selectedDoctorId.set(doctorId);
+        this.load();
+    }
+
     // ── Navigation ────────────────────────────────────────────────────────────
-    ngOnInit(): void { this.load(); }
+    ngOnInit(): void {
+        // Load active doctors for the filter bar (only if feature is enabled)
+        if (this.tenantConfig.isEnabled('multiDoctorEnabled')) {
+            this.docSvc.list(true).subscribe({ next: docs => this.doctors.set(docs) });
+        }
+        this.load();
+    }
 
     setView(mode: 'week' | 'day'): void { this.viewMode.set(mode); }
 
@@ -199,6 +223,7 @@ export class AppointmentsCalendarComponent implements OnInit {
         this.svc.list({
             fromDate: this.fmt(this.weekStart()),
             toDate:   this.fmt(this.weekEnd()),
+            doctorId: this.selectedDoctorId() ?? undefined,
             pageSize: 200,
         }).subscribe({
             next:  res => { this.appointments.set(res.items); this.loading.set(false); },
