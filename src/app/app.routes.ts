@@ -261,6 +261,13 @@ export const routes: Routes = [
                         .then(m => m.TenantsComponent),
                 title: 'Tenants — ClinicKit',
             },
+            {
+                path: 'catalog',
+                loadComponent: () =>
+                    import('./pages/settings/catalog/catalog.component')
+                        .then(m => m.CatalogComponent),
+                title: 'Catalog — ClinicKit',
+            },
         ],
     },
 

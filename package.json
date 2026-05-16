@@ -36,6 +36,7 @@
     "@fullcalendar/core": "^6.1.19",
     "@fullcalendar/daygrid": "^6.1.19",
     "@iplab/ngx-file-upload": "^20.0.0",
+    "@microsoft/signalr": "^10.0.0",
     "apexcharts": "^5.3.3",
     "express": "^5.1.0",
     "moment": "^2.30.1",

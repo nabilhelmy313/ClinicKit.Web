@@ -1,9 +1,14 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute }      from '@angular/router';
-import { TranslatePipe }       from '../../../core/pipes/translate.pipe';
-import { LanguageService }     from '../../../core/services/language.service';
-import { QueueService }        from '../../../core/services/queue.service';
-import { QueueStatusResponse } from '../../../core/models/queue.model';
+import { ActivatedRoute }          from '@angular/router';
+import { TranslatePipe }           from '../../../core/pipes/translate.pipe';
+import { LanguageService }         from '../../../core/services/language.service';
+import { QueueService }            from '../../../core/services/queue.service';
+import { QueueSignalRService }     from '../../../core/services/queue-signalr.service';
+import {
+  QueueEntry,
+  QueueStatus,
+  QueueStatusResponse,
+} from '../../../core/models/queue.model';
 
 @Component({
   selector: 'app-queue-display',
@@ -18,31 +23,45 @@ export class QueueDisplayComponent implements OnInit {
 
   // ── DI ──────────────────────────────────────────────────────────────────────
   readonly langService = inject(LanguageService);
-  private readonly svc   = inject(QueueService);
-  private readonly route = inject(ActivatedRoute);
+  private readonly svc        = inject(QueueService);
+  private readonly signalR    = inject(QueueSignalRService);
+  private readonly route      = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
   // ── State ────────────────────────────────────────────────────────────────────
   status   = signal<QueueStatusResponse | null>(null);
-  tenantId = '';   // read from ?tenantId= query param
+  tenantId = '';
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────────
-  private pollHandle?: ReturnType<typeof setInterval>;
-
   ngOnInit(): void {
-    // Read tenantId from URL query param (?tenantId=...)
     this.tenantId = this.route.snapshot.queryParamMap.get('tenantId') ?? '';
 
-    this.load();
-
-    // Refresh every 5 seconds (silent — no loading state)
-    this.pollHandle = setInterval(() => this.load(), 5_000);
-    this.destroyRef.onDestroy(() => clearInterval(this.pollHandle));
-  }
-
-  private load(): void {
+    // Initial HTTP load so the screen is populated immediately on open
     this.svc.getStatus(this.tenantId || undefined).subscribe({
       next: s => this.status.set(s),
     });
+
+    // Real-time updates via SignalR (replaces 5-second polling)
+    this.signalR.connect(this.tenantId);
+
+    const sub = this.signalR.queueUpdated$.subscribe(entries =>
+      this.status.set(this.toStatusResponse(entries))
+    );
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
+  }
+
+  // ── Compute QueueStatusResponse from the full entry list ─────────────────────
+  private toStatusResponse(entries: QueueEntry[]): QueueStatusResponse {
+    const waiting = entries
+      .filter(e => e.status === QueueStatus.Waiting)
+      .sort((a, b) => a.queueNumber - b.queueNumber);
+
+    return {
+      currentlyServing: entries.find(e => e.status === QueueStatus.Serving) ?? null,
+      next:             waiting.slice(0, 3),
+      waitingCount:     waiting.length,
+      servedCount:      entries.filter(e => e.status === QueueStatus.Completed).length,
+      totalCount:       entries.length,
+    };
   }
 }

@@ -46,6 +46,11 @@
           },
           "configurations": {
             "production": {
+              "outputPath": {
+                "base": "../../src/ClinicKit.API/wwwroot",
+                "browser": ""
+              },
+              "outputMode": "static",
               "budgets": [
                 {
                   "type": "initial",

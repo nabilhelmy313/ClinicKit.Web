@@ -63,7 +63,16 @@
                         <div [formGroupName]="$index" class="medication-row d-flex gap-10 align-items-start mb-10">
                             <mat-form-field appearance="outline" class="flex-grow-1">
                                 <mat-label>{{ 'VISITS.MEDICINE_NAME' | translate }}</mat-label>
-                                <input matInput formControlName="medicineName" />
+                                <input matInput formControlName="medicineName"
+                                       [matAutocomplete]="medAuto"
+                                       (input)="onMedicineSearch($index, $any($event.target).value)" />
+                                <mat-autocomplete #medAuto="matAutocomplete"
+                                                  [displayWith]="displayMedicineOption.bind(this)"
+                                                  (optionSelected)="onMedicineSelected($index, $event.option.value)">
+                                    @for (m of medicineOptions(); track m.id) {
+                                        <mat-option [value]="m">{{ displayMedicineName(m) }}{{ m.defaultDosage ? ' ' + m.defaultDosage : '' }}</mat-option>
+                                    }
+                                </mat-autocomplete>
                                 @if (med.get('medicineName')?.invalid && med.get('medicineName')?.touched) {
                                     <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
                                 }

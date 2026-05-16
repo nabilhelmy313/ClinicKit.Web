@@ -99,7 +99,8 @@
     "STAFF": "الكادر الطبي",
     "ANALYTICS": "الإحصائيات",
     "HELP": "المساعدة",
-    "ADMINISTRATOR": "مدير النظام"
+    "ADMINISTRATOR": "مدير النظام",
+    "CATALOG": "الخدمات والأدوية"
   },
   "TOPBAR": {
     "SEARCH_PLACEHOLDER": "بحث عن مرضى، مواعيد...",
@@ -386,6 +387,34 @@
     "PASSWORDS_NOT_MATCH": "كلمتا المرور غير متطابقتين",
     "PASSWORD_HINT": "6 أحرف على الأقل",
     "TOGGLE": "تبديل الحالة"
+  },
+  "CATALOG": {
+    "TITLE": "إدارة الخدمات والأدوية",
+    "SERVICES_TAB": "الخدمات",
+    "MEDICINES_TAB": "الأدوية",
+    "ADD_SERVICE": "إضافة خدمة",
+    "EDIT_SERVICE": "تعديل الخدمة",
+    "ADD_MEDICINE": "إضافة دواء",
+    "EDIT_MEDICINE": "تعديل الدواء",
+    "SERVICE_NAME": "اسم الخدمة",
+    "CATEGORY": "التصنيف",
+    "DEFAULT_PRICE": "السعر الافتراضي (ج)",
+    "SORT_ORDER": "الترتيب",
+    "MEDICINE_NAME": "اسم الدواء",
+    "DEFAULT_DOSAGE": "الجرعة الافتراضية",
+    "DEFAULT_FREQUENCY": "التكرار الافتراضي",
+    "STATUS_ACTIVE": "نشط",
+    "STATUS_HIDDEN": "مخفي",
+    "CREATED_SUCCESS": "تمت الإضافة بنجاح",
+    "UPDATED_SUCCESS": "تم التحديث بنجاح",
+    "TOGGLED_SUCCESS": "تم تغيير الحالة",
+    "CAT_EXAM": "كشف",
+    "CAT_XRAY": "أشعة",
+    "CAT_LAB": "تحاليل",
+    "CAT_PROC": "إجراءات",
+    "CAT_OTHER": "أخرى",
+    "NAME_AR": "الاسم بالعربية",
+    "NAME_EN": "الاسم بالإنجليزية (اختياري)"
   },
   "BILLING": {
     "TITLE": "الفواتير",

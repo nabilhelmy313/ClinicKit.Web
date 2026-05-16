@@ -63,6 +63,18 @@
             <!-- ── Invoice items ── -->
             <div class="section-label mb-10">{{ 'BILLING.ITEMS' | translate }}</div>
 
+            <!-- Quick-pick chips -->
+            @if (serviceItems().length > 0) {
+                <div class="quick-chips mb-15">
+                    <span class="chips-label">إضافة سريعة:</span>
+                    @for (svc of serviceItems().slice(0, 8); track svc.id) {
+                        <button mat-stroked-button type="button" class="quick-chip" (click)="quickAddService(svc)">
+                            {{ displayServiceName(svc) }} — {{ svc.defaultPrice | number:'1.0-0' }} ج
+                        </button>
+                    }
+                </div>
+            }
+
             <div class="items-table mb-5">
                 <div class="items-row items-header">
                     <span class="col-desc">{{ 'BILLING.ITEM_DESCRIPTION' | translate }}</span>
@@ -78,7 +90,16 @@
                             <div class="col-desc">
                                 <mat-form-field appearance="outline" class="w-100">
                                     <input matInput formControlName="description"
+                                           [matAutocomplete]="descAuto"
+                                           (input)="onDescriptionSearch($index, $any($event.target).value)"
                                            [placeholder]="'BILLING.ITEM_DESCRIPTION' | translate" />
+                                    <mat-autocomplete #descAuto="matAutocomplete"
+                                                      [displayWith]="displayServiceOption.bind(this)"
+                                                      (optionSelected)="onServiceSelected($index, $event.option.value)">
+                                        @for (svc of serviceOptions(); track svc.id) {
+                                            <mat-option [value]="svc">{{ displayServiceName(svc) }} — {{ svc.defaultPrice | number:'1.0-0' }} ج</mat-option>
+                                        }
+                                    </mat-autocomplete>
                                 </mat-form-field>
                             </div>
                             <div class="col-qty">

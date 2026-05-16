@@ -99,7 +99,8 @@
     "STAFF": "Medical Staff",
     "ANALYTICS": "Analytics",
     "HELP": "Help",
-    "ADMINISTRATOR": "Administrator"
+    "ADMINISTRATOR": "Administrator",
+    "CATALOG": "Services & Medicines"
   },
   "TOPBAR": {
     "SEARCH_PLACEHOLDER": "Search patients, appointments…",
@@ -386,6 +387,34 @@
     "PASSWORDS_NOT_MATCH": "Passwords do not match",
     "PASSWORD_HINT": "Minimum 6 characters",
     "TOGGLE": "Toggle Status"
+  },
+  "CATALOG": {
+    "TITLE": "Services & Medicines Catalog",
+    "SERVICES_TAB": "Services",
+    "MEDICINES_TAB": "Medicines",
+    "ADD_SERVICE": "Add Service",
+    "EDIT_SERVICE": "Edit Service",
+    "ADD_MEDICINE": "Add Medicine",
+    "EDIT_MEDICINE": "Edit Medicine",
+    "SERVICE_NAME": "Service Name",
+    "CATEGORY": "Category",
+    "DEFAULT_PRICE": "Default Price (EGP)",
+    "SORT_ORDER": "Sort Order",
+    "MEDICINE_NAME": "Medicine Name",
+    "DEFAULT_DOSAGE": "Default Dosage",
+    "DEFAULT_FREQUENCY": "Default Frequency",
+    "STATUS_ACTIVE": "Active",
+    "STATUS_HIDDEN": "Hidden",
+    "CREATED_SUCCESS": "Added successfully",
+    "UPDATED_SUCCESS": "Updated successfully",
+    "TOGGLED_SUCCESS": "Status changed",
+    "CAT_EXAM": "Exam",
+    "CAT_XRAY": "X-Ray",
+    "CAT_LAB": "Lab",
+    "CAT_PROC": "Procedure",
+    "CAT_OTHER": "Other",
+    "NAME_AR": "Arabic Name",
+    "NAME_EN": "English Name (Optional)"
   },
   "BILLING": {
     "TITLE": "Invoices",

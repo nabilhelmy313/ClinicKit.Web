@@ -14,17 +14,20 @@ import { MatInputModule }        from '@angular/material/input';
 import { MatSelectModule }       from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule }         from '@angular/material/icon';
+import { MatButtonModule }       from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { BillingService }   from '../../../../core/services/billing.service';
 import { PatientsService }  from '../../../../core/services/patients.service';
 import { VisitsService }    from '../../../../core/services/visits.service';
+import { CatalogService }   from '../../../../core/services/catalog.service';
 import { ToastService }     from '../../../../core/services/toast.service';
 import { LanguageService }  from '../../../../core/services/language.service';
 import { ThemeService }     from '../../../../core/services/theme.service';
 import { TranslatePipe }    from '../../../../core/pipes/translate.pipe';
 import { PatientBrief }     from '../../../../core/models/patient.model';
 import { Visit }            from '../../../../core/models/visit.model';
+import { ServiceItem }      from '../../../../core/models/catalog.model';
 import {
     CkPageHeaderComponent, CkCardComponent, CkBtnComponent, CkFormActionsComponent,
 } from '../../../../shared/index';
@@ -37,7 +40,7 @@ import {
     imports: [
         CommonModule, ReactiveFormsModule, TranslatePipe,
         MatFormFieldModule, MatInputModule, MatSelectModule,
-        MatAutocompleteModule, MatIconModule, MatProgressSpinnerModule,
+        MatAutocompleteModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule,
         CkPageHeaderComponent, CkCardComponent, CkBtnComponent, CkFormActionsComponent,
     ],
 })
@@ -49,6 +52,7 @@ export class InvoiceFormComponent implements OnInit {
     private readonly billing     = inject(BillingService);
     private readonly patientsSvc = inject(PatientsService);
     private readonly visitsSvc   = inject(VisitsService);
+    private readonly catalogSvc  = inject(CatalogService);
     private readonly toast       = inject(ToastService);
     private readonly destroyRef  = inject(DestroyRef);
 
@@ -58,6 +62,8 @@ export class InvoiceFormComponent implements OnInit {
     visitOptions    = signal<Visit[]>([]);
     loadingVisits   = signal(false);
     selectedPatient = signal<PatientBrief | null>(null);
+    serviceItems    = signal<ServiceItem[]>([]);
+    serviceOptions  = signal<ServiceItem[]>([]);
 
     private readonly patientSearch$ = new Subject<string>();
 
@@ -93,6 +99,14 @@ export class InvoiceFormComponent implements OnInit {
                 takeUntilDestroyed(this.destroyRef),
             )
             .subscribe(list => this.patientOptions.set(list));
+
+        // Load full service catalog for quick-pick chips and autocomplete
+        this.catalogSvc.getServices()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(items => {
+                this.serviceItems.set(items);
+                this.serviceOptions.set(items);
+            });
     }
 
     // ── Patient autocomplete ──────────────────────────────────────────────────
@@ -129,6 +143,36 @@ export class InvoiceFormComponent implements OnInit {
 
     visitLabel(v: Visit): string {
         return `${v.visitDate}${v.chiefComplaint ? ' — ' + v.chiefComplaint : ''}`;
+    }
+
+    // ── Quick-pick catalog ────────────────────────────────────────────────────
+    quickAddService(svc: ServiceItem): void {
+        this.itemsArray.push(this.buildItemGroup(svc.name, 1, svc.defaultPrice));
+    }
+
+    onDescriptionSearch(index: number, term: string): void {
+        const filtered = term
+            ? this.serviceItems().filter(s =>
+                s.name.toLowerCase().includes(term.toLowerCase()))
+            : this.serviceItems();
+        this.serviceOptions.set(filtered);
+    }
+
+    onServiceSelected(index: number, svc: ServiceItem): void {
+        this.itemsArray.at(index).patchValue({
+            description: svc.name,
+            unitPrice:   svc.defaultPrice,
+        });
+    }
+
+    displayServiceOption(svc: ServiceItem | string | null): string {
+        if (!svc) return '';
+        if (typeof svc === 'string') return svc;
+        return svc.name;
+    }
+
+    displayServiceName(svc: ServiceItem): string {
+        return (this.langService.lang() === 'en' && svc.nameEn) ? svc.nameEn : svc.name;
     }
 
     // ── Items ─────────────────────────────────────────────────────────────────

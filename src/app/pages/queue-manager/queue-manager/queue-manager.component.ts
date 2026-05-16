@@ -1,14 +1,15 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService }          from '../../../core/services/auth.service';
-import { AppointmentsService }  from '../../../core/services/appointments.service';
+import { AuthService }             from '../../../core/services/auth.service';
+import { AppointmentsService }     from '../../../core/services/appointments.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TranslatePipe }       from '../../../core/pipes/translate.pipe';
-import { LanguageService }     from '../../../core/services/language.service';
-import { ThemeService }        from '../../../core/services/theme.service';
-import { ToastService }        from '../../../core/services/toast.service';
-import { QueueService }        from '../../../core/services/queue.service';
-import { TenantConfigService } from '../../../core/services/tenant-config.service';
+import { TranslatePipe }           from '../../../core/pipes/translate.pipe';
+import { LanguageService }         from '../../../core/services/language.service';
+import { ThemeService }            from '../../../core/services/theme.service';
+import { ToastService }            from '../../../core/services/toast.service';
+import { QueueService }            from '../../../core/services/queue.service';
+import { QueueSignalRService }     from '../../../core/services/queue-signalr.service';
+import { TenantConfigService }     from '../../../core/services/tenant-config.service';
 import {
   QueueEntry,
   QueueStatus,
@@ -59,6 +60,7 @@ export class QueueManagerComponent implements OnInit {
   private readonly apptSvc    = inject(AppointmentsService);
   private readonly auth       = inject(AuthService);
   private readonly toast      = inject(ToastService);
+  private readonly signalR    = inject(QueueSignalRService);
   private readonly destroyRef = inject(DestroyRef);
 
   // ── State ────────────────────────────────────────────────────────────────────
@@ -146,14 +148,15 @@ export class QueueManagerComponent implements OnInit {
   readonly QueueStatusColor = QueueStatusColor;
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────────
-  private pollHandle?: ReturnType<typeof setInterval>;
-
   ngOnInit(): void {
     this.load();
     this.loadTodayAppts();
 
-    this.pollHandle = setInterval(() => this.load(), 15_000);
-    this.destroyRef.onDestroy(() => clearInterval(this.pollHandle));
+    const tenantId = this.auth.currentUser()?.tenantId ?? '';
+    this.signalR.connect(tenantId);
+
+    const sub = this.signalR.queueUpdated$.subscribe(items => this.entries.set(items));
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
   }
 
   // ── Data ──────────────────────────────────────────────────────────────────────
@@ -198,7 +201,7 @@ export class QueueManagerComponent implements OnInit {
       next: () => {
         this.toast.success(this.langService.translate('QUEUE.CALL_NEXT_SUCCESS'));
         this.loading.set(false);
-        this.load();
+        // SignalR broadcast updates entries automatically
       },
       error: () => this.loading.set(false),
     });
