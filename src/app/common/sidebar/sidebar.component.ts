@@ -1,7 +1,7 @@
 import { Component, inject, computed } from '@angular/core';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterModule, Router, NavigationEnd } from '@angular/router';
 import { ToggleService } from './toggle.service';
 import { NgClass } from '@angular/common';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
@@ -41,13 +41,19 @@ export class SidebarComponent {
 
     constructor(
         private toggleService: ToggleService,
-        public themeService: CustomizerSettingsService
+        public themeService: CustomizerSettingsService,
+        private router: Router
     ) {
         this.toggleService.isSidebarToggled$.subscribe(isSidebarToggled => {
             this.isSidebarToggled = isSidebarToggled;
         });
         this.themeService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
+        });
+        this.router.events.subscribe(e => {
+            if (e instanceof NavigationEnd && window.innerWidth < 1200) {
+                this.toggleService.close();
+            }
         });
     }
 

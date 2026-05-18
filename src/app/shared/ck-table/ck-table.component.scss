@@ -464,3 +464,51 @@ tr:focus-within .ckt-actions-cell__toolbar {
         color: rgba(255,255,255,0.70);
     }
 }
+
+// ── Mobile / Tablet responsive ────────────────────────────────────────────────
+@media only screen and (max-width: 1199px) {
+
+    // Give every cell a minimum width so columns don't collapse to unreadable widths
+    ::ng-deep .mat-mdc-table {
+        th.mat-mdc-header-cell,
+        td.mat-mdc-cell {
+            min-width: 100px;
+            white-space: nowrap;
+        }
+
+        // Actions column stays narrow and sticky so it's always reachable
+        th.ckt-th--actions,
+        td.ckt-actions-cell {
+            min-width: 48px;
+            position: sticky;
+            left: 0;
+            background: inherit;
+            z-index: 2;
+        }
+    }
+
+    // Toolbar wraps on small screens
+    .ckt-toolbar {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 12px;
+    }
+
+    // Pagination stacks on very small screens
+    .ck-pagination {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 12px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    ::ng-deep .mat-mdc-table {
+        th.mat-mdc-header-cell,
+        td.mat-mdc-cell {
+            min-width: 80px;
+            font-size: 13px;
+            padding: 8px 10px;
+        }
+    }
+}

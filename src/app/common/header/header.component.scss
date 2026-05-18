@@ -35,7 +35,8 @@
                 }
             }
             .search-box {
-                width: 360px;
+                width: 100%;
+                max-width: 360px;
     
                 i {
                     transform: translateY(-50%);
@@ -622,8 +623,8 @@
     ::ng-deep {
         .header-area {
             top: 15px;
-            left: 15px;
-            right: 15px;
+            left: 15px !important;
+            right: 15px !important;
             padding: 15px 15px 12px;
         
             .header-left-side {
@@ -1276,3 +1277,10 @@
 
 /* Min width 1600px */
 @media only screen and (min-width: 1600px) {}
+
+/* Max width 767px — hide search box on all mobile sizes */
+@media only screen and (max-width: 767px) {
+    ::ng-deep .header-area .header-left-side .search-box {
+        display: none;
+    }
+}

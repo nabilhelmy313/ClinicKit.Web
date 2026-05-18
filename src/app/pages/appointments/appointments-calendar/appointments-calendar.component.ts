@@ -53,7 +53,7 @@ export class AppointmentsCalendarComponent implements OnInit {
     doctors          = signal<Doctor[]>([]);
     selectedDoctorId = signal<string | null>(null);
     loading          = signal(false);
-    viewMode         = signal<'week' | 'day'>('week');
+    viewMode         = signal<'week' | 'day'>(window.innerWidth < 768 ? 'day' : 'week');
 
     jumpControl = new FormControl<Date | null>(null);
 
@@ -176,6 +176,7 @@ export class AppointmentsCalendarComponent implements OnInit {
 
     // ── Navigation ────────────────────────────────────────────────────────────
     ngOnInit(): void {
+        if (window.innerWidth < 768) this.viewMode.set('day');
         // Load active doctors for the filter bar (only if feature is enabled)
         if (this.tenantConfig.isEnabled('multiDoctorEnabled')) {
             this.docSvc.list(true).subscribe({ next: docs => this.doctors.set(docs) });

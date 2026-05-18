@@ -13,5 +13,8 @@ export class ToggleService {
     toggle() {
         this.isSidebarToggled.next(!this.isSidebarToggled.value);
     }
+    close() {
+        this.isSidebarToggled.next(false);
+    }
 
 }

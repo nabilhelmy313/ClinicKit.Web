@@ -3,6 +3,7 @@ import { ToggleService } from './common/sidebar/toggle.service';
 import { HeaderComponent } from './common/header/header.component';
 import { FooterComponent } from './common/footer/footer.component';
 import { SidebarComponent } from './common/sidebar/sidebar.component';
+import { BottomNavComponent } from './common/bottom-nav/bottom-nav.component';
 import { CommonModule, NgClass, ViewportScroller } from '@angular/common';
 import { RouterOutlet, Router, Event, NavigationEnd } from '@angular/router';
 import { CustomizerSettingsService } from './customizer-settings/customizer-settings.service';
@@ -14,7 +15,7 @@ const PUBLIC_ROUTE_PREFIXES = ['/authentication', '/queue-display'];
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, NgClass],
+    imports: [RouterOutlet, CommonModule, SidebarComponent, HeaderComponent, FooterComponent, BottomNavComponent, NgClass],
     templateUrl: './app.html',
     styleUrl: './app.scss'
 })
@@ -32,7 +33,7 @@ export class App {
 
     constructor(
         public router: Router,
-        private toggleService: ToggleService,
+        public toggleService: ToggleService,
         private viewportScroller: ViewportScroller,
         public themeService: CustomizerSettingsService
     ) {

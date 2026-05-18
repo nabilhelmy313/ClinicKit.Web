@@ -1,0 +1,30 @@
+<nav
+    class="bottom-nav"
+    [class.component-dark-theme]="themeService.isDark()"
+    [class.rtl-enabled]="langService.isRTL()"
+>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="bottom-nav-item">
+        <i class="material-symbols-outlined">dashboard</i>
+        <span>{{ 'SIDEBAR.DASHBOARD' | translate }}</span>
+    </a>
+
+    <a routerLink="/patients" routerLinkActive="active" class="bottom-nav-item">
+        <i class="material-symbols-outlined">patient_list</i>
+        <span>{{ 'SIDEBAR.PATIENTS' | translate }}</span>
+    </a>
+
+    <a routerLink="/appointments" routerLinkActive="active" class="bottom-nav-item">
+        <i class="material-symbols-outlined">calendar_month</i>
+        <span>{{ 'SIDEBAR.APPOINTMENTS' | translate }}</span>
+    </a>
+
+    <a routerLink="/queue-manager" routerLinkActive="active" class="bottom-nav-item">
+        <i class="material-symbols-outlined">group</i>
+        <span>{{ 'SIDEBAR.QUEUE_MANAGER' | translate }}</span>
+    </a>
+
+    <button class="bottom-nav-item" (click)="openMore()">
+        <i class="material-symbols-outlined">menu</i>
+        <span>{{ 'COMMON.MORE' | translate }}</span>
+    </button>
+</nav>

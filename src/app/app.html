@@ -8,6 +8,12 @@
     @if (!isPublicRoute()) {
         <!-- Sidebar -->
         <app-sidebar />
+        <!-- Mobile backdrop -->
+        <div
+            class="sidebar-overlay"
+            [class.active]="isSidebarToggled"
+            (click)="toggleService.close()"
+        ></div>
     }
 
     <!-- Main Content -->
@@ -25,5 +31,9 @@
             <div class="flex-grow-1"></div>
         }
     </div>
+
+    @if (!isPublicRoute()) {
+        <app-bottom-nav />
+    }
 
 </div>

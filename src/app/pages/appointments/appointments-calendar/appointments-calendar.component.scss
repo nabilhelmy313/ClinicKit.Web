@@ -633,6 +633,66 @@
     }
 }
 
+// ── Responsive ────────────────────────────────────────────────────────────────
+
+// Tablet: narrow the columns so week fits without extreme horizontal scroll
+@media only screen and (max-width: 1199px) {
+    .cal-grid {
+        grid-template-columns: repeat(7, minmax(100px, 1fr));
+    }
+
+    .cal-nav {
+        padding: 10px 12px;
+        gap: 6px;
+
+        &__month { font-size: 15px; }
+
+        &__today,
+        &__jump-btn { height: 32px; padding: 0 10px; font-size: 12px; }
+
+        &__arrow { width: 32px; height: 32px; }
+    }
+
+    .cal-view-toggle .cal-toggle-btn { height: 32px; padding: 0 10px; font-size: 12px; }
+}
+
+// Mobile: day view only, compact nav, hide week toggle text (icon-only)
+@media only screen and (max-width: 767px) {
+    .cal-list-btn { display: none !important; }
+    // Hide week button — mobile is always day view
+    .cal-view-toggle .cal-toggle-btn:first-child { display: none !important; }
+    .cal-view-toggle .cal-toggle-btn { height: 30px; padding: 0 10px; font-size: 12px; }
+
+    .cal-nav {
+        padding: 8px 10px;
+        gap: 6px;
+
+        &__title { display: none; }   // hidden — jump button already shows the date
+
+        &__jump-label { font-size: 12px; }
+
+        &__arrow { width: 30px; height: 30px; }
+        &__today { height: 30px; padding: 0 8px; font-size: 12px; }
+        &__jump-btn { height: 30px; padding: 0 8px; gap: 4px; }
+    }
+
+    .cal-grid {
+        grid-template-columns: repeat(7, minmax(80px, 1fr));
+        height: calc(100vh - 260px);
+    }
+
+    .cal-timeline {
+        height: calc(100vh - 260px);
+    }
+
+    .cal-hour__label { width: 48px; padding: 10px 8px 0; font-size: 11px; }
+
+    .cal-appt--timeline {
+        flex-wrap: wrap;
+        .cal-appt__time { min-width: unset; font-size: 10px; }
+    }
+}
+
 // Dark mode
 .component-dark-theme .cal-doctor-bar {
     border-bottom-color: rgba(255, 255, 255, 0.08);
