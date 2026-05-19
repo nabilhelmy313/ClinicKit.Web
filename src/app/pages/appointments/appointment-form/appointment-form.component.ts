@@ -11,7 +11,6 @@ import { MatInputModule }         from '@angular/material/input';
 import { MatSelectModule }        from '@angular/material/select';
 import { MatButtonModule }        from '@angular/material/button';
 import { MatDatepickerModule }    from '@angular/material/datepicker';
-import { MatNativeDateModule }    from '@angular/material/core';
 import { MatAutocompleteModule }  from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule }          from '@angular/material/icon';
@@ -29,6 +28,7 @@ import { LanguageService }     from '../../../core/services/language.service';
 import { ThemeService }        from '../../../core/services/theme.service';
 import { TenantConfigService } from '../../../core/services/tenant-config.service';
 import { CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent } from '../../../shared/index';
+import { BreakpointService } from '../../../core/services/breakpoint.service';
 
 @Component({
     selector: 'app-appointment-form',
@@ -38,7 +38,7 @@ import { CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent } from '
     imports: [
         CommonModule, ReactiveFormsModule,
         MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule,
-        MatDatepickerModule, MatNativeDateModule,
+        MatDatepickerModule,
         MatAutocompleteModule, MatProgressSpinnerModule, MatIconModule,
         TranslatePipe,
         CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent,
@@ -55,6 +55,7 @@ export class AppointmentFormComponent implements OnInit {
     readonly langService        = inject(LanguageService);
     readonly themeService       = inject(ThemeService);
     readonly tenantConfig       = inject(TenantConfigService);
+    readonly bp                 = inject(BreakpointService);
 
     protected readonly AppointmentType = AppointmentType;
 

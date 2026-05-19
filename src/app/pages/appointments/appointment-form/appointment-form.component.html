@@ -48,7 +48,7 @@
 
                     } @else {
                         <!-- ── Free autocomplete search (create mode only) ───────────────── -->
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field class="w-100">
                             <mat-label>{{ 'APPOINTMENTS.PATIENT' | translate }}</mat-label>
                             <input matInput
                                    [formControl]="patientSearch"
@@ -77,7 +77,7 @@
                 <!-- Doctor selector — visible only when multiDoctorEnabled -->
                 @if (tenantConfig.isEnabled('multiDoctorEnabled')) {
                 <div class="col-md-6 mb-20">
-                    <mat-form-field appearance="outline" class="w-100">
+                    <mat-form-field class="w-100">
                         <mat-label>{{ 'APPOINTMENTS.DOCTOR' | translate }}</mat-label>
                         <mat-select formControlName="doctorId">
                             <mat-option [value]="null">{{ 'APPOINTMENTS.NO_DOCTOR' | translate }}</mat-option>
@@ -101,13 +101,13 @@
 
                 <!-- Appointment date -->
                 <div class="col-md-4 mb-20">
-                    <mat-form-field appearance="outline" class="w-100">
+                    <mat-form-field class="w-100">
                         <mat-label>{{ 'APPOINTMENTS.DATE' | translate }}</mat-label>
                         <input matInput [matDatepicker]="datePicker"
                                formControlName="appointmentDate"
                                [min]="isEdit ? null : today" />
-                        <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-                        <mat-datepicker #datePicker></mat-datepicker>
+                        <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #datePicker [touchUi]="bp.isMobile()"></mat-datepicker>
                         @if (f['appointmentDate'].invalid && f['appointmentDate'].touched) {
                             <mat-error>{{ 'ERRORS.REQUIRED' | translate }}</mat-error>
                         }
@@ -116,7 +116,7 @@
 
                 <!-- Start time -->
                 <div class="col-md-4 mb-20">
-                    <mat-form-field appearance="outline" class="w-100">
+                    <mat-form-field class="w-100">
                         <mat-label>{{ 'APPOINTMENTS.START_TIME' | translate }}</mat-label>
                         <input matInput type="time" formControlName="startTime" />
                         @if (f['startTime'].invalid && f['startTime'].touched) {
@@ -127,7 +127,7 @@
 
                 <!-- End time -->
                 <div class="col-md-4 mb-20">
-                    <mat-form-field appearance="outline" class="w-100">
+                    <mat-form-field class="w-100">
                         <mat-label>{{ 'APPOINTMENTS.END_TIME' | translate }}</mat-label>
                         <input matInput type="time" formControlName="endTime" />
                         @if (f['endTime'].invalid && f['endTime'].touched) {
@@ -138,7 +138,7 @@
 
                 <!-- Visit type -->
                 <div class="col-md-6 mb-20">
-                    <mat-form-field appearance="outline" class="w-100">
+                    <mat-form-field class="w-100">
                         <mat-label>{{ 'APPOINTMENTS.TYPE' | translate }}</mat-label>
                         <mat-select formControlName="type">
                             <mat-option [value]="AppointmentType.FirstVisit">
@@ -156,7 +156,7 @@
 
                 <!-- Notes -->
                 <div class="col-12 mb-20">
-                    <mat-form-field appearance="outline" class="w-100">
+                    <mat-form-field class="w-100">
                         <mat-label>{{ 'APPOINTMENTS.NOTES' | translate }}</mat-label>
                         <textarea matInput formControlName="notes" rows="3"></textarea>
                     </mat-form-field>

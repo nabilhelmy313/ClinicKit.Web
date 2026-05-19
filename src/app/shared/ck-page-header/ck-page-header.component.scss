@@ -45,23 +45,62 @@
 // ── Mobile ────────────────────────────────────────────────────────────────────
 @media only screen and (max-width: 767px) {
     .ck-page-header {
-        padding: 10px 14px;
-        flex-wrap: wrap;
-        gap: 8px;
+        padding: 10px 14px 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
 
-        &__icon { font-size: 22px; }
-        &__title { font-size: 15px; }
+        &__icon { font-size: 22px; flex-shrink: 0; }
 
-        &__left { flex: 1; min-width: 0; }
+        &__title {
+            font-size: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
 
+        &__left {
+            flex: 0 0 auto;
+            padding-bottom: 10px;
+            min-width: 0;
+        }
+
+        // ── Actions: horizontal scroll row ──────────────────────────────────
+        // Wraps the <ng-content> buttons in a scrollable strip at the bottom
+        // of the card, so they never wrap to multiple rows on small screens.
         &__actions {
-            width: 100%;
-            flex-wrap: wrap;
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
             gap: 6px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 8px 0 10px;
+            border-top: 1px solid rgba(0,0,0,0.06);
+
+            &::-webkit-scrollbar { display: none; }
+
+            // fade-out hint on the trailing edge (LTR)
+            mask-image: linear-gradient(to right, #000 80%, transparent 100%);
+
+            // RTL: fade on the left
+            [dir='rtl'] & {
+                mask-image: linear-gradient(to left, #000 80%, transparent 100%);
+            }
+
+            // Make every direct child (ck-btn / print-trigger) shrink-proof
+            > * { flex-shrink: 0; }
         }
     }
 
     .ck-breadcrumb { display: none; }
+
+    :host-context(.dark-theme) .ck-page-header__actions {
+        border-color: rgba(255,255,255,0.07);
+    }
 }
 
 // ── Breadcrumb ────────────────────────────────────────────────────────────────

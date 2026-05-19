@@ -1,137 +1,104 @@
-<header
-    class="header-area bg-white border-radius transition"
-    [ngClass]="{'active': isSidebarToggled, 'sticky': isSticky}"
-    [class.component-dark-theme]="themeService.isDark()"
-    [class.right-sidebar]="themeService.isRightSidebar() || langService.isRTL()"
-    [class.hide-sidebar]="themeService.isHideSidebar()"
-    [class.dark-header]="themeService.isHeaderDark()"
-    [class.card-borderd-theme]="themeService.isCardBorder()"
-    [class.rtl-enabled]="langService.isRTL()"
->
-    <div class="d-flex align-items-center w-100">
+<header class="topbar"
+    [class.topbar--sticky]="isSticky"
+    [class.topbar--collapsed]="isSidebarToggled"
+    [class.topbar--dark]="themeService.isDark()"
+    [class.topbar--rtl]="langService.isRTL()">
 
-        <!-- Left: burger + search -->
-        <div class="header-left-side d-flex align-items-center flex-grow-1">
-            <div
-                class="burger-menu cursor-pointer transition d-none d-md-block d-xl-none"
-                [ngClass]="{'active': isSidebarToggled}"
+    <!-- ── Start: burger (tablet) ── -->
+    <div class="topbar__start">
+        <button class="topbar-burger"
+                type="button"
+                [class.topbar-burger--open]="isSidebarToggled"
                 (click)="toggle()"
-            >
-                <span class="top-bar d-block bg-black transition"></span>
-                <span class="middle-bar d-block bg-black transition"></span>
-                <span class="bottom-bar d-block bg-black transition"></span>
+                [attr.aria-label]="'TOPBAR.TOGGLE_SIDEBAR' | translate">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <!-- ── Center: logo ── -->
+    <div class="topbar__brand">
+        <img src="assets/logo.svg" alt="طَبَّبَ" class="topbar__logo">
+    </div>
+
+    <!-- ── End: action buttons ── -->
+    <div class="topbar__end">
+
+        <!-- Language toggle -->
+        <button class="topbar-btn topbar-btn--lang"
+                type="button"
+                (click)="toggleLang()"
+                [matTooltip]="langSwitchTooltip() | translate"
+                matTooltipPosition="below">
+            <i class="material-symbols-outlined">translate</i>
+            <span class="topbar-btn__lang-label">{{ langSwitchLabel() }}</span>
+        </button>
+
+        <!-- Dark / Light mode -->
+        <button class="topbar-btn"
+                type="button"
+                (click)="toggleTheme()"
+                [matTooltip]="(themeService.isDark() ? 'TOPBAR.LIGHT_MODE' : 'TOPBAR.DARK_MODE') | translate"
+                matTooltipPosition="below">
+            <i class="material-symbols-outlined">
+                {{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}
+            </i>
+        </button>
+
+        <!-- Notifications -->
+        <button class="topbar-btn"
+                type="button"
+                [matMenuTriggerFor]="notifMenu"
+                [matTooltip]="'TOPBAR.NOTIFICATIONS' | translate"
+                matTooltipPosition="below">
+            <i class="material-symbols-outlined">notifications</i>
+        </button>
+
+        <mat-menu #notifMenu="matMenu" xPosition="before" class="topbar-dropdown">
+            <div class="td-header">
+                <span>{{ 'TOPBAR.NOTIFICATIONS' | translate }}</span>
             </div>
-            <form class="search-box position-relative">
-                <i class="material-symbols-outlined">search</i>
-                <input
-                    type="text"
-                    class="input-search d-block w-100 border-none outline-0"
-                    [placeholder]="'TOPBAR.SEARCH_PLACEHOLDER' | translate"
-                >
-            </form>
-        </div>
+            <div class="td-empty">
+                <i class="material-symbols-outlined">notifications_none</i>
+                <span>{{ 'TOPBAR.NO_NOTIFICATIONS' | translate }}</span>
+            </div>
+        </mat-menu>
 
-        <!-- Center: logo -->
-        <div class="header-center-logo d-flex justify-content-center align-items-center flex-shrink-0">
-            <img src="assets/logo.svg" alt="Tabbab" style="height:44px;object-fit:contain;">
-        </div>
+        <!-- Profile -->
+        <button class="topbar-btn topbar-btn--profile"
+                type="button"
+                [matMenuTriggerFor]="profileMenu">
+            <i class="material-symbols-outlined topbar-avatar">account_circle</i>
+            <div class="topbar-user-info">
+                <span class="topbar-user-info__name">{{ displayName() }}</span>
+                <span class="topbar-user-info__role">{{ roleLabel() | translate }}</span>
+            </div>
+            <i class="material-symbols-outlined topbar-btn__chevron">expand_more</i>
+            <span class="topbar-btn__online"></span>
+        </button>
 
-        <!-- Right: actions -->
-        <ul class="header-right-side d-flex align-items-center justify-content-end flex-grow-1 mt-0 mb-0 pl-0 list-unstyled">
+        <mat-menu #profileMenu="matMenu" xPosition="before" class="topbar-dropdown topbar-dropdown--profile">
+            <div class="td-profile-header">
+                <i class="material-symbols-outlined td-avatar">account_circle</i>
+                <div class="td-profile-info">
+                    <span class="td-profile-name">{{ displayName() }}</span>
+                    <span class="td-profile-email">{{ authService.currentUser()?.email }}</span>
+                    <span class="td-profile-role">{{ roleLabel() | translate }}</span>
+                </div>
+            </div>
 
-            <!-- Language switcher -->
-            <li>
-                <button mat-icon-button [matMenuTriggerFor]="languageMenu" class="language-menu-btn"
-                        [title]="'TOPBAR.NOTIFICATIONS' | translate">
-                    <span class="lang-flag">{{ langService.lang() === 'ar' ? '🇸🇦' : '🇺🇸' }}</span>
-                </button>
-                <mat-menu class="language-menu-dropdown" #languageMenu="matMenu" xPosition="before">
-                    <div [class.dark-menu]="themeService.isDark() || themeService.isHeaderDark()">
-                        <span class="title fw-medium d-block">{{ 'LANG.ARABIC' | translate }} / {{ 'LANG.ENGLISH' | translate }}</span>
-                        <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
-                            <li>
-                                <button mat-button
-                                    (click)="langService.switchLanguage('en')"
-                                    [class.active]="langService.lang() === 'en'">
-                                    🇺🇸 English
-                                </button>
-                            </li>
-                            <li>
-                                <button mat-button
-                                    (click)="langService.switchLanguage('ar')"
-                                    [class.active]="langService.lang() === 'ar'">
-                                    🇸🇦 العربية
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </mat-menu>
-            </li>
+            <div class="td-divider"></div>
 
-            <!-- Dark / Light mode toggle -->
-            <li>
-                <button mat-button class="dark-swtich-btn" (click)="toggleTheme()"
-                        [title]="(themeService.isDark() ? 'TOPBAR.LIGHT_MODE' : 'TOPBAR.DARK_MODE') | translate">
-                    <i class="material-symbols-outlined">
-                        {{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}
-                    </i>
-                </button>
-            </li>
+            <button mat-menu-item routerLink="/settings">
+                <i class="material-symbols-outlined">settings</i>
+                {{ 'SETTINGS.TITLE' | translate }}
+            </button>
+            <button mat-menu-item (click)="logout()">
+                <i class="material-symbols-outlined">logout</i>
+                {{ 'AUTH.LOGOUT' | translate }}
+            </button>
+        </mat-menu>
 
-            <!-- Notifications -->
-            <li>
-                <button mat-icon-button [matMenuTriggerFor]="notificationsMenu"
-                        class="notifications-menu-btn p-0"
-                        [title]="'TOPBAR.NOTIFICATIONS' | translate">
-                    <i class="material-symbols-outlined">notifications</i>
-                </button>
-                <mat-menu class="notifications-menu-dropdown" #notificationsMenu="matMenu" xPosition="before">
-                    <div [class.dark-menu]="themeService.isDark() || themeService.isHeaderDark()">
-                        <div class="title d-flex align-items-center justify-content-between">
-                            <span class="fw-medium">{{ 'TOPBAR.NOTIFICATIONS' | translate }}</span>
-                        </div>
-                        <div class="notifications-empty">
-                            <i class="material-symbols-outlined">notifications_none</i>
-                            <span>{{ 'TOPBAR.NO_NOTIFICATIONS' | translate }}</span>
-                        </div>
-                    </div>
-                </mat-menu>
-            </li>
-
-            <!-- Profile -->
-            <li>
-                <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-menu-btn">
-                    <i class="material-symbols-outlined profile-avatar">account_circle</i>
-                    <span class="status d-inline-block rounded-circle position-absolute"></span>
-                </button>
-                <mat-menu class="profile-menu-dropdown" #profileMenu="matMenu" xPosition="before">
-                    <div [class.dark-menu]="themeService.isDark() || themeService.isHeaderDark()">
-                        <div class="menu-header d-flex align-items-center">
-                            <i class="material-symbols-outlined profile-avatar-lg">account_circle</i>
-                            <div class="title">
-                                <span class="d-inline-block fw-medium">
-                                    {{ authService.currentUser()?.email ?? ('COMMON.ADMINISTRATOR' | translate) }}
-                                </span>
-                                <span class="designation d-block text-body">
-                                    {{ roleLabel() | translate }}
-                                </span>
-                            </div>
-                        </div>
-                        <ul class="menu-body pl-0 mb-0 mt-0 list-unstyled">
-                            <li class="position-relative transition fw-medium">
-                                <i class="material-symbols-outlined">settings</i>
-                                {{ 'SETTINGS.TITLE' | translate }}
-                                <a routerLink="/settings" class="link-btn d-block position-absolute"></a>
-                            </li>
-                            <li class="position-relative transition fw-medium" style="cursor:pointer" (click)="logout()">
-                                <i class="material-symbols-outlined">logout</i>
-                                {{ 'AUTH.LOGOUT' | translate }}
-                            </li>
-                        </ul>
-                    </div>
-                </mat-menu>
-            </li>
-
-        </ul>
     </div>
 </header>

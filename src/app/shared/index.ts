@@ -9,6 +9,8 @@ export { CkEmptyStateComponent }                   from './ck-empty-state/ck-emp
 export { CkFormActionsComponent }                  from './ck-form-actions/ck-form-actions.component';
 export { CkDetailsComponent }                      from './ck-details/ck-details.component';
 export { CkCancelDialogComponent }                 from './ck-cancel-dialog/ck-cancel-dialog.component';
+export { CkTabsComponent }                         from './ck-tabs/ck-tabs.component';
+export type { CkTab }                              from './ck-tabs/ck-tab.model';
 
 export type { CkBtnVariant, CkBtnSize }            from './ck-btn/ck-btn.component';
 export type { CkBreadcrumb }                       from './ck-page-header/ck-page-header.component';

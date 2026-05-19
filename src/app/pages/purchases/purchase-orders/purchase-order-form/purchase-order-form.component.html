@@ -1,0 +1,125 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="add_shopping_cart"
+        [title]="'PURCHASES.NEW_ORDER' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('PURCHASES.TITLE' | translate), link: '/purchases/orders' },
+            { label: ('PURCHASES.NEW_ORDER' | translate) }
+        ]">
+    </ck-page-header>
+
+    <form [formGroup]="form">
+
+        <!-- ── Order header ────────────────────────────────────────────────── -->
+        <ck-card [title]="'PURCHASES.ORDER_INFO' | translate">
+            <div class="order-header-grid">
+
+                <mat-form-field>
+                    <mat-label>{{ 'PURCHASES.SUPPLIER' | translate }}</mat-label>
+                    <mat-select formControlName="supplierId">
+                        @for (s of suppliers(); track s.id) {
+                            <mat-option [value]="s.id">{{ s.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>{{ 'PURCHASES.ORDER_DATE' | translate }}</mat-label>
+                    <input matInput [matDatepicker]="dp" [value]="today"
+                           (dateChange)="onDateChange($event)" readonly />
+                    <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+                    <mat-datepicker #dp [touchUi]="bp.isMobile()"></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field class="full-col">
+                    <mat-label>{{ 'PURCHASES.NOTES' | translate }}</mat-label>
+                    <textarea matInput formControlName="notes" rows="2"></textarea>
+                </mat-form-field>
+
+            </div>
+        </ck-card>
+
+        <!-- ── Line items ──────────────────────────────────────────────────── -->
+        <ck-card [title]="'PURCHASES.ITEMS' | translate">
+
+            <div class="ck-items-table">
+
+                <div class="ck-items-header po-grid">
+                    <span>{{ 'CATALOG.MEDICINE_NAME' | translate }}</span>
+                    <span>{{ 'PURCHASES.ITEM_DESC' | translate }}</span>
+                    <span>{{ 'BILLING.ITEM_QTY' | translate }}</span>
+                    <span>{{ 'PURCHASES.UNIT_COST' | translate }}</span>
+                    <span>{{ 'BILLING.TOTAL' | translate }}</span>
+                    <span></span>
+                </div>
+
+                <div formArrayName="items">
+                    @for (item of items.controls; track $index) {
+                        <div class="ck-item-row po-grid" [formGroupName]="$index">
+
+                            <mat-form-field>
+                                <input matInput formControlName="medicineName"
+                                       [matAutocomplete]="medAuto" />
+                                <mat-autocomplete #medAuto autoActiveFirstOption
+                                    (optionSelected)="selectMedicine($index, $event.option.value)">
+                                    @for (m of medicineOptions()[$index]; track m.id) {
+                                        <mat-option [value]="m">{{ m.name }}</mat-option>
+                                    }
+                                </mat-autocomplete>
+                            </mat-form-field>
+
+                            <mat-form-field>
+                                <input matInput formControlName="description" />
+                            </mat-form-field>
+
+                            <mat-form-field>
+                                <input matInput type="number" min="1" formControlName="quantity" />
+                            </mat-form-field>
+
+                            <mat-form-field>
+                                <input matInput type="number" min="0" step="0.01"
+                                       formControlName="unitCost" dir="ltr" />
+                            </mat-form-field>
+
+                            <div class="row-total" dir="ltr">
+                                {{ lineTotal(item) | number:'1.2-2' }}
+                            </div>
+
+                            <button type="button" class="ck-remove-btn"
+                                    [disabled]="items.length === 1"
+                                    (click)="removeItem($index)">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+
+                        </div>
+                    }
+                </div>
+
+                <div class="ck-items-footer">
+                    <button type="button" class="ck-add-item-btn" (click)="addItem()">
+                        <span class="material-symbols-outlined">add</span>
+                        {{ 'PURCHASES.ADD_ITEM' | translate }}
+                    </button>
+                    <div class="ck-items-grand-total" dir="ltr">
+                        <span>{{ 'BILLING.TOTAL' | translate }}</span>
+                        <strong>{{ grandTotal | number:'1.2-2' }} {{ 'BILLING.CURRENCY' | translate }}</strong>
+                    </div>
+                </div>
+
+            </div>
+
+        </ck-card>
+
+        <!-- ── Actions ─────────────────────────────────────────────────────── -->
+        <ck-form-actions
+            [loading]="saving()"
+            [saveLabel]="'PURCHASES.SAVE_ORDER' | translate"
+            (cancel)="cancel()">
+        </ck-form-actions>
+
+    </form>
+
+</div>

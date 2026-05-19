@@ -1,9 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule }  from '@angular/common';
 import { Router }        from '@angular/router';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule, MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppointmentsService } from '../../../core/services/appointments.service';
@@ -18,6 +16,7 @@ import { TranslatePipe }       from '../../../core/pipes/translate.pipe';
 import { LanguageService }     from '../../../core/services/language.service';
 import { ThemeService }        from '../../../core/services/theme.service';
 import { TenantConfigService } from '../../../core/services/tenant-config.service';
+import { BreakpointService }   from '../../../core/services/breakpoint.service';
 import {
     CkPageHeaderComponent, CkCardComponent,
     CkBtnComponent, CkStatusBadgeComponent,
@@ -30,10 +29,8 @@ import {
     styleUrl:    './appointments-calendar.component.scss',
     imports: [
         CommonModule,
-        ReactiveFormsModule,
         MatProgressSpinnerModule,
         MatDatepickerModule,
-        MatNativeDateModule,
         TranslatePipe,
         CkPageHeaderComponent, CkCardComponent,
         CkBtnComponent, CkStatusBadgeComponent,
@@ -46,6 +43,7 @@ export class AppointmentsCalendarComponent implements OnInit {
     readonly langService    = inject(LanguageService);
     readonly themeService   = inject(ThemeService);
     readonly tenantConfig   = inject(TenantConfigService);
+    readonly bp             = inject(BreakpointService);
 
     // ── State ─────────────────────────────────────────────────────────────────
     anchor           = signal(new Date());
@@ -55,7 +53,6 @@ export class AppointmentsCalendarComponent implements OnInit {
     loading          = signal(false);
     viewMode         = signal<'week' | 'day'>(window.innerWidth < 768 ? 'day' : 'week');
 
-    jumpControl = new FormControl<Date | null>(null);
 
     // Work hours 8 AM → 8 PM
     readonly WORK_START = 8;
@@ -110,6 +107,24 @@ export class AppointmentsCalendarComponent implements OnInit {
         const d   = new Date(this.weekStart());
         const jan = new Date(d.getFullYear(), 0, 1);
         return Math.ceil(((d.getTime() - jan.getTime()) / 86_400_000 + jan.getDay() + 1) / 7);
+    });
+
+    private get _intlLocale(): string {
+        return this.langService.isRTL() ? 'ar-u-nu-latn' : 'en-GB';
+    }
+
+    /** "16 مايو – 22 مايو 2026" / "16 May – 22 May 2026" — used in jump button */
+    weekRangeLabel = computed(() => {
+        const loc  = this._intlLocale;
+        const fmtS = new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short' });
+        const fmtE = new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short', year: 'numeric' });
+        return `${fmtS.format(this.weekStart())} – ${fmtE.format(this.weekEnd())}`;
+    });
+
+    /** "16 مايو – 22 مايو" / "16 May – 22 May" — used in nav title */
+    weekRangeShort = computed(() => {
+        const fmt = new Intl.DateTimeFormat(this._intlLocale, { day: 'numeric', month: 'short' });
+        return `${fmt.format(this.weekStart())} – ${fmt.format(this.weekEnd())}`;
     });
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -214,7 +229,6 @@ export class AppointmentsCalendarComponent implements OnInit {
     onJump(event: MatDatepickerInputEvent<Date>): void {
         if (!event.value) return;
         this.anchor.set(event.value);
-        this.jumpControl.setValue(null, { emitEvent: false });
         this.load();
     }
 

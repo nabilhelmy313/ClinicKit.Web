@@ -1,0 +1,243 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="bar_chart"
+        [title]="'REPORTS.TITLE' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('REPORTS.TITLE' | translate) }
+        ]">
+
+        <!-- Date range picker -->
+        <form [formGroup]="range" class="date-range-form">
+            <mat-form-field class="range-field">
+                <mat-label>{{ 'REPORTS.FROM' | translate }}</mat-label>
+                <input matInput [matDatepicker]="dpFrom" formControlName="from">
+                <mat-datepicker-toggle matIconSuffix [for]="dpFrom"></mat-datepicker-toggle>
+                <mat-datepicker #dpFrom [touchUi]="bp.isMobile()"></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field class="range-field">
+                <mat-label>{{ 'REPORTS.TO' | translate }}</mat-label>
+                <input matInput [matDatepicker]="dpTo" formControlName="to">
+                <mat-datepicker-toggle matIconSuffix [for]="dpTo"></mat-datepicker-toggle>
+                <mat-datepicker #dpTo [touchUi]="bp.isMobile()"></mat-datepicker>
+            </mat-form-field>
+
+            <ck-btn icon="refresh" (clicked)="applyRange()">
+                {{ 'REPORTS.APPLY' | translate }}
+            </ck-btn>
+        </form>
+    </ck-page-header>
+
+    <!-- ── Shared pill tab bar ───────────────────────────────────────────── -->
+    <div class="reports-tab-bar">
+        <ck-tabs
+            [tabs]="reportTabs"
+            [active]="activeTab()"
+            [block]="true"
+            (activeChange)="activeTab.set($event)">
+        </ck-tabs>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ 1. REVENUE ══ -->
+    @if (activeTab() === 'revenue') {
+
+        <!-- KPI cards -->
+        <div class="kpi-row">
+            <ck-card class="kpi-card kpi-green">
+                <div class="kpi-label">{{ 'REPORTS.TOTAL_INVOICED' | translate }}</div>
+                <div class="kpi-value" dir="ltr">
+                    {{ (revenue()?.totalInvoiced ?? 0) | number:'1.2-2' }}
+                    <span class="kpi-currency">{{ 'BILLING.CURRENCY' | translate }}</span>
+                </div>
+            </ck-card>
+            <ck-card class="kpi-card kpi-gold">
+                <div class="kpi-label">{{ 'REPORTS.TOTAL_PAID' | translate }}</div>
+                <div class="kpi-value" dir="ltr">
+                    {{ (revenue()?.totalPaid ?? 0) | number:'1.2-2' }}
+                    <span class="kpi-currency">{{ 'BILLING.CURRENCY' | translate }}</span>
+                </div>
+            </ck-card>
+            <ck-card class="kpi-card kpi-warn">
+                <div class="kpi-label">{{ 'REPORTS.OUTSTANDING' | translate }}</div>
+                <div class="kpi-value" dir="ltr">
+                    {{ (revenue()?.outstanding ?? 0) | number:'1.2-2' }}
+                    <span class="kpi-currency">{{ 'BILLING.CURRENCY' | translate }}</span>
+                </div>
+            </ck-card>
+            <ck-card class="kpi-card kpi-neutral">
+                <div class="kpi-label">{{ 'REPORTS.INVOICE_COUNT' | translate }}</div>
+                <div class="kpi-value">{{ revenue()?.invoiceCount ?? 0 }}</div>
+            </ck-card>
+        </div>
+
+        @if (revenue() && revenue()!.rows.length) {
+            <ck-card [title]="'REPORTS.DAILY_REVENUE' | translate">
+                <apx-chart
+                    [series]="revenueSeries()"
+                    [chart]="revenueChart()"
+                    [xaxis]="revenueXAxis()"
+                    [stroke]="revenueStroke"
+                    [colors]="revenueColors"
+                    [fill]="revenueFill"
+                    [dataLabels]="revenueDataLabels"
+                    [plotOptions]="revenuePlotOptions"
+                    [grid]="chartGrid()"
+                    [theme]="chartTheme()"
+                    [tooltip]="chartTooltip()">
+                </apx-chart>
+            </ck-card>
+        }
+
+        <div class="export-row">
+            <ck-btn variant="outline" icon="download"
+                    [loading]="exporting()" (clicked)="exportRevenue()">
+                {{ 'REPORTS.EXPORT_EXCEL' | translate }}
+            </ck-btn>
+        </div>
+    }
+
+    <!-- ═══════════════════════════════════════ 2. APPOINTMENTS ══ -->
+    @if (activeTab() === 'appointments') {
+
+        <div class="kpi-row">
+            <ck-card class="kpi-card kpi-green">
+                <div class="kpi-label">{{ 'REPORTS.TOTAL_APPOINTMENTS' | translate }}</div>
+                <div class="kpi-value">{{ appointment()?.totalCount ?? 0 }}</div>
+            </ck-card>
+            @for (row of (appointment()?.byStatus ?? []); track row.status) {
+                <ck-card class="kpi-card kpi-neutral">
+                    <div class="kpi-label">
+                        {{ ('REPORTS.APPT_STATUS.' + row.status.toUpperCase()) | translate }}
+                    </div>
+                    <div class="kpi-value">{{ row.count }}</div>
+                </ck-card>
+            }
+        </div>
+
+        <div class="charts-row">
+            @if (apptDonutSeries().length) {
+                <ck-card [title]="'REPORTS.BY_STATUS' | translate" class="chart-half">
+                    <apx-chart
+                        [series]="apptDonutSeries()"
+                        [chart]="apptDonutChart()"
+                        [labels]="apptDonutLabels()"
+                        [colors]="apptDonutColors()"
+                        [plotOptions]="apptDonutPlotOptions"
+                        [dataLabels]="apptDonutDataLabels"
+                        [theme]="chartTheme()"
+                        [tooltip]="chartTooltip()">
+                    </apx-chart>
+                </ck-card>
+            }
+            @if (apptLineSeries()[0]?.data?.length) {
+                <ck-card [title]="'REPORTS.DAILY_TREND' | translate" class="chart-half">
+                    <apx-chart
+                        [series]="apptLineSeries()"
+                        [chart]="apptLineChart()"
+                        [xaxis]="apptLineXAxis()"
+                        [fill]="apptFill"
+                        [stroke]="apptStroke"
+                        [colors]="apptColors"
+                        [grid]="chartGrid()"
+                        [theme]="chartTheme()"
+                        [tooltip]="chartTooltip()">
+                    </apx-chart>
+                </ck-card>
+            }
+        </div>
+    }
+
+    <!-- ═══════════════════════════════════════ 3. PATIENT FLOW ══ -->
+    @if (activeTab() === 'patients') {
+
+        <div class="kpi-row">
+            <ck-card class="kpi-card kpi-green">
+                <div class="kpi-label">{{ 'REPORTS.NEW_PATIENTS' | translate }}</div>
+                <div class="kpi-value">{{ patients()?.totalNew ?? 0 }}</div>
+            </ck-card>
+        </div>
+
+        @if (patientSeries()[0]?.data?.length) {
+            <ck-card [title]="'REPORTS.NEW_PATIENTS_TREND' | translate">
+                <apx-chart
+                    [series]="patientSeries()"
+                    [chart]="patientChart()"
+                    [xaxis]="patientXAxis()"
+                    [fill]="patientFill"
+                    [stroke]="patientStroke"
+                    [colors]="patientColors"
+                    [grid]="chartGrid()"
+                    [theme]="chartTheme()"
+                    [tooltip]="chartTooltip()">
+                </apx-chart>
+            </ck-card>
+        }
+    }
+
+    <!-- ═══════════════════════════════════════ 4. TOP SERVICES ══ -->
+    @if (activeTab() === 'services') {
+
+        @if (servicesSeries()[0]?.data?.length) {
+            <ck-card [title]="'REPORTS.TOP_SERVICES' | translate">
+                <apx-chart
+                    [series]="servicesSeries()"
+                    [chart]="servicesChart()"
+                    [xaxis]="servicesXAxis()"
+                    [plotOptions]="servicesPlotOptions"
+                    [dataLabels]="servicesDataLabels"
+                    [colors]="servicesColors"
+                    [grid]="chartGrid()"
+                    [theme]="chartTheme()"
+                    [tooltip]="chartTooltip()">
+                </apx-chart>
+            </ck-card>
+        }
+
+        <ck-card [noPadding]="true">
+            <ck-table
+                [columnDefs]="servicesCols"
+                [data]="services()?.rows ?? []"
+                [loading]="loadingServices()"
+                emptyIcon="medical_services"
+                [emptyMessage]="'REPORTS.NO_DATA' | translate">
+
+                <ng-template ckCell="totalRevenue" let-row>
+                    <span class="cell-amount" dir="ltr">
+                        {{ row.totalRevenue | number:'1.2-2' }}
+                        <span class="cell-currency">{{ 'BILLING.CURRENCY' | translate }}</span>
+                    </span>
+                </ng-template>
+
+            </ck-table>
+        </ck-card>
+    }
+
+    <!-- ═══════════════════════════════════════ 5. LOW STOCK ══ -->
+    @if (activeTab() === 'lowstock') {
+
+        <ck-card [noPadding]="true">
+            <ck-table
+                [columnDefs]="stockCols"
+                [data]="lowStock()?.rows ?? []"
+                [loading]="loadingLowStock()"
+                emptyIcon="check_circle"
+                [emptyMessage]="'REPORTS.STOCK_OK' | translate">
+
+                <ng-template ckCell="currentStock" let-row>
+                    <span class="stock-badge stock-badge--{{ stockUrgency(row) }}">
+                        {{ row.currentStock }}
+                    </span>
+                </ng-template>
+
+                <ng-template ckCell="unit" let-row>
+                    {{ row.unit ?? '—' }}
+                </ng-template>
+
+            </ck-table>
+        </ck-card>
+    }
+
+</div>

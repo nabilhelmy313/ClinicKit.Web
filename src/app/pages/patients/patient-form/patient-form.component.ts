@@ -9,7 +9,6 @@ import { MatInputModule }        from '@angular/material/input';
 import { MatSelectModule }       from '@angular/material/select';
 import { MatButtonModule }       from '@angular/material/button';
 import { MatDatepickerModule }   from '@angular/material/datepicker';
-import { MatNativeDateModule }   from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { PatientsService } from '../../../core/services/patients.service';
@@ -19,6 +18,7 @@ import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
 import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService }    from '../../../core/services/theme.service';
 import { CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent } from '../../../shared/index';
+import { BreakpointService } from '../../../core/services/breakpoint.service';
 
 const EG_PHONE = /^(\+?20|0)?1[0125]\d{8}$/;
 
@@ -30,7 +30,7 @@ const EG_PHONE = /^(\+?20|0)?1[0125]\d{8}$/;
     imports: [
         CommonModule, ReactiveFormsModule,
         MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule,
-        MatDatepickerModule, MatNativeDateModule, MatProgressSpinnerModule,
+        MatDatepickerModule, MatProgressSpinnerModule,
         TranslatePipe,
         CkPageHeaderComponent, CkCardComponent, CkFormActionsComponent,
     ],
@@ -43,6 +43,7 @@ export class PatientFormComponent implements OnInit {
     private readonly route  = inject(ActivatedRoute);
     readonly langService    = inject(LanguageService);
     readonly themeService   = inject(ThemeService);
+    readonly bp             = inject(BreakpointService);
 
     protected readonly Gender = Gender;
 

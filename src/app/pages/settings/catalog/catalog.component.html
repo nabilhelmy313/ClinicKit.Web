@@ -1,193 +1,96 @@
-<div
-  class="catalog-page"
-  [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
-  [class.component-dark-theme]="themeService.isDark()"
->
-  <ck-page-header
-    [title]="'CATALOG.TITLE' | translate"
-  />
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
 
-  <ck-card>
-    <mat-tab-group animationDuration="200ms" class="catalog-tabs">
+    <ck-page-header [title]="'CATALOG.TITLE' | translate" />
 
-      <!-- ══════════════════════════════════════ SERVICES TAB ══ -->
-      <mat-tab [label]="'CATALOG.SERVICES_TAB' | translate">
+    <ck-card [noPadding]="true">
 
-        <!-- Tab toolbar -->
-        <div class="tab-toolbar">
-          <ck-btn variant="primary" (clicked)="openServiceDialog()">
-            <span class="material-symbols-outlined btn-icon">add</span>
-            {{ 'CATALOG.ADD_SERVICE' | translate }}
-          </ck-btn>
+        <!-- ── Shared pill tab bar ───────────────────────────────────────── -->
+        <div class="catalog-tab-bar">
+            <ck-tabs
+                [tabs]="catalogTabs"
+                [active]="activeTab()"
+                (activeChange)="activeTab.set($any($event))">
+            </ck-tabs>
+
+            <!-- Add button switches label with active tab -->
+            @if (activeTab() === 'services') {
+                <ck-btn variant="primary" icon="add" (clicked)="openServiceDialog()">
+                    {{ 'CATALOG.ADD_SERVICE' | translate }}
+                </ck-btn>
+            } @else {
+                <ck-btn variant="primary" icon="add" (clicked)="openMedicineDialog()">
+                    {{ 'CATALOG.ADD_MEDICINE' | translate }}
+                </ck-btn>
+            }
         </div>
 
-        <!-- Loading spinner -->
-        @if (servicesLoading()) {
-          <div class="spinner-wrap">
-            <mat-spinner diameter="40" />
-          </div>
-        }
+        <!-- ══════════════════════════════════════ SERVICES TABLE ══ -->
+        @if (activeTab() === 'services') {
+            <ck-table
+                [columnDefs]="servicesCols"
+                [data]="services()"
+                [loading]="servicesLoading()"
+                [actions]="servicesActions"
+                emptyIcon="medical_services"
+                [emptyMessage]="'CATALOG.ADD_SERVICE' | translate">
 
-        <!-- Services table -->
-        @if (!servicesLoading()) {
-          <div class="table-wrap">
-            <table mat-table [dataSource]="services()" class="ck-mat-table">
+                <ng-template ckCell="name" let-row>
+                    {{ displayName(row) }}
+                </ng-template>
 
-              <!-- Name column -->
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>{{ 'CATALOG.SERVICE_NAME' | translate }}</th>
-                <td mat-cell *matCellDef="let row">{{ displayName(row) }}</td>
-              </ng-container>
+                <ng-template ckCell="category" let-row>
+                    {{ row.category || '—' }}
+                </ng-template>
 
-              <!-- Category column -->
-              <ng-container matColumnDef="category">
-                <th mat-header-cell *matHeaderCellDef>{{ 'CATALOG.CATEGORY' | translate }}</th>
-                <td mat-cell *matCellDef="let row">{{ row.category || '—' }}</td>
-              </ng-container>
-
-              <!-- Default price column -->
-              <ng-container matColumnDef="defaultPrice">
-                <th mat-header-cell *matHeaderCellDef>{{ 'CATALOG.DEFAULT_PRICE' | translate }}</th>
-                <td mat-cell *matCellDef="let row">{{ row.defaultPrice | number:'1.0-0' }} {{ 'BILLING.CURRENCY' | translate }}</td>
-              </ng-container>
-
-              <!-- Status column -->
-              <ng-container matColumnDef="isActive">
-                <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.STATUS' | translate }}</th>
-                <td mat-cell *matCellDef="let row">
-                  <ck-status-badge
-                    [status]="row.isActive ? 'active' : 'hidden'"
-                    [label]="(row.isActive ? 'CATALOG.STATUS_ACTIVE' : 'CATALOG.STATUS_HIDDEN') | translate"
-                    [colorMap]="statusMap"
-                  />
-                </td>
-              </ng-container>
-
-              <!-- Actions column -->
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
-                <td mat-cell *matCellDef="let row" class="actions-cell">
-                  <button mat-icon-button
-                          [matTooltip]="'COMMON.EDIT' | translate"
-                          (click)="openServiceDialog(row)">
-                    <span class="material-symbols-outlined">edit</span>
-                  </button>
-                  <button mat-icon-button
-                          [matTooltip]="(row.isActive ? 'CATALOG.STATUS_HIDDEN' : 'CATALOG.STATUS_ACTIVE') | translate"
-                          (click)="toggleService(row.id)">
-                    <span class="material-symbols-outlined">
-                      {{ row.isActive ? 'visibility_off' : 'visibility' }}
+                <ng-template ckCell="defaultPrice" let-row>
+                    <span class="cell-price" dir="ltr">
+                        {{ row.defaultPrice | number:'1.0-0' }}
+                        <span class="cell-currency">{{ 'BILLING.CURRENCY' | translate }}</span>
                     </span>
-                  </button>
-                </td>
-              </ng-container>
+                </ng-template>
 
-              <tr mat-header-row *matHeaderRowDef="serviceColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: serviceColumns;"></tr>
+                <ng-template ckCell="isActive" let-row>
+                    <ck-status-badge
+                        [status]="row.isActive ? 'active' : 'hidden'"
+                        [label]="(row.isActive ? 'CATALOG.STATUS_ACTIVE' : 'CATALOG.STATUS_HIDDEN') | translate"
+                        [colorMap]="statusMap" />
+                </ng-template>
 
-              <!-- No data row -->
-              <tr class="mat-row" *matNoDataRow>
-                <td [attr.colspan]="serviceColumns.length" class="no-data-cell">
-                  <span class="material-symbols-outlined no-data-icon">medical_services</span>
-                  <p>{{ 'CATALOG.ADD_SERVICE' | translate }}</p>
-                </td>
-              </tr>
-
-            </table>
-          </div>
+            </ck-table>
         }
 
-      </mat-tab>
+        <!-- ══════════════════════════════════════ MEDICINES TABLE ══ -->
+        @if (activeTab() === 'medicines') {
+            <ck-table
+                [columnDefs]="medicinesCols"
+                [data]="medicines()"
+                [loading]="medicinesLoading()"
+                [actions]="medicinesActions"
+                emptyIcon="medication"
+                [emptyMessage]="'CATALOG.ADD_MEDICINE' | translate">
 
-      <!-- ══════════════════════════════════════ MEDICINES TAB ══ -->
-      <mat-tab [label]="'CATALOG.MEDICINES_TAB' | translate">
+                <ng-template ckCell="name" let-row>
+                    {{ displayName(row) }}
+                </ng-template>
 
-        <!-- Tab toolbar -->
-        <div class="tab-toolbar">
-          <ck-btn variant="primary" (clicked)="openMedicineDialog()">
-            <span class="material-symbols-outlined btn-icon">add</span>
-            {{ 'CATALOG.ADD_MEDICINE' | translate }}
-          </ck-btn>
-        </div>
+                <ng-template ckCell="defaultDosage" let-row>
+                    {{ row.defaultDosage || '—' }}
+                </ng-template>
 
-        <!-- Loading spinner -->
-        @if (medicinesLoading()) {
-          <div class="spinner-wrap">
-            <mat-spinner diameter="40" />
-          </div>
+                <ng-template ckCell="defaultFrequency" let-row>
+                    {{ row.defaultFrequency || '—' }}
+                </ng-template>
+
+                <ng-template ckCell="isActive" let-row>
+                    <ck-status-badge
+                        [status]="row.isActive ? 'active' : 'hidden'"
+                        [label]="(row.isActive ? 'CATALOG.STATUS_ACTIVE' : 'CATALOG.STATUS_HIDDEN') | translate"
+                        [colorMap]="statusMap" />
+                </ng-template>
+
+            </ck-table>
         }
 
-        <!-- Medicines table -->
-        @if (!medicinesLoading()) {
-          <div class="table-wrap">
-            <table mat-table [dataSource]="medicines()" class="ck-mat-table">
-
-              <!-- Name column -->
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>{{ 'CATALOG.MEDICINE_NAME' | translate }}</th>
-                <td mat-cell *matCellDef="let row">{{ displayName(row) }}</td>
-              </ng-container>
-
-              <!-- Dosage column -->
-              <ng-container matColumnDef="defaultDosage">
-                <th mat-header-cell *matHeaderCellDef>{{ 'CATALOG.DEFAULT_DOSAGE' | translate }}</th>
-                <td mat-cell *matCellDef="let row">{{ row.defaultDosage || '—' }}</td>
-              </ng-container>
-
-              <!-- Frequency column -->
-              <ng-container matColumnDef="defaultFrequency">
-                <th mat-header-cell *matHeaderCellDef>{{ 'CATALOG.DEFAULT_FREQUENCY' | translate }}</th>
-                <td mat-cell *matCellDef="let row">{{ row.defaultFrequency || '—' }}</td>
-              </ng-container>
-
-              <!-- Status column -->
-              <ng-container matColumnDef="isActive">
-                <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.STATUS' | translate }}</th>
-                <td mat-cell *matCellDef="let row">
-                  <ck-status-badge
-                    [status]="row.isActive ? 'active' : 'hidden'"
-                    [label]="(row.isActive ? 'CATALOG.STATUS_ACTIVE' : 'CATALOG.STATUS_HIDDEN') | translate"
-                    [colorMap]="statusMap"
-                  />
-                </td>
-              </ng-container>
-
-              <!-- Actions column -->
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
-                <td mat-cell *matCellDef="let row" class="actions-cell">
-                  <button mat-icon-button
-                          [matTooltip]="'COMMON.EDIT' | translate"
-                          (click)="openMedicineDialog(row)">
-                    <span class="material-symbols-outlined">edit</span>
-                  </button>
-                  <button mat-icon-button
-                          [matTooltip]="(row.isActive ? 'CATALOG.STATUS_HIDDEN' : 'CATALOG.STATUS_ACTIVE') | translate"
-                          (click)="toggleMedicine(row.id)">
-                    <span class="material-symbols-outlined">
-                      {{ row.isActive ? 'visibility_off' : 'visibility' }}
-                    </span>
-                  </button>
-                </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="medicineColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: medicineColumns;"></tr>
-
-              <!-- No data row -->
-              <tr class="mat-row" *matNoDataRow>
-                <td [attr.colspan]="medicineColumns.length" class="no-data-cell">
-                  <span class="material-symbols-outlined no-data-icon">medication</span>
-                  <p>{{ 'CATALOG.ADD_MEDICINE' | translate }}</p>
-                </td>
-              </tr>
-
-            </table>
-          </div>
-        }
-
-      </mat-tab>
-
-    </mat-tab-group>
-  </ck-card>
+    </ck-card>
 </div>

@@ -21,12 +21,14 @@ export class ToastService {
       isRtl: this.lang.isRTL(),
     };
 
+    const isMobile = window.innerWidth < 768;
+
     this.snackBar.openFromComponent(CkToastComponent, {
       data,
       duration,
-      panelClass:         ['ck-toast-panel'],
+      panelClass:         isMobile ? ['ck-toast-panel', 'ck-toast-panel--mobile'] : ['ck-toast-panel'],
       horizontalPosition: 'center',
-      verticalPosition:   'bottom',
+      verticalPosition:   isMobile ? 'top' : 'bottom',
     });
   }
 }

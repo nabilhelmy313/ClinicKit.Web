@@ -1,0 +1,23 @@
+.order-header-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    .full-col { grid-column: 1 / -1; }
+}
+
+// 6-col grid: med-name | description | qty | unit-cost | total | del
+.po-grid {
+    grid-template-columns: 2fr 2fr 80px 110px 110px 40px;
+    gap: 0 10px;
+    align-items: center;
+}
+
+@media (max-width: 767px) {
+    .order-header-grid { grid-template-columns: 1fr; }
+    .ck-items-header.po-grid { display: none !important; }
+    .ck-item-row.po-grid {
+        grid-template-columns: 1fr 1fr;
+        padding: 8px 12px;
+        mat-form-field:first-child { grid-column: 1 / -1; }
+    }
+}

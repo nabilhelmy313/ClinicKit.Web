@@ -463,10 +463,38 @@
 @media only screen and (min-width : 576px) and (max-width : 767px) {}
 
 /* Min width 768px to Max width 991px */
-@media only screen and (min-width : 768px) and (max-width : 991px) {}
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+    // In RTL tablet mode the sidebar is a drawer — it must be hidden off-screen
+    // by default and only visible when .active. The global [dir="rtl"] rule above
+    // forces right: 0 !important which breaks the drawer behaviour; override it here.
+    [dir="rtl"] {
+        .sidebar-area {
+            right: -100% !important;
+            left: auto !important;
+
+            &.active, &.hide-sidebar {
+                right: 0 !important;
+                left: auto !important;
+            }
+        }
+    }
+}
 
 /* Min width 992px to Max width 1199px */
-@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+@media only screen and (min-width : 992px) and (max-width : 1199px) {
+    // Same fix as the 768-991px block above — sidebar is still a drawer at 992-1199px.
+    [dir="rtl"] {
+        .sidebar-area {
+            right: -100% !important;
+            left: auto !important;
+
+            &.active, &.hide-sidebar {
+                right: 0 !important;
+                left: auto !important;
+            }
+        }
+    }
+}
 
 /* Min width 1200px to Max width 1399px */
 @media only screen and (min-width: 1200px) and (max-width: 1399px) {}

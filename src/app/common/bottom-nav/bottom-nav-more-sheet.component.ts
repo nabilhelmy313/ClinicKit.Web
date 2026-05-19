@@ -4,6 +4,7 @@ import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { AuthService } from '../../core/services/auth.service';
 import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { LanguageService } from '../../core/services/language.service';
 
 @Component({
     selector: 'app-bottom-nav-more-sheet',
@@ -30,6 +31,12 @@ import { CustomizerSettingsService } from '../../customizer-settings/customizer-
                     <span class="sheet-item__label">
                         {{ (themeService.isDark() ? 'TOPBAR.LIGHT_MODE' : 'TOPBAR.DARK_MODE') | translate }}
                     </span>
+                </button>
+
+                <!-- Language switch -->
+                <button class="sheet-item" (click)="toggleLang()">
+                    <i class="material-symbols-outlined sheet-item__icon">translate</i>
+                    <span class="sheet-item__label">{{ langSwitchLabel() }}</span>
                 </button>
 
                 @if (isAdminOrReceptionist()) {
@@ -152,8 +159,13 @@ import { CustomizerSettingsService } from '../../customizer-settings/customizer-
 })
 export class BottomNavMoreSheetComponent {
     readonly themeService = inject(CustomizerSettingsService);
+    readonly langService  = inject(LanguageService);
     private readonly sheetRef = inject(MatBottomSheetRef<BottomNavMoreSheetComponent>);
     private readonly auth = inject(AuthService);
+
+    readonly langSwitchLabel = computed(() =>
+        this.langService.lang() === 'ar' ? 'EN — English' : 'عر — العربية'
+    );
 
     readonly isAdmin = computed(() => this.auth.currentUser()?.roles.includes('Admin') ?? false);
     readonly isAdminOrReceptionist = computed(
@@ -162,6 +174,10 @@ export class BottomNavMoreSheetComponent {
     readonly userEmail = computed(() => this.auth.currentUser()?.email ?? '');
 
     toggleTheme(): void { this.themeService.toggleTheme(); }
+
+    toggleLang(): void {
+        this.langService.switchLanguage(this.langService.lang() === 'ar' ? 'en' : 'ar');
+    }
 
     logout(): void {
         this.sheetRef.dismiss();

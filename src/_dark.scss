@@ -729,68 +729,119 @@
     }
 
     // ── Mat Input / Form Fields ─────────────────────────────────────────────────
+    // NOTE: _ui-kit.scss sets background: var(--whiteColor) !important on the
+    // fill wrapper. We must also use !important here to beat it in dark mode.
     .mat-mdc-form-field {
-        // Icon inside field
         --mdc-icon-button-icon-color: var(--whiteColor);
 
-        // Outlined variant (used everywhere in this app: appearance="outline")
-        --mdc-outlined-text-field-input-text-color:             rgba(255, 255, 255, 0.87);
-        --mdc-outlined-text-field-caret-color:                  rgba(255, 255, 255, 0.87);
-        --mdc-outlined-text-field-focus-input-text-color:       rgba(255, 255, 255, 0.87);
-        --mdc-outlined-text-field-label-text-color:             rgba(255, 255, 255, 0.60);
-        --mdc-outlined-text-field-hover-label-text-color:       rgba(255, 255, 255, 0.75);
-        --mdc-outlined-text-field-focus-label-text-color:       rgba(255, 255, 255, 0.87);
-        --mdc-outlined-text-field-outline-color:                rgba(255, 255, 255, 0.23);
-        --mdc-outlined-text-field-hover-outline-color:          rgba(255, 255, 255, 0.55);
-        --mdc-outlined-text-field-focus-outline-color:          var(--sage-400);
-        --mdc-outlined-text-field-disabled-input-text-color:    rgba(255, 255, 255, 0.38);
-        --mdc-outlined-text-field-disabled-label-text-color:    rgba(255, 255, 255, 0.38);
-        --mdc-outlined-text-field-disabled-outline-color:       rgba(255, 255, 255, 0.12);
-        --mdc-outlined-text-field-input-text-placeholder-color: rgba(255, 255, 255, 0.45);
+        // ── CSS token overrides (fill appearance) ────────────────────────────
+        --mdc-filled-text-field-container-color:             #1e2a38;
+        --mdc-filled-text-field-hover-container-color:       #253344;
+        --mdc-filled-text-field-disabled-container-color:    rgba(255,255,255,0.04);
+        --mdc-filled-text-field-input-text-color:            rgba(255, 255, 255, 0.87);
+        --mdc-filled-text-field-caret-color:                 var(--sage-400);
+        --mdc-filled-text-field-focus-label-text-color:      var(--sage-400);
+        --mdc-filled-text-field-label-text-color:            rgba(255, 255, 255, 0.55);
+        --mdc-filled-text-field-hover-label-text-color:      rgba(255, 255, 255, 0.75);
+        --mdc-filled-text-field-disabled-input-text-color:   rgba(255, 255, 255, 0.38);
+        --mdc-filled-text-field-disabled-label-text-color:   rgba(255, 255, 255, 0.38);
+        --mdc-filled-text-field-input-text-placeholder-color:rgba(255, 255, 255, 0.38);
 
-        // Filled variant (fallback)
-        --mdc-filled-text-field-input-text-color:           rgba(255, 255, 255, 0.87);
-        --mdc-filled-text-field-caret-color:                rgba(255, 255, 255, 0.87);
-        --mdc-filled-text-field-label-text-color:           rgba(255, 255, 255, 0.60);
-        --mdc-filled-text-field-hover-label-text-color:     rgba(255, 255, 255, 0.75);
-        --mdc-filled-text-field-container-color:            rgba(255, 255, 255, 0.07);
-        --mdc-filled-text-field-disabled-container-color:   #131920;
-        --mdc-filled-text-field-disabled-input-text-color:  rgba(255, 255, 255, 0.38);
-        --mdc-filled-text-field-disabled-label-text-color:  rgba(255, 255, 255, 0.38);
-
-        // Select
+        // ── Select ───────────────────────────────────────────────────────────
         --mat-select-enabled-trigger-text-color:  rgba(255, 255, 255, 0.87);
-        --mat-select-placeholder-text-color:      rgba(255, 255, 255, 0.45);
+        --mat-select-placeholder-text-color:      rgba(255, 255, 255, 0.40);
         --mat-select-enabled-arrow-color:         rgba(255, 255, 255, 0.54);
 
-        // ── Direct rules (belt-and-suspenders — wins even if CSS-var chain breaks)
-        input.mat-mdc-input-element,
-        textarea.mat-mdc-input-element,
-        input,
-        textarea {
-            color: rgba(255, 255, 255, 0.87) !important;
-            caret-color: rgba(255, 255, 255, 0.87) !important;
-            background-color: transparent !important;
+        // ── The fill wrapper: override the !important white from _ui-kit ─────
+        .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+            background:    #1e2a38 !important;
+            border-color:  rgba(255, 255, 255, 0.12) !important;
 
-            &::placeholder {
-                color: rgba(255, 255, 255, 0.40) !important;
+            &:hover {
+                background:   #253344 !important;
+                border-color: rgba(255, 255, 255, 0.25) !important;
             }
         }
 
-        // Give the outlined wrapper a subtle dark tint so text is always readable
-        .mat-mdc-text-field-wrapper {
-            background-color: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.15);
+        // Focus ring — match brand green
+        &.mat-focused .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+            border-color: var(--sage-400) !important;
+            border-width:  1.5px !important;
         }
 
-        // Autocomplete/select panel text
-        .mat-mdc-select-value-text { color: rgba(255, 255, 255, 0.87); }
-        .mat-mdc-select-placeholder { color: rgba(255, 255, 255, 0.45); }
+        // Error state — red border
+        &.mat-form-field-invalid .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+            border-color: #f87171 !important;
+        }
+
+        // Disabled state
+        &.mat-form-field-disabled .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+            background:   rgba(255, 255, 255, 0.04) !important;
+            border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        // Input & textarea text — transparent bg so the wrapper colour shows
+        input.mat-mdc-input-element,
+        textarea.mat-mdc-input-element {
+            color:            rgba(255, 255, 255, 0.87) !important;
+            caret-color:      var(--sage-400) !important;
+            background-color: transparent !important;
+
+            &::placeholder { color: rgba(255, 255, 255, 0.38) !important; }
+        }
+
+        // Autocomplete / select panel text
+        .mat-mdc-select-value-text  { color: rgba(255, 255, 255, 0.87); }
+        .mat-mdc-select-placeholder { color: rgba(255, 255, 255, 0.40); }
+
+        // Datepicker toggle icon
+        .mat-datepicker-toggle .mat-mdc-icon-button {
+            color: rgba(255, 255, 255, 0.55);
+        }
     }
 
-    // ── mat-error dark theme ────────────────────────────────────────────────────
+    // ── mat-label (floated, outside wrapper) ────────────────────────────────────
+    .mat-mdc-floating-label {
+        color: rgba(255, 255, 255, 0.55);
+    }
+
+    // ── mat-error ───────────────────────────────────────────────────────────────
     .mat-mdc-form-field-error {
-        color: #f87171;   // red-400 — readable on dark surface
+        color: #f87171;
+    }
+
+    // ── mat-hint ────────────────────────────────────────────────────────────────
+    .mat-mdc-form-field-hint {
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+    // ── Items-table rows inside dark components (invoice / purchase order) ──────
+    .ck-items-table {
+        border-color: rgba(255, 255, 255, 0.10);
+
+        .ck-items-header {
+            background: #131920;
+            border-color: rgba(255, 255, 255, 0.10);
+            span { color: rgba(255, 255, 255, 0.55); }
+        }
+        .ck-item-row {
+            background: #1b232d;
+            border-color: rgba(255, 255, 255, 0.07);
+
+            .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+                background: #1e2a38 !important;
+            }
+        }
+        .ck-items-footer {
+            background: #131920;
+            border-color: rgba(255, 255, 255, 0.10);
+        }
+        .ck-add-item-btn {
+            color: rgba(255, 255, 255, 0.60);
+            border-color: rgba(255, 255, 255, 0.15);
+            &:hover { background: rgba(255, 255, 255, 0.04); }
+        }
+        .row-total { color: rgba(255, 255, 255, 0.87); }
     }
 
     // Mat Calendar
@@ -881,12 +932,65 @@
         }
     }
 
-    // Mat Tabs
+    // ── ApexCharts — transparent canvas so dark card bg shows through ───────────
+    // Fixes the white plot area visible inside dark-mode cards.
+    .apexcharts-canvas {
+        background: transparent !important;
+    }
+    .apexcharts-canvas svg {
+        background: transparent !important;
+    }
+    // Axis labels, legend text
+    .apexcharts-xaxis-label,
+    .apexcharts-yaxis-label,
+    .apexcharts-legend-text {
+        fill:  rgba(255,255,255,0.55) !important;
+        color: rgba(255,255,255,0.55) !important;
+    }
+    // Donut / pie centre text
+    .apexcharts-datalabels-group text,
+    .apexcharts-donut-label,
+    .apexcharts-pie-label {
+        fill: rgba(255,255,255,0.87) !important;
+    }
+    // Grid lines (broader scope — not limited to mat-card-content)
+    .apexcharts-gridline {
+        stroke: rgba(255,255,255,0.07) !important;
+    }
+    // Tooltip
+    .apexcharts-tooltip {
+        background: #1b232d !important;
+        border-color: rgba(255,255,255,0.10) !important;
+        color: rgba(255,255,255,0.87) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+        .apexcharts-tooltip-title {
+            background: #131920 !important;
+            border-color: rgba(255,255,255,0.10) !important;
+            color: rgba(255,255,255,0.87) !important;
+        }
+    }
+
+    // ── Mat Tabs — pill tab header tray in dark ───────────────────────────────
     .mat-mdc-tab-group, .mat-mdc-tab-nav-bar {
-        --mat-tab-header-disabled-ripple-color: rgba(255, 255, 255, 0.38);
-        --mat-tab-header-inactive-label-text-color: rgba(255, 255, 255, 0.6);
-        --mat-tab-header-inactive-focus-label-text-color: rgba(255, 255, 255, 0.6);
-        --mat-tab-header-inactive-hover-label-text-color: rgba(255, 255, 255, 0.6);
+        --mat-tab-header-disabled-ripple-color:              rgba(255,255,255,0.10);
+        --mat-tab-header-inactive-label-text-color:          rgba(255,255,255,0.55);
+        --mat-tab-header-inactive-focus-label-text-color:    rgba(255,255,255,0.70);
+        --mat-tab-header-inactive-hover-label-text-color:    rgba(255,255,255,0.80);
+        --mat-tab-header-active-label-text-color:            rgba(255,255,255,0.95);
+        --mat-tab-header-active-focus-label-text-color:      rgba(255,255,255,0.95);
+        --mat-tab-header-active-hover-label-text-color:      rgba(255,255,255,0.95);
+        --mat-tab-header-divider-color:                      transparent;
+
+        // Tab header tray — override the cream var(--paper-1) set by the component
+        .mat-mdc-tab-header {
+            background: #1b232d !important;
+            border-radius: 12px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07);
+        }
+        // Hide the underline indicator — replaced by pill in .tab-chip
+        .mdc-tab-indicator { display: none !important; }
+        // Tab body area — transparent so page bg shows
+        .mat-mdc-tab-body-wrapper { background: transparent; }
     }
 
     // Mat Toolbar
@@ -1006,6 +1110,33 @@
     .table-responsive {
         &::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
         &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+    }
+
+    // ── CkTabs — global dark override ────────────────────────────────────────
+    // :host-context() is unreliable with Angular emulated encapsulation;
+    // override from body.dark-theme instead.
+    .ck-tabs {
+        background: #1b232d !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .ck-tab {
+        color: rgba(255, 255, 255, 0.50) !important;
+
+        &.ck-tab--active {
+            background: var(--sage-700, #0D5238) !important;
+            color: #fff !important;
+        }
+
+        &:not(.ck-tab--active):hover {
+            background: rgba(76, 175, 125, 0.12) !important;
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+    }
+
+    .ck-tab__badge {
+        background: rgba(76, 175, 125, 0.18) !important;
+        color: #4caf7d !important;
     }
 
 }

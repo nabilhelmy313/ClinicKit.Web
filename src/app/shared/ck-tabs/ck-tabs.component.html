@@ -1,0 +1,20 @@
+<div class="ck-tabs" [class.ck-tabs--block]="block">
+    @for (tab of tabs; track tab.key) {
+        <button
+            type="button"
+            class="ck-tab"
+            [class.ck-tab--active]="tab.key === active"
+            (click)="select(tab.key)">
+
+            @if (tab.icon) {
+                <i class="material-symbols-outlined ck-tab__icon">{{ tab.icon }}</i>
+            }
+
+            <span class="ck-tab__label">{{ tab.label | translate }}</span>
+
+            @if (tab.badge) {
+                <span class="ck-tab__badge">{{ tab.badge }}</span>
+            }
+        </button>
+    }
+</div>

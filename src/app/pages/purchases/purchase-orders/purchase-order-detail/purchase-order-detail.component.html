@@ -1,0 +1,98 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    @if (order(); as o) {
+
+    <ck-page-header
+        icon="receipt_long"
+        [title]="'PURCHASES.ORDER_DETAIL' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('PURCHASES.TITLE' | translate), link: '/purchases/orders' },
+            { label: ('PURCHASES.ORDER_DETAIL' | translate) }
+        ]">
+
+        <ck-btn variant="outline" icon="arrow_back" (clicked)="back()">
+            {{ 'COMMON.BACK' | translate }}
+        </ck-btn>
+
+        @if (isDraft()) {
+            <ng-container *appHasPermission="'Purchases.Edit'">
+                <ck-btn variant="outline" icon="cancel" color="warn"
+                        [loading]="actioning()" (clicked)="cancelOrder()">
+                    {{ 'PURCHASES.CANCEL_ORDER' | translate }}
+                </ck-btn>
+            </ng-container>
+            <ng-container *appHasPermission="'Purchases.Receive'">
+                <ck-btn icon="inventory_2"
+                        [loading]="actioning()" (clicked)="receive()">
+                    {{ 'PURCHASES.RECEIVE' | translate }}
+                </ck-btn>
+            </ng-container>
+        }
+
+    </ck-page-header>
+
+    <!-- ── Order summary ── -->
+    <ck-card>
+        <div class="order-header">
+            <div class="order-meta">
+                <div class="meta-item">
+                    <span class="meta-label">{{ 'PURCHASES.SUPPLIER' | translate }}</span>
+                    <span class="meta-value">{{ o.supplierName }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">{{ 'PURCHASES.ORDER_DATE' | translate }}</span>
+                    <span class="meta-value" dir="ltr">{{ o.orderDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">{{ 'PURCHASES.STATUS' | translate }}</span>
+                    <ck-status-badge
+                        [status]="o.status"
+                        [label]="statusLabel(o.status)"
+                        [colorMap]="statusColorMap">
+                    </ck-status-badge>
+                </div>
+                @if (o.notes) {
+                    <div class="meta-item meta-notes">
+                        <span class="meta-label">{{ 'PURCHASES.NOTES' | translate }}</span>
+                        <span class="meta-value">{{ o.notes }}</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </ck-card>
+
+    <!-- ── Items table ── -->
+    <ck-card [title]="'PURCHASES.ITEMS' | translate" [noPadding]="true">
+        <div class="items-table">
+            <div class="items-row items-header">
+                <span class="col-desc">{{ 'PURCHASES.ITEM_DESC' | translate }}</span>
+                <span class="col-med">{{ 'CATALOG.MEDICINE_NAME' | translate }}</span>
+                <span class="col-qty text-center">{{ 'BILLING.ITEM_QTY' | translate }}</span>
+                <span class="col-cost text-end">{{ 'PURCHASES.UNIT_COST' | translate }}</span>
+                <span class="col-total text-end">{{ 'BILLING.TOTAL' | translate }}</span>
+            </div>
+
+            @for (item of o.items; track item.id) {
+                <div class="items-row">
+                    <div class="col-desc">{{ item.description }}</div>
+                    <div class="col-med text-muted">{{ item.medicineName ?? '—' }}</div>
+                    <div class="col-qty text-center">{{ item.quantity }}</div>
+                    <div class="col-cost text-end">{{ item.unitCost | number:'1.2-2' }}</div>
+                    <div class="col-total text-end fw-semibold">{{ item.totalCost | number:'1.2-2' }}</div>
+                </div>
+            }
+        </div>
+
+        <div class="order-total">
+            <span>{{ 'BILLING.TOTAL' | translate }}</span>
+            <strong dir="ltr">{{ o.totalAmount | number:'1.2-2' }} {{ 'BILLING.CURRENCY' | translate }}</strong>
+        </div>
+    </ck-card>
+
+    } @else if (!loading()) {
+        <ck-card><p>{{ 'COMMON.NOT_FOUND' | translate }}</p></ck-card>
+    }
+
+</div>

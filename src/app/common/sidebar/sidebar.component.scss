@@ -958,11 +958,12 @@
                 left: auto;
 
                 &.right-sidebar {
-                    right: -100%;   /* RTL doc: right hides off the right edge */
+                    right: -100%;
                     left: auto;
 
                     &.active, &.hide-sidebar {
-                        left: 0;
+                        right: 0; /* ← was left:0, RTL right-sidebar must slide in from right */
+                        left: auto;
                     }
                 }
                 &.active, &.hide-sidebar {
@@ -999,11 +1000,12 @@
                 left: auto;
 
                 &.right-sidebar {
-                    right: -100%;   /* RTL doc: right hides off the right edge */
+                    right: -100%;
                     left: auto;
 
                     &.active, &.hide-sidebar {
-                        left: 0;
+                        right: 0; /* ← was left:0 — same RTL fix as 768-991 block */
+                        left: auto;
                     }
                 }
                 &.active, &.hide-sidebar {

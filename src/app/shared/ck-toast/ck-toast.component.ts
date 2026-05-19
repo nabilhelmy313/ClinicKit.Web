@@ -193,6 +193,33 @@ const ICONS: Record<CkToastType, string> = {
       color: rgba(255,255,255,.3);
       &:hover { color: rgba(255,255,255,.7); background: rgba(255,255,255,.08); }
     }
+
+    /* ── Mobile — toast appears at TOP, offset below the fixed header ───────── */
+    /*   The bottom CDK pane sits at bottom:0, so margin-bottom does nothing.   */
+    /*   Using verticalPosition:'top' + margin-top is the only reliable fix.    */
+    .mat-mdc-snack-bar-container.ck-toast-panel--mobile {
+      max-width: calc(100vw - 24px) !important;
+      width:     calc(100vw - 24px) !important;
+      /* Push below the fixed header (~82px on mobile) + safe area inset */
+      margin-top: calc(82px + env(safe-area-inset-top, 0px)) !important;
+    }
+
+    .ck-toast-panel--mobile .ckt-toast {
+      min-width: unset;
+      max-width: unset;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+    }
+
+    .ck-toast-panel--mobile .ckt-toast__icon {
+      width: 32px;
+      height: 32px;
+      .material-icons { font-size: 18px; }
+    }
+
+    .ck-toast-panel--mobile .ckt-toast__title   { font-size: 12px; }
+    .ck-toast-panel--mobile .ckt-toast__message { font-size: 12px; }
   `],
 })
 export class CkToastComponent {

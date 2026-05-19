@@ -1,26 +1,29 @@
-import { NgClass } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
 import { Component, HostListener, computed, inject } from '@angular/core';
-import { ToggleService } from '../sidebar/toggle.service';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
-import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
-import { LanguageService } from '../../core/services/language.service';
-import { AuthService } from '../../core/services/auth.service';
-import { TranslatePipe } from '../../core/pipes/translate.pipe';
+import { NgClass }          from '@angular/common';
+import { RouterLink }       from '@angular/router';
+import { MatMenuModule }    from '@angular/material/menu';
+import { MatButtonModule }  from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import { ToggleService }              from '../sidebar/toggle.service';
+import { CustomizerSettingsService }  from '../../customizer-settings/customizer-settings.service';
+import { LanguageService }            from '../../core/services/language.service';
+import { AuthService }                from '../../core/services/auth.service';
+import { TranslatePipe }              from '../../core/pipes/translate.pipe';
 
 @Component({
     selector: 'app-header',
-    imports: [NgClass, MatMenuModule, MatButtonModule, RouterLink, TranslatePipe],
+    standalone: true,
+    imports: [NgClass, MatMenuModule, MatButtonModule, MatTooltipModule, RouterLink, TranslatePipe],
     templateUrl: './header.component.html',
-    styleUrl: './header.component.scss'
+    styleUrl:    './header.component.scss',
 })
 export class HeaderComponent {
 
     readonly langService  = inject(LanguageService);
     readonly authService  = inject(AuthService);
+    readonly themeService = inject(CustomizerSettingsService);
 
-    // Maps the first role in the JWT to its i18n translation key
     private static readonly ROLE_KEY_MAP: Record<string, string> = {
         Admin:        'USERS.ROLE_ADMIN',
         Doctor:       'USERS.ROLE_DOCTOR',
@@ -34,48 +37,51 @@ export class HeaderComponent {
             : 'COMMON.ADMINISTRATOR';
     });
 
-    // isSidebarToggled
-    isSidebarToggled = false;
+    /** Display name: uses the part before @ in the email, dots/underscores → spaces, title-cased */
+    readonly displayName = computed(() => {
+        const user = this.authService.currentUser();
+        if (!user?.email) return this.langService.translate('COMMON.ADMINISTRATOR');
+        return user.email
+            .split('@')[0]
+            .replace(/[._\-]/g, ' ')
+            .replace(/\b\w/g, c => c.toUpperCase());
+    });
 
-    // isToggled
-    isToggled = false;
+    /** Label shown on the lang button — the language you'd switch TO */
+    readonly langSwitchLabel = computed(() =>
+        this.langService.lang() === 'ar' ? 'EN' : 'عر'
+    );
+
+    readonly langSwitchTooltip = computed(() =>
+        this.langService.lang() === 'ar' ? 'TOPBAR.SWITCH_TO_EN' : 'TOPBAR.SWITCH_TO_AR'
+    );
+
+    // ── Sidebar state ─────────────────────────────────────────────────────────
+    isSidebarToggled = false;
+    isToggled        = false;
 
     constructor(
         private toggleService: ToggleService,
-        public themeService: CustomizerSettingsService
     ) {
-        this.toggleService.isSidebarToggled$.subscribe(isSidebarToggled => {
-            this.isSidebarToggled = isSidebarToggled;
-        });
-        this.themeService.isToggled$.subscribe(isToggled => {
-            this.isToggled = isToggled;
-        });
+        this.toggleService.isSidebarToggled$.subscribe(v => this.isSidebarToggled = v);
+        this.themeService.isToggled$.subscribe(v => this.isToggled = v);
     }
 
-    // Burger Menu Toggle
-    toggle() {
-        this.toggleService.toggle();
-    }
+    toggle(): void { this.toggleService.toggle(); }
 
-    // Navbar Sticky
-    isSticky: boolean = false;
+    // ── Sticky ────────────────────────────────────────────────────────────────
+    isSticky = false;
     @HostListener('window:scroll')
-    checkScroll() {
-        const scrollPosition = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-        if (scrollPosition >= 50) {
-            this.isSticky = true;
-        } else {
-            this.isSticky = false;
-        }
+    checkScroll(): void {
+        this.isSticky = (window.scrollY || document.documentElement.scrollTop || 0) >= 50;
     }
 
-    // Dark Mode
-    toggleTheme() {
-        this.themeService.toggleTheme();
+    // ── Actions ───────────────────────────────────────────────────────────────
+    toggleTheme(): void { this.themeService.toggleTheme(); }
+
+    toggleLang(): void {
+        this.langService.switchLanguage(this.langService.lang() === 'ar' ? 'en' : 'ar');
     }
 
-    logout() {
-        this.authService.logout();
-    }
-
+    logout(): void { this.authService.logout(); }
 }

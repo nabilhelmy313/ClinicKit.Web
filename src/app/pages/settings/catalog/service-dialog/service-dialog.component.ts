@@ -43,7 +43,7 @@ export interface ServiceDialogData { item?: ServiceItem; }
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="ck-dialog__body">
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'CATALOG.SERVICE_NAME' | translate }}</mat-label>
             <input matInput formControlName="name" />
             @if (form.get('name')?.invalid && form.get('name')?.touched) {
@@ -51,12 +51,12 @@ export interface ServiceDialogData { item?: ServiceItem; }
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100 mb-15">
+          <mat-form-field class="w-100 mb-15">
             <mat-label>{{ 'CATALOG.NAME_EN' | translate }}</mat-label>
             <input matInput formControlName="nameEn" dir="ltr" placeholder="e.g. Medical Examination" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'CATALOG.CATEGORY' | translate }}</mat-label>
             <mat-select formControlName="category">
               <mat-option [value]="null">— {{ 'COMMON.NONE' | translate }} —</mat-option>
@@ -68,7 +68,7 @@ export interface ServiceDialogData { item?: ServiceItem; }
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'CATALOG.DEFAULT_PRICE' | translate }}</mat-label>
             <input matInput type="number" min="1" formControlName="defaultPrice" />
             @if (form.get('defaultPrice')?.invalid && form.get('defaultPrice')?.touched) {
@@ -76,7 +76,7 @@ export interface ServiceDialogData { item?: ServiceItem; }
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'CATALOG.SORT_ORDER' | translate }}</mat-label>
             <input matInput type="number" min="1" formControlName="sortOrder" />
           </mat-form-field>

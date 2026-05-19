@@ -33,6 +33,9 @@
                 {{ 'APPOINTMENTS.CANCEL_CONFIRM' | translate }}
             </ck-btn>
         }
+        <ck-btn variant="outline" icon="print" (click)="printCard()">
+            {{ 'COMMON.PRINT' | translate }}
+        </ck-btn>
         <ck-btn variant="outline" icon="arrow_back"
                 (click)="router.navigate(['/appointments'])">
             {{ 'COMMON.BACK' | translate }}

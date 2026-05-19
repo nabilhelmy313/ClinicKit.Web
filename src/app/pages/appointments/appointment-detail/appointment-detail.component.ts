@@ -7,6 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AppointmentsService } from '../../../core/services/appointments.service';
 import { QueueService }        from '../../../core/services/queue.service';
 import { ToastService }        from '../../../core/services/toast.service';
+import { PrintService }        from '../../../core/services/print.service';
 import {
     Appointment,
     AppointmentStatus,
@@ -48,6 +49,7 @@ export class AppointmentDetailComponent implements OnInit {
     readonly themeService    = inject(ThemeService);
 
     private readonly queueSvc = inject(QueueService);
+    private readonly print    = inject(PrintService);
 
     appointmentId = '';
     appointment   = signal<Appointment | null>(null);
@@ -130,6 +132,11 @@ export class AppointmentDetailComponent implements OnInit {
             },
             error: () => this.enqueueing.set(false),
         });
+    }
+
+    printCard(): void {
+        const a = this.appointment();
+        if (a) this.print.printAppointmentCard(a);
     }
 
     private doCancel(reason: string | null): void {

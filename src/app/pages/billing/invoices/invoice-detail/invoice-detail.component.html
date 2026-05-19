@@ -16,19 +16,58 @@
             {{ 'COMMON.BACK' | translate }}
         </ck-btn>
 
+        <ng-container *appHasPermission="'Invoices.Print'">
+            <!-- ── Print split-button ── -->
+            <button class="print-trigger"
+                    type="button"
+                    [matMenuTriggerFor]="printMenu"
+                    [matTooltip]="'BILLING.PRINT_TOOLTIP' | translate"
+                    matTooltipPosition="below">
+                <i class="material-symbols-outlined">print</i>
+                <span>{{ 'COMMON.PRINT' | translate }}</span>
+                <i class="material-symbols-outlined print-chevron">expand_more</i>
+            </button>
+
+            <mat-menu #printMenu="matMenu" xPosition="before" class="ck-print-menu">
+
+                <!-- Receipt (A5) -->
+                <button mat-menu-item (click)="printInvoice()">
+                    <i class="material-symbols-outlined pm-icon pm-icon--green">receipt_long</i>
+                    <div class="pm-content">
+                        <span class="pm-title">{{ 'BILLING.PRINT_RECEIPT' | translate }}</span>
+                        <span class="pm-sub">A5 · {{ 'BILLING.PRINT_RECEIPT_SUB' | translate }}</span>
+                    </div>
+                    <kbd class="pm-shortcut">Ctrl+P</kbd>
+                </button>
+
+                <!-- Thermal (80 mm) -->
+                <button mat-menu-item (click)="printThermal()">
+                    <i class="material-symbols-outlined pm-icon pm-icon--gold">receipt</i>
+                    <div class="pm-content">
+                        <span class="pm-title">{{ 'BILLING.THERMAL' | translate }}</span>
+                        <span class="pm-sub">80 mm · {{ 'BILLING.PRINT_THERMAL_SUB' | translate }}</span>
+                    </div>
+                    <kbd class="pm-shortcut">Ctrl+⇧+P</kbd>
+                </button>
+
+            </mat-menu>
+        </ng-container>
+
         @if (isDraft()) {
-            <ck-btn variant="outline"
-                    icon="cancel"
-                    color="warn"
-                    [loading]="actioning()"
-                    (clicked)="cancelInvoice()">
-                {{ 'BILLING.CANCEL_INVOICE' | translate }}
-            </ck-btn>
-            <ck-btn icon="payments"
-                    [loading]="actioning()"
-                    (clicked)="markPaid()">
-                {{ 'BILLING.MARK_PAID' | translate }}
-            </ck-btn>
+            <ng-container *appHasPermission="'Invoices.Edit'">
+                <ck-btn variant="outline"
+                        icon="cancel"
+                        color="warn"
+                        [loading]="actioning()"
+                        (clicked)="cancelInvoice()">
+                    {{ 'BILLING.CANCEL_INVOICE' | translate }}
+                </ck-btn>
+                <ck-btn icon="payments"
+                        [loading]="actioning()"
+                        (clicked)="markPaid()">
+                    {{ 'BILLING.MARK_PAID' | translate }}
+                </ck-btn>
+            </ng-container>
         }
     </ck-page-header>
 

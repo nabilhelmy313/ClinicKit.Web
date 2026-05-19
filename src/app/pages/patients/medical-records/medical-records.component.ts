@@ -7,6 +7,7 @@ import { MatExpansionModule }       from '@angular/material/expansion';
 import { PatientsService } from '../../../core/services/patients.service';
 import { VisitsService }   from '../../../core/services/visits.service';
 import { ToastService }    from '../../../core/services/toast.service';
+import { PrintService }    from '../../../core/services/print.service';
 import { Patient }         from '../../../core/models/patient.model';
 import { Visit }           from '../../../core/models/visit.model';
 import { TranslatePipe }   from '../../../core/pipes/translate.pipe';
@@ -42,6 +43,7 @@ export class MedicalRecordsComponent implements OnInit {
     private readonly patSvc    = inject(PatientsService);
     private readonly visitsSvc = inject(VisitsService);
     private readonly toast     = inject(ToastService);
+    private readonly print     = inject(PrintService);
 
     patientId = '';
 
@@ -90,6 +92,13 @@ export class MedicalRecordsComponent implements OnInit {
         this.showForm.set(false);
         this.page.set(1);
         this.loadVisits();
+    }
+
+    printPrescription(visit: Visit): void {
+        const patient = this.patient();
+        if (patient && visit.medications.length > 0) {
+            this.print.printPrescription(visit, patient);
+        }
     }
 
     prevPage(): void { this.page.update(p => p - 1); this.loadVisits(); }

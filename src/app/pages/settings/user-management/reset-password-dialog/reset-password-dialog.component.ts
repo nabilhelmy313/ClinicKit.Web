@@ -39,7 +39,7 @@ export interface ResetPasswordDialogData { userId: string; userEmail: string; }
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="ck-dialog__body">
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'USERS.NEW_PASSWORD' | translate }}</mat-label>
             <mat-icon matPrefix>lock</mat-icon>
             <input matInput [type]="showNew() ? 'text' : 'password'" formControlName="newPassword" />
@@ -51,7 +51,7 @@ export interface ResetPasswordDialogData { userId: string; userEmail: string; }
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'USERS.CONFIRM_PASSWORD' | translate }}</mat-label>
             <mat-icon matPrefix>lock_outline</mat-icon>
             <input matInput [type]="showConfirm() ? 'text' : 'password'" formControlName="confirmPassword" />

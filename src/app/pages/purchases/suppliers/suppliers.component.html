@@ -1,0 +1,65 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="storefront"
+        [title]="'PURCHASES.SUPPLIERS' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('PURCHASES.TITLE' | translate), link: '/purchases/orders' },
+            { label: ('PURCHASES.SUPPLIERS' | translate) }
+        ]">
+        <ck-btn icon="add" (clicked)="openForm()">
+            {{ 'PURCHASES.ADD_SUPPLIER' | translate }}
+        </ck-btn>
+    </ck-page-header>
+
+    <!-- Inline add form -->
+    @if (showForm()) {
+        <ck-card [title]="'PURCHASES.ADD_SUPPLIER' | translate">
+            <form [formGroup]="form" class="supplier-form">
+                <mat-form-field>
+                    <mat-label>{{ 'PURCHASES.SUPPLIER_NAME' | translate }}</mat-label>
+                    <input matInput formControlName="name" />
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>{{ 'PURCHASES.PHONE' | translate }}</mat-label>
+                    <input matInput formControlName="phone" dir="ltr" />
+                </mat-form-field>
+                <mat-form-field class="full-width">
+                    <mat-label>{{ 'PURCHASES.ADDRESS' | translate }}</mat-label>
+                    <input matInput formControlName="address" />
+                </mat-form-field>
+                <mat-form-field class="full-width">
+                    <mat-label>{{ 'PURCHASES.NOTES' | translate }}</mat-label>
+                    <textarea matInput formControlName="notes" rows="2"></textarea>
+                </mat-form-field>
+            </form>
+            <div class="form-actions">
+                <ck-btn variant="outline" icon="close" (clicked)="showForm.set(false)">
+                    {{ 'COMMON.CANCEL' | translate }}
+                </ck-btn>
+                <ck-btn icon="save" [loading]="saving()" [disabled]="form.invalid" (clicked)="save()">
+                    {{ 'COMMON.SAVE' | translate }}
+                </ck-btn>
+            </div>
+        </ck-card>
+    }
+
+    <!-- Suppliers table -->
+    <ck-card [noPadding]="true">
+        <ck-table
+            [data]="suppliers()"
+            [columnDefs]="colDefs"
+            [actions]="tableActions"
+            [loading]="loading()"
+            [totalCount]="totalCount()"
+            [page]="page()"
+            [pageSize]="pageSize()"
+            (prevPage)="prevPage()"
+            (nextPage)="nextPage()"
+            (pageSizeChange)="onPageSizeChange($event)">
+        </ck-table>
+    </ck-card>
+
+</div>

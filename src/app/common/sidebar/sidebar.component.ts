@@ -24,14 +24,27 @@ export class SidebarComponent {
     private readonly auth   = inject(AuthService);
 
     // Role helpers — computed from the JWT signal, reactive to login/logout
+    readonly isSystemAdmin  = computed(() => this.auth.currentUser()?.roles.includes('SystemAdmin')  ?? false);
     readonly isAdmin        = computed(() => this.auth.currentUser()?.roles.includes('Admin')        ?? false);
     readonly isDoctor       = computed(() => this.auth.currentUser()?.roles.includes('Doctor')       ?? false);
     readonly isReceptionist = computed(() => this.auth.currentUser()?.roles.includes('Receptionist') ?? false);
+    readonly isAccountant   = computed(() => this.auth.currentUser()?.roles.includes('Accountant')   ?? false);
+    readonly isPharmacist   = computed(() => this.auth.currentUser()?.roles.includes('Pharmacist')   ?? false);
 
     /** true for Admin OR Receptionist */
     readonly isAdminOrReceptionist = computed(() => this.isAdmin() || this.isReceptionist());
     /** true for Admin OR Doctor */
     readonly isAdminOrDoctor       = computed(() => this.isAdmin() || this.isDoctor());
+
+    // Finance section visibility
+    /** Billing (Invoices): Admin, Receptionist, Accountant */
+    readonly canViewBilling   = computed(() => this.isAdmin() || this.isReceptionist() || this.isAccountant());
+    /** Purchases: Admin, Pharmacist */
+    readonly canViewPurchases = computed(() => this.isAdmin() || this.isPharmacist());
+    /** Show Finance section header when at least one sub-section is visible */
+    readonly canViewFinance   = computed(() => this.canViewBilling() || this.canViewPurchases());
+    /** Reports: Admin, Accountant */
+    readonly canViewReports   = computed(() => this.isAdmin() || this.isAccountant());
 
     // isSidebarToggled
     isSidebarToggled = false;

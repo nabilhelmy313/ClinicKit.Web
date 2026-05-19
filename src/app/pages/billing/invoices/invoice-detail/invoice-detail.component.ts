@@ -1,18 +1,22 @@
 import {
-    Component, OnInit, inject, signal, computed,
+    Component, OnInit, inject, signal, computed, HostListener,
 } from '@angular/core';
 import { CommonModule }    from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatIconModule }    from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule }    from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { BillingService }  from '../../../../core/services/billing.service';
 import { DialogService }   from '../../../../core/services/dialog.service';
 import { ToastService }    from '../../../../core/services/toast.service';
+import { PrintService }    from '../../../../core/services/print.service';
 import { LanguageService } from '../../../../core/services/language.service';
 import { ThemeService }    from '../../../../core/services/theme.service';
 import { TranslatePipe }   from '../../../../core/pipes/translate.pipe';
+import { HasPermissionDirective } from '../../../../core/directives/has-permission.directive';
 import {
     Invoice, InvoiceStatusLabels,
 } from '../../../../core/models/billing.model';
@@ -27,8 +31,9 @@ import {
     styleUrl:    './invoice-detail.component.scss',
     imports: [
         CommonModule, TranslatePipe,
-        MatIconModule, MatDividerModule,
+        MatIconModule, MatDividerModule, MatMenuModule, MatTooltipModule,
         CkPageHeaderComponent, CkCardComponent, CkBtnComponent, CkStatusBadgeComponent,
+        HasPermissionDirective,
     ],
 })
 export class InvoiceDetailComponent implements OnInit {
@@ -39,6 +44,7 @@ export class InvoiceDetailComponent implements OnInit {
     private readonly billing = inject(BillingService);
     private readonly dialog  = inject(DialogService);
     private readonly toast   = inject(ToastService);
+    private readonly print   = inject(PrintService);
 
     // ── State ─────────────────────────────────────────────────────────────────
     invoice   = signal<Invoice | null>(null);
@@ -110,6 +116,30 @@ export class InvoiceDetailComponent implements OnInit {
                 error: () => this.actioning.set(false),
             });
         });
+    }
+
+    printInvoice(): void {
+        const inv = this.invoice();
+        if (inv) this.print.printInvoice(inv);
+    }
+
+    printThermal(): void {
+        const inv = this.invoice();
+        if (inv) this.print.printThermal(inv);
+    }
+
+    // ── Keyboard shortcuts ────────────────────────────────────────────────────
+    @HostListener('document:keydown', ['$event'])
+    onKeydown(e: KeyboardEvent): void {
+        if (!this.invoice()) return;
+        if (e.ctrlKey && !e.shiftKey && e.key === 'p') {
+            e.preventDefault();
+            this.printInvoice();
+        }
+        if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+            e.preventDefault();
+            this.printThermal();
+        }
     }
 
     back(): void { this.router.navigate(['/billing/invoices']); }

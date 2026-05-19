@@ -1,23 +1,131 @@
-// ── Quick-pick chips ─────────────────────────────────────────────────────────
+// ── Quick-pick chips ──────────────────────────────────────────────────────────
 .quick-chips {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
-    align-items: center;
 
     .chips-label {
-        font-size: 13px;
-        color: var(--text-secondary, #666);
-        margin-inline-end: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-3, #888);
     }
 }
 
+// Scrollable row — wraps on desktop, scrolls on mobile
+.chips-scroll {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px; // leave room for focus ring
+
+    &::-webkit-scrollbar { display: none; }
+
+    @media (max-width: 767px) {
+        flex-wrap: nowrap; // single scrollable row on phones
+        // fade-out hint at trailing edge
+        -webkit-mask-image: linear-gradient(to left, transparent 0%, #000 60px);
+        mask-image: linear-gradient(to left, transparent 0%, #000 60px);
+    }
+}
+
+// Individual chip
 .quick-chip {
-    font-size: 13px;
-    height: 32px;
-    padding: 0 12px;
-    border-radius: 16px !important;
-    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    height: 34px;
+    padding: 0 13px 0 9px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(13, 82, 56, 0.22);
+    background: rgba(13, 82, 56, 0.04);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    outline: none;
+
+    // Focus ring (keyboard nav)
+    &:focus-visible {
+        outline: 2px solid var(--sage-700, #0D5238);
+        outline-offset: 2px;
+    }
+
+    &:hover {
+        background: rgba(13, 82, 56, 0.09);
+        border-color: var(--sage-700, #0D5238);
+
+        .qc-name { color: var(--sage-700, #0D5238); }
+    }
+
+    &:active {
+        background: rgba(13, 82, 56, 0.16);
+        transform: scale(0.96);
+    }
+
+    // ── inner parts ──────────────────────────────────────────────────────────
+    .qc-icon {
+        font-size: 15px;
+        line-height: 1;
+        color: var(--sage-700, #0D5238);
+        flex-shrink: 0;
+    }
+
+    .qc-name {
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--ink-1, #222);
+        white-space: nowrap;
+        transition: color 0.15s;
+    }
+
+    .qc-sep {
+        font-size: 11px;
+        color: var(--ink-3, #aaa);
+        margin: 0 1px;
+    }
+
+    .qc-price {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--sage-700, #0D5238);
+        white-space: nowrap;
+    }
+}
+
+// ── Dark mode overrides ───────────────────────────────────────────────────────
+.component-dark-theme {
+    .chips-label { color: rgba(255, 255, 255, 0.38); }
+
+    .chips-scroll {
+        @media (max-width: 767px) {
+            -webkit-mask-image: linear-gradient(to left, transparent 0%, #000 60px);
+            mask-image: linear-gradient(to left, transparent 0%, #000 60px);
+        }
+    }
+
+    .quick-chip {
+        border-color: rgba(76, 175, 125, 0.20);
+        background: rgba(76, 175, 125, 0.05);
+
+        .qc-icon  { color: #4caf7d; }
+        .qc-name  { color: rgba(255, 255, 255, 0.70); }
+        .qc-sep   { color: rgba(255, 255, 255, 0.25); }
+        .qc-price { color: #4caf7d; }
+
+        &:hover {
+            background: rgba(76, 175, 125, 0.14);
+            border-color: #4caf7d;
+            .qc-name { color: #fff; }
+        }
+
+        &:active { background: rgba(76, 175, 125, 0.22); }
+    }
 }
 
 .optional-label {
@@ -52,82 +160,9 @@
     letter-spacing: 0.04em;
 }
 
-// ── Items table ──────────────────────────────────────────────────────────────
-.items-table {
-    width: 100%;
-    border: 1px solid var(--ck-border);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.items-row {
-    display: grid;
+// ── Invoice grid: desc | qty | price | amount | action ────────────────────────
+.invoice-grid {
     grid-template-columns: 1fr 90px 120px 110px 44px;
-    gap: 0;
+    gap: 0 8px;
     align-items: center;
-
-    &.items-header {
-        background: var(--ck-surface-alt, #f5f5f5);
-        border-bottom: 1px solid var(--ck-border);
-
-        span {
-            padding: 10px 12px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--ck-text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-    }
-
-    & + & {
-        border-top: 1px solid var(--ck-border);
-    }
-}
-
-.col-desc,
-.col-qty,
-.col-price,
-.col-amount,
-.col-action {
-    padding: 6px 8px;
-}
-
-.col-desc   { padding-inline-start: 12px; }
-.col-action { padding-inline-end: 8px; text-align: center; }
-
-.amount-cell {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--ck-primary);
-}
-
-.remove-btn {
-    color: var(--ck-danger, #c62828);
-    opacity: 0.75;
-
-    &:hover { opacity: 1; }
-}
-
-// ── Totals ───────────────────────────────────────────────────────────────────
-.totals-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 6px;
-}
-
-.totals-row {
-    display: flex;
-    gap: 32px;
-    font-size: 0.95rem;
-
-    span  { color: var(--ck-text-secondary); min-width: 120px; text-align: end; }
-    strong { min-width: 100px; text-align: start; }
-
-    &.totals-total {
-        border-top: 2px solid var(--ck-border);
-        padding-top: 8px;
-        font-size: 1.1rem;
-    }
 }

@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from './common/not-found/not-found.component';
-import { authGuard }   from './core/guards/auth.guard';
-import { publicGuard } from './core/guards/public.guard';
+import { authGuard }        from './core/guards/auth.guard';
+import { publicGuard }      from './core/guards/public.guard';
+import { systemAdminGuard } from './core/guards/system-admin.guard';
 
 export const routes: Routes = [
 
@@ -210,6 +211,43 @@ export const routes: Routes = [
         ],
     },
 
+    // ── Purchases & Inventory ─────────────────────────────────────────────
+    {
+        path: 'purchases',
+        canActivate: [authGuard],
+        children: [
+            { path: '', redirectTo: 'orders', pathMatch: 'full' },
+            {
+                path: 'orders',
+                loadComponent: () =>
+                    import('./pages/purchases/purchase-orders/purchase-orders-list/purchase-orders-list.component')
+                        .then(m => m.PurchaseOrdersListComponent),
+                title: 'Purchase Orders — ClinicKit',
+            },
+            {
+                path: 'orders/new',
+                loadComponent: () =>
+                    import('./pages/purchases/purchase-orders/purchase-order-form/purchase-order-form.component')
+                        .then(m => m.PurchaseOrderFormComponent),
+                title: 'New Purchase Order — ClinicKit',
+            },
+            {
+                path: 'orders/:id',
+                loadComponent: () =>
+                    import('./pages/purchases/purchase-orders/purchase-order-detail/purchase-order-detail.component')
+                        .then(m => m.PurchaseOrderDetailComponent),
+                title: 'Purchase Order — ClinicKit',
+            },
+            {
+                path: 'suppliers',
+                loadComponent: () =>
+                    import('./pages/purchases/suppliers/suppliers.component')
+                        .then(m => m.SuppliersComponent),
+                title: 'Suppliers — ClinicKit',
+            },
+        ],
+    },
+
     // ── Reports ───────────────────────────────────────────────────────────
     {
         path: 'reports',
@@ -256,6 +294,7 @@ export const routes: Routes = [
             },
             {
                 path: 'tenants',
+                canActivate: [systemAdminGuard],
                 loadComponent: () =>
                     import('./pages/settings/tenants/tenants.component')
                         .then(m => m.TenantsComponent),

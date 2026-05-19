@@ -58,6 +58,17 @@
                         </mat-expansion-panel-header>
 
                         <div class="visit-body pt-15">
+                            <!-- Print prescription button -->
+                            @if (visit.medications.length > 0) {
+                                <div class="d-flex justify-content-end mb-10">
+                                    <button class="default-btn outline-btn small-btn"
+                                            (click)="printPrescription(visit)">
+                                        <i class="material-symbols-outlined" style="font-size:16px">print</i>
+                                        {{ 'VISITS.PRINT_RX' | translate }}
+                                    </button>
+                                </div>
+                            }
+
                             <!-- Complaint -->
                             @if (visit.chiefComplaint) {
                                 <div class="visit-field mb-15">

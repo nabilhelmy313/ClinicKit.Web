@@ -1,0 +1,158 @@
+:host { display: block; }
+
+// ── Pill tray ─────────────────────────────────────────────────────────────────
+.ck-tabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f1f0ec;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 12px;
+    padding: 5px 6px;
+    flex-wrap: wrap;         // desktop: let tabs wrap if many
+
+    // ── Block / full-width variant ────────────────────────────────────────────
+    &--block {
+        display: flex;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+// ── Individual pill ───────────────────────────────────────────────────────────
+.ck-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2, #555);
+    white-space: nowrap;      // never break label text
+    flex-shrink: 0;           // never squish a tab
+    transition: background 0.16s ease, color 0.16s ease;
+    outline: none;
+
+    &:focus-visible {
+        outline: 2px solid var(--sage-700, #0D5238);
+        outline-offset: 2px;
+    }
+
+    // ── Active ────────────────────────────────────────────────────────────────
+    &--active {
+        background: var(--sage-700, #0D5238);
+        color: #fff;
+
+        .ck-tab__icon  { color: #fff; }
+
+        .ck-tab__badge {
+            background: rgba(255, 255, 255, 0.22);
+            color: #fff;
+        }
+    }
+
+    // ── Hover (inactive only) ─────────────────────────────────────────────────
+    &:not(.ck-tab--active):hover {
+        background: rgba(13, 82, 56, 0.08);
+        color: var(--sage-700, #0D5238);
+    }
+}
+
+// ── Icon ──────────────────────────────────────────────────────────────────────
+.ck-tab__icon {
+    font-size: 17px;
+    line-height: 1;
+    color: inherit;
+    flex-shrink: 0;
+}
+
+// ── Badge count ───────────────────────────────────────────────────────────────
+.ck-tab__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background: rgba(13, 82, 56, 0.10);
+    color: var(--sage-700, #0D5238);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+    transition: background 0.16s, color 0.16s;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Mobile  ≤ 767px — ALWAYS a single scrollable row regardless of block mode
+// ══════════════════════════════════════════════════════════════════════════════
+@media (max-width: 767px) {
+    // Host becomes the scroll container
+    :host {
+        display: block;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        &::-webkit-scrollbar { display: none; }
+
+        // Fade-out hint on trailing edge to indicate more tabs exist
+        -webkit-mask-image: linear-gradient(
+            to left,
+            transparent 0%,
+            #000 48px
+        );
+        mask-image: linear-gradient(
+            to left,
+            transparent 0%,
+            #000 48px
+        );
+    }
+
+    // Tray: single no-wrap row, wider than viewport → parent scrolls it
+    .ck-tabs {
+        display: inline-flex;   // never stretch to 100% on mobile
+        flex-wrap: nowrap;
+        width: max-content;
+        min-width: 100%;        // at least full width if few tabs
+        border-radius: 10px;
+    }
+
+    // Slightly smaller pills on phones
+    .ck-tab        { padding: 5px 11px; font-size: 12px; }
+    .ck-tab__icon  { font-size: 15px; }
+    .ck-tab__badge { font-size: 10px; min-width: 17px; padding: 1px 5px; }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// Dark theme
+// ══════════════════════════════════════════════════════════════════════════════
+:host-context(.component-dark-theme) {
+    .ck-tabs {
+        background: #131920;
+        border-color: rgba(255, 255, 255, 0.07);
+    }
+
+    .ck-tab {
+        color: rgba(255, 255, 255, 0.50);
+
+        &--active {
+            background: var(--sage-700, #0D5238);
+            color: #fff;
+        }
+
+        &:not(.ck-tab--active):hover {
+            background: rgba(76, 175, 125, 0.12);
+            color: rgba(255, 255, 255, 0.85);
+        }
+    }
+
+    .ck-tab__badge {
+        background: rgba(76, 175, 125, 0.15);
+        color: #4caf7d;
+    }
+}

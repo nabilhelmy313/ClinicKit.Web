@@ -1,0 +1,56 @@
+<div [dir]="langService.isRTL() ? 'rtl' : 'ltr'"
+     [class.component-dark-theme]="themeService.isDark()">
+
+    <ck-page-header
+        icon="shopping_bag"
+        [title]="'PURCHASES.ORDERS_TITLE' | translate"
+        [breadcrumbs]="[
+            { label: ('SIDEBAR.DASHBOARD' | translate), link: '/dashboard' },
+            { label: ('PURCHASES.TITLE' | translate) }
+        ]">
+        <ck-btn variant="outline" icon="storefront"
+                (clicked)="router.navigate(['/purchases/suppliers'])">
+            {{ 'PURCHASES.SUPPLIERS' | translate }}
+        </ck-btn>
+        <ck-btn icon="add"
+                (clicked)="router.navigate(['/purchases/orders/new'])">
+            {{ 'PURCHASES.NEW_ORDER' | translate }}
+        </ck-btn>
+    </ck-page-header>
+
+    <ck-card [noPadding]="true">
+        <ck-table
+            [data]="orders()"
+            [columnDefs]="colDefs"
+            [actions]="tableActions"
+            [loading]="loading()"
+            [totalCount]="totalCount()"
+            [page]="page()"
+            [pageSize]="pageSize()"
+            (prevPage)="prevPage()"
+            (nextPage)="nextPage()"
+            (pageSizeChange)="onPageSizeChange($event)">
+
+            <!-- Order date formatted -->
+            <ng-template ckCellDef="orderDate" let-row>
+                {{ row.orderDate | date:'dd/MM/yyyy' }}
+            </ng-template>
+
+            <!-- Total with currency -->
+            <ng-template ckCellDef="totalAmount" let-row>
+                {{ row.totalAmount | number:'1.2-2' }} {{ 'BILLING.CURRENCY' | translate }}
+            </ng-template>
+
+            <!-- Status badge -->
+            <ng-template ckCellDef="status" let-row>
+                <ck-status-badge
+                    [status]="row.status"
+                    [label]="statusLabel(row.status)"
+                    [colorMap]="statusColorMap">
+                </ck-status-badge>
+            </ng-template>
+
+        </ck-table>
+    </ck-card>
+
+</div>

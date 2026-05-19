@@ -143,39 +143,68 @@
                         </mat-expansion-panel>
                     }
 
-                    <!-- ══════════════════════════════════ FINANCE ══ Admin + Receptionist -->
-                    @if (isAdminOrReceptionist()) {
+                    <!-- ══════════════════════════════════ FINANCE ══ -->
+                    @if (canViewFinance()) {
                         <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_FINANCE' | translate }}</span>
 
-                        <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>
-                                    <i class="material-symbols-outlined">receipt_long</i>
-                                    <span class="title">{{ 'SIDEBAR.BILLING' | translate }}</span>
-                                </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <ul class="sidebar-sub-menu">
-                                <li class="sidemenu-item">
-                                    <a routerLink="/billing/invoices" routerLinkActive="active" class="sidemenu-link">
-                                        {{ 'SIDEBAR.INVOICES' | translate }}
-                                    </a>
-                                </li>
-                                <li class="sidemenu-item">
-                                    <a routerLink="/billing/payments" routerLinkActive="active" class="sidemenu-link">
-                                        {{ 'SIDEBAR.PAYMENTS' | translate }}
-                                    </a>
-                                </li>
-                                <li class="sidemenu-item">
-                                    <a routerLink="/billing/insurance" routerLinkActive="active" class="sidemenu-link">
-                                        {{ 'SIDEBAR.INSURANCE' | translate }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </mat-expansion-panel>
+                        <!-- Billing — Admin, Receptionist, Accountant -->
+                        @if (canViewBilling()) {
+                            <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <i class="material-symbols-outlined">receipt_long</i>
+                                        <span class="title">{{ 'SIDEBAR.BILLING' | translate }}</span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <ul class="sidebar-sub-menu">
+                                    <li class="sidemenu-item">
+                                        <a routerLink="/billing/invoices" routerLinkActive="active" class="sidemenu-link">
+                                            {{ 'SIDEBAR.INVOICES' | translate }}
+                                        </a>
+                                    </li>
+                                    <li class="sidemenu-item">
+                                        <a routerLink="/billing/payments" routerLinkActive="active" class="sidemenu-link">
+                                            {{ 'SIDEBAR.PAYMENTS' | translate }}
+                                        </a>
+                                    </li>
+                                    <li class="sidemenu-item">
+                                        <a routerLink="/billing/insurance" routerLinkActive="active" class="sidemenu-link">
+                                            {{ 'SIDEBAR.INSURANCE' | translate }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </mat-expansion-panel>
+                        }
+
+                        <!-- Purchases & Inventory — Admin, Pharmacist -->
+                        @if (canViewPurchases()) {
+                            <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        <i class="material-symbols-outlined">shopping_bag</i>
+                                        <span class="title">{{ 'PURCHASES.TITLE' | translate }}</span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <ul class="sidebar-sub-menu">
+                                    <li class="sidemenu-item">
+                                        <a routerLink="/purchases/orders" routerLinkActive="active" class="sidemenu-link">
+                                            {{ 'PURCHASES.ORDERS_TITLE' | translate }}
+                                        </a>
+                                    </li>
+                                    @if (isAdmin()) {
+                                        <li class="sidemenu-item">
+                                            <a routerLink="/purchases/suppliers" routerLinkActive="active" class="sidemenu-link">
+                                                {{ 'PURCHASES.SUPPLIERS' | translate }}
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </mat-expansion-panel>
+                        }
                     }
 
-                    <!-- ══════════════════════════════════ ANALYTICS ══ Admin only -->
-                    @if (isAdmin()) {
+                    <!-- ══════════════════════════════════ ANALYTICS ══ Admin, Accountant -->
+                    @if (canViewReports()) {
                         <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_ANALYTICS' | translate }}</span>
 
                         <a routerLink="/reports" class="sidebar-menu-link"
@@ -186,7 +215,7 @@
                     }
 
                     <!-- ══════════════════════════════════ SYSTEM ══ Admin only -->
-                    @if (isAdmin()) {
+                    @if (isAdmin() || isSystemAdmin()) {
                         <span class="sub-title text-body">{{ 'SIDEBAR.SECTION_SYSTEM' | translate }}</span>
 
                         <mat-expansion-panel (opened)="panelOpenState=true" (closed)="panelOpenState=false">
@@ -197,6 +226,7 @@
                                 </mat-panel-title>
                             </mat-expansion-panel-header>
                             <ul class="sidebar-sub-menu">
+                                @if (isAdmin()) {
                                 <li class="sidemenu-item">
                                     <a routerLink="/settings/clinic" routerLinkActive="active" class="sidemenu-link">
                                         {{ 'SIDEBAR.CLINIC_PROFILE' | translate }}
@@ -207,16 +237,21 @@
                                         {{ 'SIDEBAR.USERS_ROLES' | translate }}
                                     </a>
                                 </li>
+                                }
+                                @if (isSystemAdmin()) {
                                 <li class="sidemenu-item">
                                     <a routerLink="/settings/tenants" routerLinkActive="active" class="sidemenu-link">
                                         {{ 'SIDEBAR.TENANTS' | translate }}
                                     </a>
                                 </li>
+                                }
+                                @if (isAdmin()) {
                                 <li class="sidemenu-item">
                                     <a routerLink="/settings/catalog" routerLinkActive="active" class="sidemenu-link">
                                         {{ 'SIDEBAR.CATALOG' | translate }}
                                     </a>
                                 </li>
+                                }
                             </ul>
                         </mat-expansion-panel>
                     }

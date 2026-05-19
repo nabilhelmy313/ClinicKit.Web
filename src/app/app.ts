@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { ToggleService } from './common/sidebar/toggle.service';
 import { HeaderComponent } from './common/header/header.component';
 import { FooterComponent } from './common/footer/footer.component';
@@ -10,6 +10,7 @@ import { CustomizerSettingsService } from './customizer-settings/customizer-sett
 import { LanguageService } from './core/services/language.service';
 import { TenantConfigService } from './core/services/tenant-config.service';
 import { AuthService } from './core/services/auth.service';
+import { DateAdapter } from '@angular/material/core';
 
 const PUBLIC_ROUTE_PREFIXES = ['/authentication', '/queue-display'];
 
@@ -25,6 +26,15 @@ export class App {
     readonly langService      = inject(LanguageService);
     private readonly auth     = inject(AuthService);
     private readonly tenantConfig = inject(TenantConfigService);
+    private readonly dateAdapter  = inject(DateAdapter);
+
+    // Switch datepicker calendar locale when the app language changes.
+    // 'ar-u-nu-latn' = Arabic month/day names + Western (Latin) numerals.
+    private readonly _localeEffect = effect(() => {
+        this.dateAdapter.setLocale(
+            this.langService.isRTL() ? 'ar-EG-u-nu-latn' : 'en-GB',
+        );
+    });
 
     isSidebarToggled = false;
     isPublicRoute = signal(false);

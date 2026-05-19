@@ -59,18 +59,17 @@
             <!-- Jump-to-date picker -->
             <div class="cal-nav__center">
                 <input class="cal-nav__jump-input"
-                       [formControl]="jumpControl"
                        [matDatepicker]="jumpPicker"
                        (dateChange)="onJump($event)"
                        readonly />
-                <mat-datepicker #jumpPicker></mat-datepicker>
+                <mat-datepicker #jumpPicker [touchUi]="bp.isMobile()"></mat-datepicker>
 
                 <button class="cal-nav__jump-btn" (click)="jumpPicker.open()"
                         [title]="'APPOINTMENTS.JUMP_TO_DATE' | translate">
                     <span class="material-symbols-outlined cal-nav__jump-icon">calendar_month</span>
                     @if (viewMode() === 'week') {
                         <span class="cal-nav__jump-label" dir="ltr">
-                            {{ weekStart() | date:'d MMM' }} – {{ weekEnd() | date:'d MMM yyyy' }}
+                            {{ weekRangeLabel() }}
                         </span>
                     } @else {
                         <span class="cal-nav__jump-label">{{ dayLabel() }}</span>
@@ -88,7 +87,7 @@
                 <span class="cal-nav__month">{{ monthLabel() }}</span>
                 @if (viewMode() === 'week') {
                     <span class="cal-nav__range" dir="ltr">
-                        {{ weekStart() | date:'d MMM' }} – {{ weekEnd() | date:'d MMM' }}
+                        {{ weekRangeShort() }}
                         &nbsp;·&nbsp;
                         {{ 'APPOINTMENTS.WEEK' | translate }} {{ weekNumber() }}
                     </span>

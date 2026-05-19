@@ -30,7 +30,7 @@
 
                     <!-- First name -->
                     <div class="col-md-6 mb-20">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field class="w-100">
                             <mat-label>{{ 'PATIENTS.FIRST_NAME' | translate }}</mat-label>
                             <input matInput formControlName="firstName" />
                             @if (f['firstName'].invalid && f['firstName'].touched) {
@@ -41,7 +41,7 @@
 
                     <!-- Last name -->
                     <div class="col-md-6 mb-20">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field class="w-100">
                             <mat-label>{{ 'PATIENTS.LAST_NAME' | translate }}</mat-label>
                             <input matInput formControlName="lastName" />
                             @if (f['lastName'].invalid && f['lastName'].touched) {
@@ -52,7 +52,7 @@
 
                     <!-- Phone -->
                     <div class="col-md-6 mb-20">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field class="w-100">
                             <mat-label>{{ 'PATIENTS.PHONE' | translate }}</mat-label>
                             <input matInput formControlName="phone" dir="ltr"
                                    [placeholder]="'PATIENTS.PHONE_PLACEHOLDER' | translate" />
@@ -66,7 +66,7 @@
 
                     <!-- Gender -->
                     <div class="col-md-6 mb-20">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field class="w-100">
                             <mat-label>{{ 'PATIENTS.GENDER' | translate }}</mat-label>
                             <mat-select formControlName="gender">
                                 <mat-option [value]="Gender.Male">{{ 'PATIENTS.MALE' | translate }}</mat-option>
@@ -77,17 +77,17 @@
 
                     <!-- Date of birth -->
                     <div class="col-md-6 mb-20">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field class="w-100">
                             <mat-label>{{ 'PATIENTS.BIRTH_DATE' | translate }}</mat-label>
                             <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth" />
-                            <mat-datepicker-toggle matSuffix [for]="dobPicker"></mat-datepicker-toggle>
-                            <mat-datepicker #dobPicker></mat-datepicker>
+                            <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #dobPicker [touchUi]="bp.isMobile()"></mat-datepicker>
                         </mat-form-field>
                     </div>
 
                     <!-- Notes -->
                     <div class="col-12 mb-20">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <mat-form-field class="w-100">
                             <mat-label>{{ 'PATIENTS.NOTES' | translate }}</mat-label>
                             <textarea matInput formControlName="notes" rows="3"></textarea>
                         </mat-form-field>

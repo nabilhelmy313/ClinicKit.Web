@@ -1,1286 +1,433 @@
-::ng-deep {
-    .header-area {
-        top: 25px;
-        left: 282px;
-        right: 25px;
-        z-index: 101;
-        height: auto;
-        padding: 12px;
-        position: fixed;
-    
-        .header-left-side {
-            .burger-menu {
-                margin-right: 15px;
-    
-                span {
-                    height: 1px;
-                    width: 25px;
-                    margin: 6px 0;
-                }
-                &.active {
-                    span {
-                        &.top-bar {
-                            transform: rotate(45deg);
-                            transform-origin: 10% 10%;
-                        }
-                        &.middle-bar {
-                            opacity: 0;
-                        }
-                        &.bottom-bar {
-                            transform: rotate(-45deg);
-                            transform-origin: 10% 90%;
-                            margin-top: 5px;
-                        }
-                    }
-                }
-            }
-            .search-box {
-                width: 100%;
-                max-width: 360px;
-    
-                i {
-                    transform: translateY(-50%);
-                    color: var(--blackColor);
-                    position: absolute;
-                    font-size: 18px;
-                    left: 13px;
-                    top: 50%;
-                }
-                .input-search {
-                    height: 40px;
-                    font-size: 14px;
-                    border-radius: 3px;
-                    background: #f4f6fc;
-                    color: var(--blackColor);
-                    padding: {
-                        left: 40px;
-                        right: 15px;
-                    };
-                    &::placeholder {
-                        font-weight: 300;
-                        color: var(--bodyColor);
-                        transition: var(--transition);
-                    }
-                    &:focus {
-                        &::placeholder {
-                            color: transparent;
-                        }
-                    }
-                }
-            }
-        }
-        .header-right-side {
-            position: relative;
-            top: 2px;
+// ═══════════════════════════════════════════ TOPBAR ══════════════════════════
+// Clean, standalone topbar — no Bootstrap utility classes.
+// Positioning offsets mirror the sidebar widths:
+//   expanded: 282px  |  collapsed: 85px  |  mobile: 0
 
-            li {
-                .language-menu-btn {
-                    width: auto;
-                    height: auto;
-                    border-radius: 0;
-                    margin-right: 18px;
-                    padding: 0 20px 0 0;
+// These MUST match app.scss .main-content padding values exactly.
+$sidebar-w:    282px;   // main-content padding-left / padding-right (sidebar side)
+$sidebar-w-sm: 262px;   // 1200–1399px viewport
+$sidebar-mini:  85px;   // collapsed sidebar
+$edge-gap:      25px;   // gap from screen edge (non-sidebar side + top float)
+$topbar-h:      64px;
 
-                    i {
-                        font-size: 18px;
-                        color: var(--blackColor);
-                    }
-                    &::after {
-                        top: 50%;
-                        right: 0;
-                        margin-top: -2px;
-                        content: "\ea4e";
-                        position: absolute;
-                        color: var(--blackColor);
-                        transform: translateY(-50%);
-                        font-family: remixicon !important;
-                    }
-                    &.mat-mdc-icon-button {
-                        .mat-mdc-button-persistent-ripple {
-                            border-radius: 0;
-                        }
-                    }
-                }
-                .dark-swtich-btn {
-                    &.mat-mdc-button {
-                        min-width: auto;
-                        height: auto;
-                        width: auto;
-                        padding: 0;
-            
-                        i {
-                            font-size: 20px;
-                            color: var(--blackColor);
-                        }
-                    }
-                }
-                .profile-avatar {
-                    font-size: 28px;
-                    color: var(--blackColor);
-                    vertical-align: middle;
-                }
-                .notifications-menu-btn {
-                    width: auto;
-                    height: auto;
-                    border-radius: 0;
-                    margin-left: 19px;
+// ── Base ──────────────────────────────────────────────────────────────────────
+::ng-deep .topbar {
+    position: fixed;
+    top:   $edge-gap;    // floats above content by 25px
+    left:  $sidebar-w;   // = main-content padding-left (LTR)  ← NO extra gap
+    right: $edge-gap;    // = main-content padding-right       ← same 25px
+    z-index: 101;
+    height: $topbar-h;
 
-                    i {
-                        font-size: 20px;
-                        margin-right: -10px;
-                        color: var(--blackColor);
-                    }
-                    &.mat-mdc-icon-button {
-                        .mat-mdc-button-persistent-ripple {
-                            border-radius: 0;
-                        }
-                    }
-                    .daxa-badge {
-                        top: -15px;
-                        width: 17px;
-                        height: 17px;
-                        line-height: 17px;
-                        position: relative;
-                        border-radius: 50%;
-                        display: inline-block;
-                        color: var(--whiteColor);
-                        background-color: var(--dangerColor);
-                        font: {
-                            size: 10px;
-                            weight: 500;
-                        };
-                    }
-                }
-                .profile-menu-btn {
-                    top: -2px;
-                    width: auto;
-                    height: auto;
-                    min-width: auto;
-                    margin-left: 20px;
-                    position: relative;
-                    padding: 0 18px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-                    img {
-                        width: 40px;
-                        border-radius: 50%;
-                    }
-                    &::after {
-                        top: 50%;
-                        right: -3px;
-                        content: "\ea4e";
-                        position: absolute;
-                        color: var(--blackColor);
-                        transform: translateY(-50%);
-                        font-family: remixicon !important;
-                    }
-                    &.mat-mdc-icon-button {
-                        .mat-mdc-button-persistent-ripple {
-                            border-radius: 0;
-                        }
-                    }
-                    .status {
-                        right: 0;
-                        bottom: 3px;
-                        width: 11px;
-                        height: 11px;
-                        border: 2px solid var(--whiteColor);
-                        background-color: #2ecc71;
-                    }
-                }
-            }
-        }
-        &.sticky {
-            top: 0;
-            box-shadow: 0px 0px 35px 0px rgba(154, 161, 171, 0.15);
-        }
-        &.active, &.hide-sidebar {
-            left: 85px;
-        }
-        &.right-sidebar {
-            left: 25px;
-            right: 282px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+    padding: 0 16px;
 
-            &.active, &.hide-sidebar {
-                right: 85px;
-            }
-        }
-        &.card-borderd-theme {
-            box-shadow: var(--borderBoxShadow) !important;
-        }
-        .header-center-logo img {
-            filter: brightness(0);
-            transition: filter 0.3s ease;
-        }
-        &.component-dark-theme, &.dark-header {
-            .header-center-logo img {
-                filter: brightness(0) invert(1);
-            }
-            .header-left-side {
-                .burger-menu {
-                    span {
-                        background: var(--whiteColor) !important;
-                    }
-                }
-                .search-box {
-                    i {
-                        color: var(--whiteColor);
-                    }
-                    .input-search {
-                        background: rgba(255, 255, 255, .07);
-                        color: var(--whiteColor);
-                        
-                        &::placeholder {
-                            color: rgba(255, 255, 255, .50);
-                        }
-                        &:focus {
-                            &::placeholder {
-                                color: transparent;
-                            }
-                        }
-                    }
-                }
-            }
-            .header-right-side {
-                li {
-                    .language-menu-btn {
-                        i {
-                            color: var(--whiteColor);
-                        }
-                        &::after {
-                            color: var(--whiteColor);
-                        }
-                    }
-                    .dark-swtich-btn {
-                        &.mat-mdc-button {
-                            i {
-                                color: var(--whiteColor);
-                            }
-                        }
-                    }
-                    .profile-avatar { color: var(--whiteColor); }
-                    .notifications-menu-btn {
-                        i {
-                            color: var(--whiteColor);
-                        }
-                    }
-                    .profile-menu-btn {
-                        &::after {
-                            color: var(--whiteColor);
-                        }
-                    }
-                }
-            }
-        }
-        &.dark-header {
-            &.bg-white {
-                background-color: #1b232d !important;
-            }
-        }
-        &.rtl-enabled {
-            left: 25px;
-            right: 282px;
+    transition: left .22s ease, right .22s ease, box-shadow .2s;
 
-            .header-left-side {
-                .burger-menu {
-                    margin: {
-                        left: 15px;
-                        right: 0;
-                    };
-                }
-                .search-box {
-                    i {
-                        right: 13px;
-                        left: auto;
-                    }
-                    .input-search {
-                        padding: {
-                            right: 40px;
-                            left: 15px;
-                        };
-                    }
-                }
-            }
-            .header-right-side {
-                padding-right: 0;
-                
-                li {
-                    .language-menu-btn {
-                        padding: 0 0 0 20px;
-                        margin: {
-                            right: 0;
-                            left: 18px;
-                        };
-                        &::after {
-                            right: auto;
-                            left: 0;
-                        }
-                    }
-                    .calendar-menu-btn {
-                        margin: {
-                            right: 22px;
-                            left: 0;
-                        };
-                    }
-                    .messages-menu-btn {
-                        margin: {
-                            left: 0;
-                            right: 23px;
-                        };
-                        i {
-                            margin: {
-                                right: 0;
-                                left: -7px;
-                            };
-                        }
-                    }
-                    .notifications-menu-btn {
-                        margin: {
-                            left: 0;
-                            right: 19px;
-                        };
-                        i {
-                            margin: {
-                                left: -10px;
-                                right: 0;
-                            };
-                        }
-                    }
-                    .profile-menu-btn {
-                        padding: 0 0 0 18px;
-                        margin: {
-                            left: 0;
-                            right: 20px;
-                        };
-                        &::after {
-                            right: auto;
-                            left: -3px;
-                        }
-                        .status {
-                            right: auto;
-                            left: 0;
-                        }
-                    }
-                }
-            }
-            &.active, &.hide-sidebar {
-                left: 25px;
-                right: 85px;
-            }
-            &.right-sidebar {
-                right: 25px;
-                left: 282px;
-    
-                &.active, &.hide-sidebar {
-                    left: 85px;
-                }
-            }
-        }
+    // ── RTL (sidebar on right) ───────────────────────────────────────────────
+    &.topbar--rtl {
+        left:  $edge-gap;   // = main-content padding-left (RTL)
+        right: $sidebar-w;  // = main-content padding-right (RTL)
     }
-    .mat-mdc-menu-panel {
-        &.language-menu-dropdown {
-            width: 220px;
-            height: auto;
-            max-width: 220px;
-            overflow: hidden;
-            margin-top: 10px;
-            padding: 20px 0 0;
-            border-radius: 15px;
-            box-shadow: 0px 4px 34px rgba(101, 96, 240, 0.1);
 
-            .mat-mdc-menu-content {
-                padding: 0;
-            }
-            .title {
-                padding: 0 25px 20px;
-            }
-            .menu-body {
-                li {
-                    border-bottom: 1px dashed #e7e2e2;
+    // ── Sidebar collapsed ────────────────────────────────────────────────────
+    &.topbar--collapsed {
+        left: $sidebar-mini;
+        &.topbar--rtl { left: $edge-gap; right: $sidebar-mini; }
+    }
 
-                    .mdc-button {
-                        padding: 0;
-                        width: 100%;
-                        height: auto;
-                        display: block;
-                        padding: 14px 25px;
+    // ── Sticky (scrolled) ────────────────────────────────────────────────────
+    &.topbar--sticky {
+        top: 0;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+    }
 
-                        .mdc-button__label {
-                            display: flex;
-                            align-items: center;
-                            color: var(--blackColor);
-                            font: {
-                                size: 15px;
-                                weight: 500;
-                            };
-                            img {
-                                margin-right: 10px;
-                                width: 30px;
-                            }
-                        }
-                        &.active {
-                            background-color: var(--daxaColor);
-                            border-radius: 6px;
-                            .mdc-button__label {
-                                color: var(--whiteColor);
-                            }
-                        }
-                    }
-                    &:first-child {
-                        border-top: 1px dashed #e7e2e2;
-                    }
-                    &:last-child {
-                        border-bottom: 0;
-                    }
-                }
-            }
-            &:has(.dark-menu) {
-                box-shadow: unset !important;
-                background-color: #1b232d !important;
+    // ── Dark mode ────────────────────────────────────────────────────────────
+    &.topbar--dark {
+        background: #1b232d;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.06);
 
-                .title {
-                    color: var(--whiteColor);
-                }
-                .text-body {
-                    color: rgba(255, 255, 255, .50) !important;
-                }
-                .menu-body {
-                    li {
-                        border-color: rgba(255, 255, 255, 0.09);
-    
-                        .mdc-button {
-                            .mdc-button__label {
-                                color: var(--whiteColor);
-                            }
-                            .mat-mdc-button-persistent-ripple {
-                                &::before {
-                                    --mat-text-button-state-layer-color: var(--whiteColor);
-                                }
-                            }
-                            &.active {
-                                background-color: var(--daxaColor);
-                                .mdc-button__label {
-                                    color: var(--whiteColor);
-                                }
-                            }
-                        }
-                        &:first-child {
-                            border-color: rgba(255, 255, 255, 0.09);
-                        }
-                    }
-                }
-                a {
-                    color: var(--whiteColor);
-
-                    &:hover {
-                        color: var(--daxaColor);
-                    }
-                }
-            }
+        .topbar-burger span  { background: rgba(255,255,255,0.75); }
+        .topbar__logo        { filter: brightness(0) invert(1) !important; }
+        .topbar-user-info__name { color: rgba(255,255,255,0.88); }
+        .topbar-btn         { color: rgba(255,255,255,0.72);
+            &:hover         { background: rgba(255,255,255,0.07); color: #fff; }
         }
-        &.notifications-menu-dropdown {
-            width: 300px;
-            height: auto;
-            padding: 20px 0;
-            max-width: 300px;
-            overflow: hidden;
-            margin-top: 10px;
-            border-radius: 15px;
-            box-shadow: 0px 4px 34px rgba(101, 96, 240, 0.1);
+        .topbar-btn--lang   { border-color: rgba(255,255,255,0.18); }
+        .topbar-btn__lang-label { color: rgba(255,255,255,0.72); }
+        .topbar-avatar      { color: rgba(255,255,255,0.80); }
+        .topbar-btn__online { border-color: #1b232d; }
+    }
+}
 
-            .mat-mdc-menu-content { padding: 0; }
+// ── Layout regions ────────────────────────────────────────────────────────────
+::ng-deep .topbar__start {
+    display: none;   // hidden on desktop/tablet by default; shown via media query
+    flex-shrink: 0;
+}
 
-            .title {
-                padding: 0 20px 16px;
-                border-bottom: 1px dashed #e7e2e2;
-                font-size: 15px;
-                font-weight: 500;
-            }
+::ng-deep .topbar__brand {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+}
 
-            .notifications-empty {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-                padding: 28px 20px;
-                color: #9ca3af;
+::ng-deep .topbar__logo {
+    height: 34px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0);
+    transition: filter .25s;
+    flex-shrink: 0;
+}
 
-                i { font-size: 36px; opacity: 0.5; }
-                span { font-size: 13px; }
-            }
+::ng-deep .topbar__end {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
 
-            &:has(.dark-menu) {
-                box-shadow: unset !important;
-                background-color: #1b232d !important;
+// ── Burger ────────────────────────────────────────────────────────────────────
+::ng-deep .topbar-burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 38px;
+    height: 38px;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background .15s;
+    flex-shrink: 0;
 
-                .title {
-                    color: var(--whiteColor);
-                    border-color: rgba(255, 255, 255, 0.09);
-                }
-                .notifications-empty {
-                    color: rgba(255, 255, 255, 0.35);
-                }
-            }
+    span {
+        display: block;
+        height: 2px;
+        width: 100%;
+        border-radius: 2px;
+        background: #4b5563;
+        transition: transform .22s, opacity .22s, margin .22s;
+    }
+
+    &:hover { background: rgba(0,0,0,0.05); }
+
+    &.topbar-burger--open {
+        span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        span:nth-child(2) { opacity: 0; }
+        span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    }
+}
+
+// ── Action buttons ────────────────────────────────────────────────────────────
+::ng-deep .topbar-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #4b5563;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    flex-shrink: 0;
+
+    i.material-symbols-outlined { font-size: 20px; line-height: 1; }
+
+    &:hover { background: rgba(13,82,56,.07); color: #0D5238; }
+    &:focus-visible { outline: 2px solid #0D5238; outline-offset: 2px; }
+
+    // ── Language button — wider to fit label ─────────────────────────────────
+    &.topbar-btn--lang {
+        width: auto;
+        padding: 0 10px;
+        gap: 5px;
+        border: 1.5px solid rgba(0,0,0,0.12);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        border-radius: 20px;
+
+        i.material-symbols-outlined { font-size: 16px; }
+    }
+
+    &__lang-label {
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        color: #374151;
+    }
+
+    // ── Profile button — wider, shows name + role ────────────────────────────
+    &.topbar-btn--profile {
+        width: auto;
+        padding: 0 10px 0 6px;
+        gap: 8px;
+        margin-inline-start: 4px;
+        border-radius: 10px;
+        position: relative;
+        min-width: 0;
+    }
+
+    &__online {
+        position: absolute;
+        bottom: 6px;
+        inset-inline-start: 30px;   // just outside the avatar circle
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #2ecc71;
+        border: 2px solid #fff;
+    }
+
+    &__chevron {
+        font-size: 16px;
+        opacity: 0.5;
+        flex-shrink: 0;
+    }
+}
+
+::ng-deep .topbar-avatar {
+    font-size: 30px;
+    color: #374151;
+    flex-shrink: 0;
+}
+
+// ── User name / role pill ─────────────────────────────────────────────────────
+::ng-deep .topbar-user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    min-width: 0;
+    max-width: 160px;
+
+    &__name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a2330;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        line-height: 1.2;
+    }
+
+    &__role {
+        font-size: 11px;
+        color: #607D8B;
+        white-space: nowrap;
+        line-height: 1.2;
+    }
+}
+
+// Dark-mode user info
+::ng-deep .topbar--dark {
+    .topbar-user-info__name { color: rgba(255,255,255,0.88); }
+    .topbar-user-info__role { color: rgba(255,255,255,0.45); }
+    .topbar-btn__online     { border-color: #1b232d; }
+    .topbar-btn__chevron    { color: rgba(255,255,255,0.50); }
+}
+
+// ── Dropdown menus (mat-menu panels) ─────────────────────────────────────────
+// These live in CDK overlay → must be global (no encapsulation)
+::ng-deep .topbar-dropdown.mat-mdc-menu-panel {
+    min-width: 220px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+    overflow: hidden;
+    margin-top: 6px !important;
+
+    .mat-mdc-menu-content { padding: 0 !important; }
+
+    // shared header row inside dropdown
+    .td-header {
+        padding: 14px 16px 10px;
+        font-size: 14px;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(0,0,0,0.07);
+        color: #1a2330;
+    }
+
+    .td-divider {
+        height: 1px;
+        background: rgba(0,0,0,0.07);
+        margin: 4px 0;
+    }
+
+    .td-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 28px 20px;
+        color: #9ca3af;
+        i  { font-size: 36px; opacity: .5; }
+        span { font-size: 13px; }
+    }
+
+    // mat-menu-item inside topbar dropdowns
+    .mat-mdc-menu-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        color: #1a2330 !important;
+
+        i.material-symbols-outlined {
+            font-size: 20px;
+            color: #0D5238;
+            flex-shrink: 0;
         }
-        &.profile-menu-dropdown {
-            width: 220px;
-            padding: 20px 0;
-            min-width: auto;
-            max-width: 100%;
-            overflow: hidden;
-            margin-top: 10px;
-            border-radius: 15px;
-            box-shadow: 0px 4px 34px rgba(101, 96, 240, 0.1);
 
-            .menu-header {
-                border-bottom: 1px dashed #e7e2e2;
-                margin-bottom: 10px;
-                padding: 16px 20px 16px;
+        &:hover { background: rgba(13,82,56,.06) !important; }
+    }
+}
 
-                .profile-avatar-lg {
-                    font-size: 44px;
-                    color: var(--daxaColor);
-                    flex-shrink: 0;
-                }
-                .title {
-                    margin-left: 10px;
+// Profile dropdown — wider with avatar header
+::ng-deep .topbar-dropdown--profile.mat-mdc-menu-panel {
+    min-width: 240px !important;
 
-                    span:first-child {
-                        font-size: 14px;
-                        word-break: break-all;
-                        color: inherit;
-                    }
-                    .designation {
-                        margin-top: 3px;
-                        font-size: 13px;
-                        text-transform: capitalize;
-                    }
-                }
-            }
-            .menu-body {
-                li {
-                    padding: 10px 20px 10px 48px;
-                    font-size: 15px;
+    .td-profile-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+    }
 
-                    i {
-                        top: 50%;
-                        left: 20px;
-                        line-height: 1;
-                        font-size: 20px;
-                        margin-top: -0.2px;
-                        position: absolute;
-                        color: var(--daxaColor);
-                        transform: translateY(-50%);
-                    }
-                    .link-btn {
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        z-index: 1;
-                    }
-                    &:hover {
-                        background-color: #f2f1f9;
-                        color: var(--daxaColor);
-                    }
-                }
-            }
-            .mat-mdc-menu-content {
-                padding: 0;
-            }
-            &:has(.dark-menu) {
-                color: var(--whiteColor);
-                box-shadow: unset !important;
-                background-color: #1b232d !important;
+    .td-avatar {
+        font-size: 44px;
+        color: #0D5238;
+        flex-shrink: 0;
+    }
 
-                a {
-                    color: var(--whiteColor);
+    .td-profile-info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        overflow: hidden;
+    }
 
-                    &:hover {
-                        color: var(--daxaColor);
-                    }
-                }
-                .menu-header {
-                    border-color: rgba(255, 255, 255, 0.09);
-                }
-                .text-body {
-                    color: rgba(255, 255, 255, .50) !important;
-                }
-                .menu-body {
-                    li {
-                        &:hover {
-                            background-color: #2c343e;
-                        }
-                    }
-                }
-            }
+    .td-profile-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a2330;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .td-profile-email {
+        font-size: 11px;
+        color: #9ca3af;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: ltr;
+        text-align: start;
+    }
+
+    .td-profile-role {
+        font-size: 12px;
+        color: #607D8B;
+        text-transform: capitalize;
+        margin-top: 2px;
+    }
+}
+
+// ── Dark theme for dropdowns ──────────────────────────────────────────────────
+.dark-theme ::ng-deep .topbar-dropdown.mat-mdc-menu-panel {
+    background: #1e2d3d !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35) !important;
+
+    .td-header    { color: rgba(255,255,255,.87); border-color: rgba(255,255,255,.08); }
+    .td-divider   { background: rgba(255,255,255,.08); }
+    .td-empty     { color: rgba(255,255,255,.35); }
+
+    .mat-mdc-menu-item {
+        color: rgba(255,255,255,.80) !important;
+        i.material-symbols-outlined { color: #4caf7d; }
+        &:hover { background: rgba(255,255,255,.06) !important; }
+    }
+
+    .td-profile-name { color: rgba(255,255,255,.87); }
+    .td-profile-role { color: rgba(255,255,255,.45); }
+    .td-avatar       { color: #4caf7d; }
+}
+
+// ═══════════════════════════════ RESPONSIVE ═══════════════════════════════════
+
+// 1200–1399px: slightly narrower sidebar (262px per app.scss)
+@media (min-width: 1200px) and (max-width: 1399px) {
+    ::ng-deep .topbar {
+        left:  $sidebar-w-sm;
+        &.topbar--rtl       { left: $edge-gap; right: $sidebar-w-sm; }
+        &.topbar--collapsed {
+            left: $sidebar-mini;
+            &.topbar--rtl { left: $edge-gap; right: $sidebar-mini; }
         }
     }
 }
 
-/* Max width 767px */
-@media only screen and (max-width : 767px) {
-
-    ::ng-deep {
-        .header-area {
-            top: 15px;
-            left: 15px !important;
-            right: 15px !important;
-            padding: 15px 15px 12px;
-        
-            .header-left-side {
-                justify-content: center;
-
-                .search-box {
-                    width: 280px;
-        
-                    i {
-                        font-size: 18px;
-                    }
-                    .input-search {
-                        padding: {
-                            left: 38px;
-                            right: 15px;
-                        };
-                    }
-                }
-            }
-            .header-right-side {
-                top: 0;
-                justify-content: center;
-                margin-top: 15px !important;
-    
-                li {
-                    .language-menu-btn {
-                        margin-right: 10px;
-                        padding: 0 15px 0 0;
-
-                        &::after {
-                            font-size: 14px;
-                        }
-                    }
-                    .calendar-menu-btn {
-                        margin: {
-                            left: 15px;
-                            top: -3px;
-                        };
-                    }
-                    .messages-menu-btn {
-                        margin-left: 15px;
-    
-                        i {
-                            margin-right: -7px;
-                        }
-                        .daxa-badge {
-                            width: 15px;
-                            height: 15px;
-                            font-size: 9px;
-                            line-height: 15px;
-                        }
-                    }
-                    .notifications-menu-btn {
-                        margin-left: 12px;
-    
-                        i {
-                            margin-right: -10px;
-                        }
-                        .daxa-badge {
-                            width: 15px;
-                            height: 15px;
-                            font-size: 9px;
-                            line-height: 15px;
-                        }
-                    }
-                    .profile-menu-btn {
-                        margin-left: 13px;
-                        padding: 0 15px 0 0;
-    
-                        img {
-                            width: 35px;
-                        }
-                        &::after {
-                            font-size: 14px;
-                        }
-                    }
-                }
-            }
-            &.sticky {
-                top: 0;
-            }
-            &.active, &.hide-sidebar {
-                left: 15px;
-            }
-            &.right-sidebar {
-                left: 15px;
-                right: 15px;
-    
-                &.active, &.hide-sidebar {
-                    right: 15px;
-                }
-            }
-            &.rtl-enabled {
-                left: 15px;
-                right: 15px;
-
-                .header-left-side {
-                    .search-box {
-                        .input-search {
-                            padding: {
-                                right: 38px;
-                                left: 15px;
-                            };
-                        }
-                    }
-                }
-                .header-right-side {
-                    li {
-                        .language-menu-btn {
-                            padding: 0 0 0 15px;
-                            margin: {
-                                left: 10px;
-                                right: 0;
-                            };
-                        }
-                        .calendar-menu-btn {
-                            margin: {
-                                left: 0;
-                                right: 15px;
-                            };
-                        }
-                        .messages-menu-btn {
-                            margin: {
-                                left: 0;
-                                right: 15px;
-                            };
-                            i {
-                                margin: {
-                                    left: -7px;
-                                    right: 0;
-                                };
-                            }
-                        }
-                        .notifications-menu-btn {
-                            margin: {
-                                left: 0;
-                                right: 12px;
-                            };
-                            i {
-                                margin: {
-                                    right: 0;
-                                    left: -10px;
-                                };
-                            }
-                        }
-                        .profile-menu-btn {
-                            padding: 0 0 0 15px;
-                            margin: {
-                                left: 0;
-                                right: 13px;
-                            };
-                        }
-                    }
-                }
-                &.active, &.hide-sidebar {
-                    left: 15px;
-                    right: 15px;
-                }
-                &.right-sidebar {
-                    right: 15px;
-                    left: 15px;
-        
-                    &.active, &.hide-sidebar {
-                        left: 15px;
-                    }
-                }
-            }
-        }
-        .mat-mdc-menu-panel {
-            &.language-menu-dropdown {
-                width: 200px;
-                max-width: 200px;
-                padding: 15px 0 0;
-    
-                .title {
-                    padding: 0 15px 15px;
-                }
-                .menu-body {
-                    li {
-                        .mdc-button {
-                            padding: 13px 15px;
-                            
-                            .mdc-button__label {
-                                font-size: 14px;
-
-                                img {
-                                    margin-right: 9px;
-                                    width: 27px;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            &.messages-menu-dropdown {
-                width: 300px;
-                padding: 15px 0;
-                max-width: 300px;
-    
-                .title {
-                    padding: {
-                        left: 15px;
-                        right: 15px;
-                        bottom: 15px;
-                    };
-                    .link-btn {
-                        font-size: 13px;
-                    }
-                }
-                .menu-body {
-                    margin-bottom: 15px;
-    
-                    li {
-                        padding: 16px 15px 16px 69px;
-    
-                        img {
-                            left: 15px;
-                        }
-                        .sub-title {
-                            margin-bottom: 5px;
-                            
-                            span {
-                                font-size: 13px;
-                            }
-                        }
-                        .message {
-                            font-size: 13px;
-                        }
-                        .unread {
-                            width: 6px;
-                            right: 15px;
-                            height: 6px;
-                        }
-                    }
-                }
-                .menu-footer {
-                    a {
-                        font-size: 13px;
-                    }
-                }
-            }
-            &.notifications-menu-dropdown {
-                width: 300px;
-                padding: 15px 0;
-                max-width: 300px;
-    
-                .title {
-                    padding: {
-                        left: 15px;
-                        right: 15px;
-                        bottom: 15px;
-                    };
-                    .link-btn {
-                        font-size: 13px;
-                    }
-                }
-                .menu-body {
-                    margin-bottom: 15px;
-    
-                    li {
-                        padding: 15px 15px 15px 64px;
-    
-                        .icon {
-                            left: 15px;
-                            width: 40px;
-                            height: 40px;
-    
-                            i {
-                                font-size: 18px;
-                            }
-                        }
-                        .unread {
-                            width: 6px;
-                            right: 15px;
-                            height: 6px;
-                        }
-                        .time {
-                            font-size: 13px;
-                        }
-                    }
-                }
-                .menu-footer {
-                    a {
-                        font-size: 13px;
-                    }
-                }
-            }
-            &.profile-menu-dropdown {
-                padding: 15px 0;
-    
-                .menu-header {
-                    margin-bottom: 8px;
-                    padding: {
-                        left: 15px;
-                        right: 15px;
-                        bottom: 15px;
-                    };
-                    .title {
-                        margin-left: 11px;
-    
-                        a {
-                            font-size: 15px;
-                        }
-                        .designation {
-                            font-size: 14px;
-                        }
-                    }
-                }
-                .menu-body {
-                    li {
-                        padding: 8px 15px 8px 41px;
-                        font-size: 14px;
-    
-                        i {
-                            left: 15px;
-                            font-size: 18px;
-                        }
-                    }
-                }
-            }
-        }
+// Tablet (768–1199px): sidebar is a drawer — show burger, collapse user name
+// Must reach 1199px because sidebar goes to drawer mode at ≤1199px.
+@media (max-width: 1199px) {
+    ::ng-deep .topbar {
+        left:  $edge-gap;
+        right: $edge-gap;
+        &.topbar--rtl       { left: $edge-gap; right: $edge-gap; }
+        &.topbar--collapsed { left: $edge-gap; right: $edge-gap; }
     }
-
+    ::ng-deep .topbar__start   { display: flex; }
+    ::ng-deep .topbar-user-info,
+    ::ng-deep .topbar-btn__chevron { display: none; }
+    ::ng-deep .topbar-btn--profile { padding: 0; width: 38px; }
 }
 
-/* Min width 576px to Max width 767px */
-@media only screen and (min-width : 576px) and (max-width : 767px) {}
+// Mobile (< 768px): full-width, flush to screen edges, smaller
+@media (max-width: 767px) {
+    ::ng-deep .topbar {
+        top:           0;
+        left:          0 !important;
+        right:         0 !important;
+        border-radius: 0;
+        height:        56px;
+        padding:       0 10px;
+        gap:           4px;
+        box-shadow:    0 2px 8px rgba(0,0,0,0.08);
 
-/* Min width 768px to Max width 991px */
-@media only screen and (min-width : 768px) and (max-width : 991px) {
-
-    ::ng-deep {
-        .header-area {
-            left: 25px;
-            right: 25px;
-            padding: 12px 15px;
-        
-            .header-left-side {
-                .burger-menu {
-                    margin-right: 20px;
-                }
-                .search-box {
-                    width: 290px;
-                }
-            }
-            .header-right-side {
-                li {
-                    .language-menu-btn {
-                        margin-right: 14px;
-                        padding: 0 18px 0 0;
-                    }
-                    .calendar-menu-btn {
-                        margin-left: 19px;
-                    }
-                    .messages-menu-btn {
-                        margin-left: 20px;
-                    }
-                    .notifications-menu-btn {
-                        margin-left: 17px;
-                    }
-                    .profile-menu-btn {
-                        margin-left: 18px;
-    
-                        img {
-                            width: 35px;
-                        }
-                    }
-                }
-            }
-            &.active, &.hide-sidebar {
-                left: 25px;
-            }
-            &.right-sidebar {
-                right: 25px;
-    
-                &.active, &.hide-sidebar {
-                    right: 25px;
-                }
-            }
-            &.rtl-enabled {
-                left: 25px;
-                right: 25px;
-        
-                .header-left-side {
-                    .burger-menu {
-                        margin: {
-                            left: 20px;
-                            right: 0;
-                        };
-                    }
-                }
-                .header-right-side {
-                    li {
-                        .language-menu-btn {
-                            padding: 0 0 0 18px;
-                            margin: {
-                                right: 0;
-                                left: 14px;
-                            };
-                        }
-                        .calendar-menu-btn {
-                            margin: {
-                                left: 0;
-                                right: 19px;
-                            };
-                        }
-                        .messages-menu-btn {
-                            margin: {
-                                left: 0;
-                                right: 20px;
-                            };
-                        }
-                        .notifications-menu-btn {
-                            margin: {
-                                left: 0;
-                                right: 17px;
-                            };
-                        }
-                        .profile-menu-btn {
-                            margin: {
-                                left: 0;
-                                right: 18px;
-                            };
-                        }
-                    }
-                }
-                &.active, &.hide-sidebar {
-                    left: 25px;
-                    right: 25px;
-                }
-                &.right-sidebar {
-                    right: 25px;
-                    left: 25px;
-        
-                    &.active, &.hide-sidebar {
-                        left: 25px;
-                    }
-                }
-            }
-        }
-        .mat-mdc-menu-panel {
-            &.language-menu-dropdown {
-                padding: 18px 0 0;
-    
-                .title {
-                    padding: 0 20px 18px;
-                }
-                .menu-body {
-                    li {
-                        .mdc-button {
-                            padding: 13px 20px;
-                            
-                            .mdc-button__label {
-                                font-size: 14px;
-                            }
-                        }
-                    }
-                }
-            }
-            &.messages-menu-dropdown {
-                width: 350px;
-                padding: 20px 0;
-                max-width: 350px;
-    
-                .title {
-                    padding: {
-                        left: 20px;
-                        right: 20px;
-                        bottom: 20px;
-                    };
-                    .link-btn {
-                        font-size: 14px;
-                    }
-                }
-                .menu-body {
-                    margin-bottom: 20px;
-    
-                    li {
-                        padding: 18px 20px 18px 75px;
-    
-                        img {
-                            left: 20px;
-                        }
-                        .sub-title {
-                            span {
-                                font-size: 13.5px;
-                            }
-                        }
-                        .message {
-                            font-size: 13.5px;
-                        }
-                        .unread {
-                            right: 20px;
-                        }
-                    }
-                }
-                .menu-footer {
-                    a {
-                        font-size: 14px;
-                    }
-                }
-            }
-            &.notifications-menu-dropdown {
-                width: 350px;
-                padding: 20px 0;
-                max-width: 350px;
-    
-                .title {
-                    padding: {
-                        left: 20px;
-                        right: 20px;
-                        bottom: 20px;
-                    };
-                    .link-btn {
-                        font-size: 14px;
-                    }
-                }
-                .menu-body {
-                    margin-bottom: 20px;
-    
-                    li {
-                        padding: 17px 20px 17px 74px;
-    
-                        .icon {
-                            left: 20px;
-                        }
-                        .unread {
-                            right: 20px;
-                        }
-                        .time {
-                            font-size: 13.5px;
-                        }
-                    }
-                }
-                .menu-footer {
-                    a {
-                        font-size: 14px;
-                    }
-                }
-            }
-            &.profile-menu-dropdown {
-                .menu-header {
-                    margin-bottom: 8px;
-                    
-                    .title {
-                        margin-left: 11px;
-    
-                        a {
-                            font-size: 16px;
-                        }
-                        .designation {
-                            font-size: 14px;
-                        }
-                    }
-                }
-                .menu-body {
-                    li {
-                        padding: 10px 20px 10px 47px;
-                        font-size: 14px;
-                    }
-                }
-            }
-        }
+        &.topbar--sticky { border-radius: 0; }
     }
 
-}
+    ::ng-deep .topbar__logo  { height: 28px; }
+    ::ng-deep .topbar__name  { font-size: 16px; }
 
-/* Min width 992px to Max width 1199px */
-@media only screen and (min-width : 992px) and (max-width : 1199px) {
+    // Collapse lang label on very small screens, keep icon only
+    ::ng-deep .topbar-btn--lang .topbar-btn__lang-label { display: none; }
+    ::ng-deep .topbar-btn--lang { width: 38px; padding: 0; border: none; border-radius: 10px; }
 
-    ::ng-deep {
-        .header-area {
-            left: 25px;
-        
-            .header-left-side {
-                .search-box {
-                    width: 320px;
-                }
-            }
-            &.active, &.hide-sidebar {
-                left: 25px;
-            }
-            &.right-sidebar {
-                right: 25px;
-    
-                &.active, &.hide-sidebar {
-                    right: 25px;
-                }
-            }
-            &.rtl-enabled {
-                left: 25px;
-                right: 25px;
-
-                &.active, &.hide-sidebar {
-                    left: 25px;
-                    right: 25px;
-                }
-                &.right-sidebar {
-                    right: 25px;
-                    left: 25px;
-        
-                    &.active, &.hide-sidebar {
-                        left: 25px;
-                    }
-                }
-            }
-        }
-    }
-
-}
-
-/* Min width 1200px to Max width 1399px */
-@media only screen and (min-width: 1200px) and (max-width: 1399px) {
-
-    ::ng-deep {
-        .header-area {
-            left: 262px;
-
-            &.active, &.hide-sidebar {
-                left: 85px;
-            }
-            &.right-sidebar {
-                right: 262px;
-    
-                &.active, &.hide-sidebar {
-                    right: 85px;
-                }
-            }
-            &.rtl-enabled {
-                left: 25px;
-                right: 262px;
-
-                &.active, &.hide-sidebar {
-                    left: 25px;
-                    right: 85px;
-                }
-                &.right-sidebar {
-                    right: 25px;
-                    left: 262px;
-        
-                    &.active, &.hide-sidebar {
-                        left: 85px;
-                    }
-                }
-            }
-        }
-    }
-
-}
-
-/* Min width 1600px */
-@media only screen and (min-width: 1600px) {}
-
-/* Max width 767px — hide search box on all mobile sizes */
-@media only screen and (max-width: 767px) {
-    ::ng-deep .header-area .header-left-side .search-box {
-        display: none;
-    }
+    // Tighten up action buttons
+    ::ng-deep .topbar-btn { width: 34px; height: 34px; }
+    ::ng-deep .topbar-btn i.material-symbols-outlined { font-size: 19px; }
+    ::ng-deep .topbar-avatar { font-size: 26px; }
 }

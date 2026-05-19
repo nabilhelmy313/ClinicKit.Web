@@ -25,7 +25,7 @@
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
         <!-- Email -->
-        <mat-form-field appearance="outline" class="w-100 mb-15">
+        <mat-form-field class="w-100 mb-20">
           <mat-label>{{ 'USERS.EMAIL' | translate }}</mat-label>
           <input matInput type="email" formControlName="email"
                  [placeholder]="'USERS.EMAIL' | translate" />
@@ -36,7 +36,7 @@
 
         <!-- Password (create only) -->
         @if (!isEdit) {
-          <mat-form-field appearance="outline" class="w-100 mb-15">
+          <mat-form-field class="w-100 mb-20">
             <mat-label>{{ 'USERS.PASSWORD' | translate }}</mat-label>
             <input matInput type="password" formControlName="password" />
             @if (f['password'].invalid && f['password'].touched) {
@@ -46,7 +46,7 @@
         }
 
         <!-- Role -->
-        <mat-form-field appearance="outline" class="w-100 mb-20">
+        <mat-form-field class="w-100 mb-20">
           <mat-label>{{ 'USERS.ROLE' | translate }}</mat-label>
           <mat-select formControlName="role">
             @for (r of roles; track r) {

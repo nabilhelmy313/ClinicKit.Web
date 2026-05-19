@@ -65,11 +65,17 @@ export class AuthService {
         ? (Array.isArray(rawRole) ? rawRole as string[] : [rawRole as string])
         : [];
 
+      const rawPerm = (p as Record<string, unknown>)['permission'];
+      const permissions = rawPerm
+        ? (Array.isArray(rawPerm) ? rawPerm as string[] : [rawPerm as string])
+        : [];
+
       return {
         userId:   p.sub,
         email:    p.email,
         tenantId: p.tenant_id,
         roles,
+        permissions,
       };
     } catch {
       return null;

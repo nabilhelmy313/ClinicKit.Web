@@ -12,7 +12,6 @@ import { MatInputModule }           from '@angular/material/input';
 import { MatButtonModule }          from '@angular/material/button';
 import { MatAutocompleteModule }    from '@angular/material/autocomplete';
 import { MatDatepickerModule }      from '@angular/material/datepicker';
-import { MatNativeDateModule }      from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule }            from '@angular/material/icon';
 
@@ -24,6 +23,7 @@ import { Visit }           from '../../../../core/models/visit.model';
 import { MedicineItem }    from '../../../../core/models/catalog.model';
 import { TranslatePipe }   from '../../../../core/pipes/translate.pipe';
 import { CkCardComponent, CkFormActionsComponent } from '../../../../shared/index';
+import { BreakpointService } from '../../../../core/services/breakpoint.service';
 import { VisitAttachmentsComponent } from '../visit-attachments/visit-attachments.component';
 
 @Component({
@@ -34,7 +34,7 @@ import { VisitAttachmentsComponent } from '../visit-attachments/visit-attachment
     imports: [
         CommonModule, ReactiveFormsModule,
         MatFormFieldModule, MatInputModule, MatButtonModule, MatAutocompleteModule,
-        MatDatepickerModule, MatNativeDateModule, MatProgressSpinnerModule, MatIconModule,
+        MatDatepickerModule, MatProgressSpinnerModule, MatIconModule,
         TranslatePipe,
         CkCardComponent, CkFormActionsComponent,
         VisitAttachmentsComponent,
@@ -51,6 +51,7 @@ export class VisitFormComponent implements OnInit {
     private readonly toast       = inject(ToastService);
     private readonly destroyRef  = inject(DestroyRef);
     readonly langService         = inject(LanguageService);
+    readonly bp                  = inject(BreakpointService);
 
     form!: FormGroup;
     submitting = false;

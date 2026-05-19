@@ -42,7 +42,7 @@ export interface MedicineDialogData { item?: MedicineItem; }
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="ck-dialog__body">
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'CATALOG.MEDICINE_NAME' | translate }}</mat-label>
             <input matInput formControlName="name" />
             @if (form.get('name')?.invalid && form.get('name')?.touched) {
@@ -50,18 +50,18 @@ export interface MedicineDialogData { item?: MedicineItem; }
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100 mb-15">
+          <mat-form-field class="w-100 mb-15">
             <mat-label>{{ 'CATALOG.NAME_EN' | translate }}</mat-label>
             <input matInput formControlName="nameEn" dir="ltr" placeholder="e.g. Panadol 500mg" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'CATALOG.DEFAULT_DOSAGE' | translate }}</mat-label>
             <input matInput formControlName="defaultDosage"
                    [placeholder]="'COMMON.OPTIONAL' | translate" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-100">
+          <mat-form-field class="w-100">
             <mat-label>{{ 'CATALOG.DEFAULT_FREQUENCY' | translate }}</mat-label>
             <input matInput formControlName="defaultFrequency"
                    [placeholder]="'COMMON.OPTIONAL' | translate" />
